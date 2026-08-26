@@ -73,6 +73,11 @@
     body.dark .modal-content { background: #1a1a1a; border-color: #333; }
     body.dark .help-btn { background: #e50914; color: #fff; }
     body.dark .help-btn:hover { background: #bd0710; }
+    body.dark .guide-step { background: #161616; border-color: #2a2a2a; }
+    body.dark .guide-step p { color: #aaa; }
+    body.dark .marketing-target { background: #121212; border-bottom: 3px solid #e50914; }
+    body.dark .marketing-target .target-item { background: #1a1a1a; border-color: #333; }
+    body.dark .marketing-target .target-item p { color: #aaa; }
 
     /* --- CONTENEUR & BOUTONS --- */
     .container { width: min(92%, 1160px); margin: 0 auto; }
@@ -231,7 +236,7 @@
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .card p { color: #666; font-size: 15px; line-height: 1.7; }
 
-    /* --- GUIDE (nouvelle section) --- */
+    /* --- GUIDE --- */
     .guide-steps {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;
       margin-top: 20px;
@@ -248,6 +253,55 @@
     }
     .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
     .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
+
+    /* --- NOUVELLE SECTION MARKETING "POUR QUI ?" --- */
+    .marketing-target {
+      background: #f8f8f8;
+      border-top: 3px solid #e50914;
+      border-bottom: 3px solid #e50914;
+      padding: 60px 0;
+      text-align: center;
+      transition: background 0.3s;
+    }
+    .marketing-target .container { max-width: 1060px; }
+    .marketing-target h2 {
+      font-size: clamp(30px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 15px;
+    }
+    .marketing-target h2 span { color: #e50914; }
+    .marketing-target .tagline {
+      font-size: 20px;
+      color: #444;
+      max-width: 750px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+    body.dark .marketing-target .tagline { color: #ccc; }
+    .target-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    .target-item {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 20px;
+      padding: 25px 15px;
+      transition: 0.3s;
+    }
+    .target-item:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
+    .target-item i {
+      font-size: 38px;
+      color: #e50914;
+      display: block;
+      margin-bottom: 12px;
+    }
+    .target-item h4 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+    .target-item p { color: #666; font-size: 14px; line-height: 1.6; margin: 0; }
+    body.dark .target-item p { color: #aaa; }
 
     /* --- À PROPOS --- */
     .about-wrapper {
@@ -279,7 +333,7 @@
       content: "•"; color: #e50914; font-weight: 900; font-size: 22px; line-height: 1;
     }
 
-    /* --- ÉQUIPE --- */
+    /* --- ÉQUIPE AVEC DRAPEAUX --- */
     .team-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
     }
@@ -288,6 +342,7 @@
       padding: 18px 12px; text-align: center; transition: 0.25s;
     }
     .team-member:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); }
+    .team-member .flag { font-size: 24px; display: block; margin-bottom: 6px; }
     .team-member strong { display: block; font-size: 17px; font-weight: 700; }
     .team-member .location { font-size: 14px; color: #888; margin-top: 4px; }
 
@@ -415,7 +470,7 @@
     .list li { display: flex; gap: 12px; align-items: flex-start; padding: 5px 0; }
     .list li::before { content: "✓"; color: #e50914; font-weight: 900; }
 
-    /* --- DISCLAIMER ÉLARGI --- */
+    /* --- DISCLAIMER --- */
     .disclaimer {
       background: #f8f8f8; border-top: 3px solid #e50914;
       padding: 40px 0; font-size: 14px; color: #555; line-height: 1.9;
@@ -499,6 +554,7 @@
       .client-grid, .payment-details-grid { grid-template-columns: 1fr 1fr; }
       .research-grid { grid-template-columns: 1fr; }
       .guide-steps { grid-template-columns: 1fr 1fr; }
+      .target-grid { grid-template-columns: repeat(3, 1fr); }
       .cta { flex-direction: column; text-align: center; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .wizard-nav { flex-direction: column; }
@@ -512,6 +568,7 @@
       section { padding: 50px 0; }
       .grid3, .grid4, .team-grid, .client-grid, .payment-details-grid { grid-template-columns: 1fr; }
       .guide-steps { grid-template-columns: 1fr; }
+      .target-grid { grid-template-columns: 1fr 1fr; }
       .hero-grid { gap: 30px; }
       .hero-card .tech-grid { grid-template-columns: 1fr 1fr; }
       .cta { padding: 25px; }
@@ -609,7 +666,48 @@
       </div>
     </section>
 
-    <!-- GUIDE : Comment demander un service -->
+    <!-- SECTION MARKETING "POUR QUI ?" -->
+    <section class="marketing-target" id="marketing">
+      <div class="container">
+        <h2>Vous avez un projet <span>numérique</span> ?</h2>
+        <p class="tagline">
+          Vous voulez une application ou un site web pour votre entreprise, restaurant, école, activité privée ou autres ? 
+          <strong>N'hésitez pas à contacter Xynera Club.</strong> Nous concrétisons vos idées avec une équipe d'experts passionnés.
+        </p>
+        <div class="target-grid">
+          <div class="target-item">
+            <i class="fas fa-building"></i>
+            <h4>Entreprise</h4>
+            <p>Site vitrine, plateforme e-commerce, outils de gestion et solutions B2B.</p>
+          </div>
+          <div class="target-item">
+            <i class="fas fa-utensils"></i>
+            <h4>Restaurant</h4>
+            <p>Menu en ligne, réservation de tables, commandes en ligne et application fidélité.</p>
+          </div>
+          <div class="target-item">
+            <i class="fas fa-graduation-cap"></i>
+            <h4>École</h4>
+            <p>Portail de cours, plateforme de formation, gestion des notes et communication.</p>
+          </div>
+          <div class="target-item">
+            <i class="fas fa-users"></i>
+            <h4>Activité privée</h4>
+            <p>Blog, portfolio, réseau social, événementiel et applications personnalisées.</p>
+          </div>
+          <div class="target-item">
+            <i class="fas fa-plus-circle"></i>
+            <h4>Autres</h4>
+            <p>Startups, associations, collectivités, clubs sportifs et tout autre besoin.</p>
+          </div>
+        </div>
+        <a href="#contact" class="btn btn-red btn-lg" style="padding:18px 50px; font-size:20px;">
+          <i class="fas fa-paper-plane"></i> Contactez-nous dès maintenant
+        </a>
+      </div>
+    </section>
+
+    <!-- GUIDE -->
     <section id="guide">
       <div class="container">
         <div class="section-head">
@@ -664,15 +762,14 @@
             <h4>Valeurs</h4>
             <ul class="values-list">
               <li><strong>Collaboration</strong> – Le collectif prime sur l'individualité. Les meilleures solutions naissent de l'intelligence collective.</li>
-              <li><strong>Apprentissage continu</strong> – La veille technologique et le partage de connaissances sont au cœur de notre démarche.</li>
               <li><strong>Créativité</strong> – Nous encourageons l'expérimentation et la prise de risque calculée.</li>
+              <li><strong>Apprentissage continu</strong> – La veille technologique et le partage de connaissances sont au cœur de notre démarche.</li>
               <li><strong>Intégrité</strong> – Nous agissons avec transparence et éthique dans toutes nos relations et projets.</li>
             </ul>
           </div>
           <div class="about-box">
             <strong>15+</strong>
             <span>développeurs et étudiants réunis autour d'une même ambition.</span>
-            <p style="margin-top:20px; font-weight:700;">Fondateur : Djamil</p>
             <div style="display:flex;gap:10px;margin-top:15px;">
               <span style="width:50px;height:8px;border-radius:99px;background:#0757d9;"></span>
               <span style="width:50px;height:8px;border-radius:99px;background:#e50914;"></span>
@@ -747,18 +844,18 @@
           <p>Des développeurs, chercheurs et designers unis par la même passion pour l'innovation.</p>
         </div>
         <div class="team-grid">
-          <div class="team-member"><strong>Djamil</strong><span class="location">RDC, Kinshasa</span></div>
-          <div class="team-member"><strong>Florentin</strong><span class="location">Belgique</span></div>
-          <div class="team-member"><strong>Marie-Claire</strong><span class="location">RDC, Goma</span></div>
-          <div class="team-member"><strong>Abdoul Karim</strong><span class="location">Côte d'Ivoire</span></div>
-          <div class="team-member"><strong>Sophie N.</strong><span class="location">France, Paris</span></div>
-          <div class="team-member"><strong>Jean-Pierre</strong><span class="location">RDC, Lubumbashi</span></div>
-          <div class="team-member"><strong>Grace A.</strong><span class="location">Kenya, Nairobi</span></div>
-          <div class="team-member"><strong>Michael O.</strong><span class="location">Nigeria, Lagos</span></div>
-          <div class="team-member"><strong>Chloé D.</strong><span class="location">Belgique, Bruxelles</span></div>
-          <div class="team-member"><strong>Hamza M.</strong><span class="location">Maroc, Casablanca</span></div>
-          <div class="team-member"><strong>Esther K.</strong><span class="location">RDC, Bukavu</span></div>
-          <div class="team-member"><strong>David W.</strong><span class="location">Canada, Montréal</span></div>
+          <div class="team-member"><span class="flag">🇨🇩</span><strong>Djamil</strong><span class="location">RDC, Kinshasa</span></div>
+          <div class="team-member"><span class="flag">🇧🇪</span><strong>Florentin</strong><span class="location">Belgique</span></div>
+          <div class="team-member"><span class="flag">🇨🇩</span><strong>Marie-Claire</strong><span class="location">RDC, Goma</span></div>
+          <div class="team-member"><span class="flag">🇨🇮</span><strong>Abdoul Karim</strong><span class="location">Côte d'Ivoire</span></div>
+          <div class="team-member"><span class="flag">🇫🇷</span><strong>Sophie N.</strong><span class="location">France, Paris</span></div>
+          <div class="team-member"><span class="flag">🇨🇩</span><strong>Jean-Pierre</strong><span class="location">RDC, Lubumbashi</span></div>
+          <div class="team-member"><span class="flag">🇰🇪</span><strong>Grace A.</strong><span class="location">Kenya, Nairobi</span></div>
+          <div class="team-member"><span class="flag">🇳🇬</span><strong>Michael O.</strong><span class="location">Nigeria, Lagos</span></div>
+          <div class="team-member"><span class="flag">🇧🇪</span><strong>Chloé D.</strong><span class="location">Belgique, Bruxelles</span></div>
+          <div class="team-member"><span class="flag">🇲🇦</span><strong>Hamza M.</strong><span class="location">Maroc, Casablanca</span></div>
+          <div class="team-member"><span class="flag">🇨🇩</span><strong>Esther K.</strong><span class="location">RDC, Bukavu</span></div>
+          <div class="team-member"><span class="flag">🇨🇦</span><strong>David W.</strong><span class="location">Canada, Montréal</span></div>
         </div>
       </div>
     </section>
@@ -939,7 +1036,7 @@
       </div>
     </section>
 
-    <!-- SECTION : Envoyer une proposition / discuter avec l'équipe (avant paiement) -->
+    <!-- SECTION PROPOSITION -->
     <section id="discuss" style="background:#f5f5f5;">
       <div class="container">
         <div class="section-head">
@@ -1040,7 +1137,7 @@
     </div>
   </footer>
 
-  <!-- BOUTON D'AIDE FLOTTANT -->
+  <!-- BOUTON D'AIDE -->
   <button class="help-btn" id="helpBtn" aria-label="Aide et contact">
     <i class="fas fa-life-ring"></i> Aide
   </button>
@@ -1076,13 +1173,13 @@
     // --- FONCTIONS ---
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
-        alert('✅ ' + text + ' copié dans le presse-papiers !');
+        alert(text + ' copié dans le presse-papiers !');
       }).catch(() => {
-        alert('❌ Copie manuelle requise.');
+        alert('Copie manuelle requise.');
       });
     }
 
-    // --- MENU MOBILE : ouverture/fermeture ---
+    // --- MENU MOBILE ---
     const menuBtn = document.getElementById('menuBtn');
     const closeMenuBtn = document.getElementById('closeMenuBtn');
     const mainNav = document.getElementById('mainNav');
@@ -1101,13 +1198,11 @@
 
     menuBtn.addEventListener('click', () => toggleMenu(true));
     closeMenuBtn.addEventListener('click', () => toggleMenu(false));
-    // Fermer le menu lors d'un clic sur un lien
     mainNav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         if (window.innerWidth < 992) toggleMenu(false);
       });
     });
-    // Réinitialiser sur redimensionnement
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 992) toggleMenu(false);
     });
@@ -1159,7 +1254,7 @@
       player.play().catch(() => {});
     });
 
-    // --- WIZARD (étapes) ---
+    // --- WIZARD ---
     const serviceSelect = document.getElementById('serviceSelect');
     const step1Next = document.getElementById('step1Next');
     const step2Next = document.getElementById('step2Next');
@@ -1234,7 +1329,7 @@
     const uploadArea = document.getElementById('uploadArea');
 
     fileInput.addEventListener('change', function() {
-      fileNameDisplay.textContent = this.files.length > 0 ? '📎 ' + this.files[0].name : 'Aucun fichier sélectionné';
+      fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Aucun fichier sélectionné';
     });
 
     uploadArea.addEventListener('click', function(e) {
@@ -1253,11 +1348,11 @@
       this.style.borderColor = '#ccc';
       if (e.dataTransfer.files.length > 0) {
         fileInput.files = e.dataTransfer.files;
-        fileNameDisplay.textContent = '📎 ' + e.dataTransfer.files[0].name;
+        fileNameDisplay.textContent = e.dataTransfer.files[0].name;
       }
     });
 
-    // --- SOUMISSION FORMULAIRES (3 formulaires) ---
+    // --- SOUMISSION FORMULAIRES ---
     function handleFormSubmit(formId, messageId) {
       const form = document.getElementById(formId);
       if (!form) return;
@@ -1273,7 +1368,6 @@
           if (response.ok) {
             document.getElementById(messageId).style.display = 'block';
             this.reset();
-            // Pour le formulaire final, on réinitialise aussi l'affichage du fichier
             if (formId === 'finalRequestForm') {
               document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
             }
@@ -1307,7 +1401,6 @@
         helpModal.classList.remove('active');
       }
     });
-    // Fermer avec la touche Échap
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') helpModal.classList.remove('active');
     });
