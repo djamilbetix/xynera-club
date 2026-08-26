@@ -7,7 +7,7 @@
 <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
 <style>
 :root{
-  --black:#090909; --black2:#121212; --red:#e50914; --red2:#ff3340;
+  --black:#090909; --black2:#121212; --red:#e50914; --red2:#ff3340; --blue:#0757d9; --blue2:#1f7aff;
   --white:#fff; --muted:#a7a7a7; --line:#262626; --card:#151515;
   --max:1180px; --radius:22px;
 }
@@ -23,7 +23,7 @@ img{max-width:100%;display:block}
 header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #eee}
 .nav{height:74px;display:flex;align-items:center;justify-content:space-between;gap:25px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:-1px;font-size:21px}
-.logo-mark{width:39px;height:39px;border-radius:11px;background:#111;color:#fff;display:grid;place-items:center;position:relative;overflow:hidden}
+.logo-mark{width:39px;height:39px;border-radius:11px;background:linear-gradient(135deg,var(--blue),#063a96);color:#fff;display:grid;place-items:center;position:relative;overflow:hidden}
 .logo-mark:after{content:"";position:absolute;width:24px;height:7px;background:var(--red);transform:rotate(-45deg)}
 .logo-mark span{position:relative;z-index:2;font-weight:950}
 nav{display:flex;gap:22px;font-size:14px;font-weight:700}
@@ -33,13 +33,13 @@ nav a:hover{color:var(--red)}
 .hero:before{content:"";position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(229,9,20,.13);filter:blur(70px);right:-120px;top:-80px}
 .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:55px;align-items:center;position:relative;z-index:2}
 .eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid #333;background:#111;padding:7px 11px;border-radius:99px;color:#ddd;font-size:12px;font-weight:800;margin-bottom:18px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(229,9,20,.45)}
 h1{font-size:clamp(45px,6vw,76px);line-height:.98;letter-spacing:-4px;margin-bottom:22px}
-h1 span{color:var(--red)}
+h1 span{color:var(--blue2)}
 .hero p{color:#c7c7c7;font-size:18px;max-width:670px}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
 .hero-card{background:linear-gradient(145deg,#181818,#0e0e0e);border:1px solid #292929;border-radius:28px;padding:28px;box-shadow:0 25px 70px rgba(0,0,0,.35)}
-.xc{height:280px;display:grid;place-items:center;font-size:160px;font-weight:1000;font-style:italic;letter-spacing:-25px;background:linear-gradient(135deg,#fff 35%,#888);-webkit-background-clip:text;color:transparent;position:relative}
+.xc{height:280px;display:grid;place-items:center;font-size:160px;font-weight:1000;font-style:italic;letter-spacing:-25px;background:linear-gradient(135deg,#ffffff 25%,#2b72ff 58%,#e50914 85%);-webkit-background-clip:text;color:transparent;position:relative}
 .xc:after{content:"";position:absolute;width:210px;height:18px;background:var(--red);transform:rotate(-40deg);border-radius:99px;opacity:.95}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
 .stat{border:1px solid #292929;border-radius:16px;padding:14px;text-align:center}.stat strong{display:block;font-size:24px}.stat small{color:#999}
@@ -131,7 +131,7 @@ footer{background:#080808;color:#fff;padding:50px 0 25px}.footer-grid{display:gr
     <strong>15+</strong>
     <span>développeurs et étudiants réunis autour d'une même ambition.</span>
     <p style="margin-top:20px"><b>Fondateur :</b> Djamil Yakonga</p>
-    <p style="margin-top:8px;color:#555">Le club valorise la collaboration, l'apprentissage continu, la créativité et la mise en pratique.</p>
+    <p style="margin-top:8px;color:#555">Le club valorise la collaboration, l'apprentissage continu, la créativité et la mise en pratique.</p><div style="display:flex;gap:8px;margin-top:18px"><span style="width:42px;height:8px;border-radius:99px;background:#0757d9"></span><span style="width:42px;height:8px;border-radius:99px;background:#e50914"></span></div>
   </div>
 </div>
 </section>
