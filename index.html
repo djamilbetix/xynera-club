@@ -1,283 +1,674 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Xynera Club — communauté de développeurs, innovation numérique, Web3, blockchain et éducation technologique.">
-<title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
-<style>
-:root{
-  --black:#090909; --black2:#121212; --red:#e50914; --red2:#ff3340; --blue:#0757d9; --blue2:#1f7aff;
-  --white:#fff; --muted:#a7a7a7; --line:#262626; --card:#151515;
-  --max:1180px; --radius:22px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:Inter,Arial,Helvetica,sans-serif;background:#fff;color:#111;line-height:1.6}
-a{text-decoration:none;color:inherit}
-img{max-width:100%;display:block}
-.container{width:min(92%,var(--max));margin:auto}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 21px;border-radius:12px;font-weight:800;border:1px solid transparent;cursor:pointer;transition:.25s}
-.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#bd0710;transform:translateY(-2px)}
-.btn-dark{background:#111;color:#fff}.btn-outline{border-color:#ddd;background:#fff}.btn-outline:hover{border-color:#111}
-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #eee}
-.nav{height:74px;display:flex;align-items:center;justify-content:space-between;gap:25px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:-1px;font-size:21px}
-.logo-mark{width:39px;height:39px;border-radius:11px;background:linear-gradient(135deg,var(--blue),#063a96);color:#fff;display:grid;place-items:center;position:relative;overflow:hidden}
-.logo-mark:after{content:"";position:absolute;width:24px;height:7px;background:var(--red);transform:rotate(-45deg)}
-.logo-mark span{position:relative;z-index:2;font-weight:950}
-nav{display:flex;gap:22px;font-size:14px;font-weight:700}
-nav a:hover{color:var(--red)}
-.menu{display:none;background:none;border:0;font-size:27px}
-.hero{background:linear-gradient(120deg,#070707,#171717);color:#fff;min-height:690px;display:flex;align-items:center;position:relative;overflow:hidden}
-.hero:before{content:"";position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(229,9,20,.13);filter:blur(70px);right:-120px;top:-80px}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:55px;align-items:center;position:relative;z-index:2}
-.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid #333;background:#111;padding:7px 11px;border-radius:99px;color:#ddd;font-size:12px;font-weight:800;margin-bottom:18px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(229,9,20,.45)}
-h1{font-size:clamp(45px,6vw,76px);line-height:.98;letter-spacing:-4px;margin-bottom:22px}
-h1 span{color:var(--blue2)}
-.hero p{color:#c7c7c7;font-size:18px;max-width:670px}
-.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-.hero-card{background:linear-gradient(145deg,#181818,#0e0e0e);border:1px solid #292929;border-radius:28px;padding:28px;box-shadow:0 25px 70px rgba(0,0,0,.35)}
-.xc{height:280px;display:grid;place-items:center;font-size:160px;font-weight:1000;font-style:italic;letter-spacing:-25px;background:linear-gradient(135deg,#ffffff 25%,#2b72ff 58%,#e50914 85%);-webkit-background-clip:text;color:transparent;position:relative}
-.xc:after{content:"";position:absolute;width:210px;height:18px;background:var(--red);transform:rotate(-40deg);border-radius:99px;opacity:.95}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
-.stat{border:1px solid #292929;border-radius:16px;padding:14px;text-align:center}.stat strong{display:block;font-size:24px}.stat small{color:#999}
-section{padding:90px 0}
-.section-head{max-width:760px;margin-bottom:42px}.kicker{color:var(--red);font-weight:900;text-transform:uppercase;letter-spacing:2px;font-size:12px}.section-head h2{font-size:clamp(31px,4vw,48px);line-height:1.05;margin:8px 0 15px;letter-spacing:-2px}.section-head p{color:#666}
-.dark{background:#090909;color:#fff}.dark .section-head p{color:#aaa}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.card{border:1px solid #e8e8e8;border-radius:var(--radius);padding:25px;background:#fff;transition:.25s}
-.card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.08)}
-.dark .card{background:var(--card);border-color:#292929}
-.icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#111;color:#fff;font-weight:900;margin-bottom:18px}
-.icon.red{background:var(--red)}.card h3{margin-bottom:8px}.card p{color:#666;font-size:14px}.dark .card p{color:#aaa}
-.about{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}
-.about-box{background:#f5f5f5;border-radius:28px;padding:32px;border-left:5px solid var(--red)}
-.about-box strong{font-size:38px;display:block;line-height:1}.about-box span{color:#666}
-.list{list-style:none;display:grid;gap:12px;margin-top:20px}.list li{display:flex;gap:10px}.list li:before{content:"✓";color:var(--red);font-weight:900}
-.service-number{font-size:12px;color:var(--red);font-weight:900}
-.project{overflow:hidden;padding:0}.project-body{padding:22px}.project-cover{height:190px;background:linear-gradient(135deg,#111,#2a2a2a);display:grid;place-items:center;color:#fff;font-size:42px;font-weight:950;letter-spacing:-2px}.tag{display:inline-block;padding:5px 9px;background:#f3f3f3;border-radius:99px;font-size:11px;font-weight:800;margin:4px 4px 0 0}
-.team-card{text-align:center}.avatar{width:90px;height:90px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;margin:0 auto 15px;font-size:25px;font-weight:950;border:4px solid #fff;box-shadow:0 0 0 1px #ddd}.team-card:first-child .avatar{background:var(--red)}
-.role{font-size:12px;color:var(--red);font-weight:900;text-transform:uppercase}
-.video-area{border:2px dashed #444;border-radius:24px;padding:30px;text-align:center;background:#111}
-.video-area input{display:none}.upload-label{display:inline-flex;cursor:pointer}.video-preview{display:none;margin-top:25px}.video-preview video{width:100%;max-height:520px;border-radius:18px;background:#000}
-.research{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.research .card{min-height:200px}
-.cta{background:#111;color:#fff;border-radius:30px;padding:50px;display:flex;justify-content:space-between;align-items:center;gap:30px}
-.cta p{color:#aaa;max-width:650px}
-.contact{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px}
-form{display:grid;gap:14px}.field{display:grid;gap:7px}.field label{font-size:13px;font-weight:800}.field input,.field textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:12px;font:inherit}.field textarea{min-height:150px;resize:vertical}
-footer{background:#080808;color:#fff;padding:50px 0 25px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:35px}.footer-grid p,.footer-grid a{color:#999;font-size:14px}.footer-grid h4{margin-bottom:13px}.footer-bottom{border-top:1px solid #242424;margin-top:35px;padding-top:20px;color:#777;font-size:12px}
-.notice{margin-top:20px;padding:15px;border-radius:12px;background:#fff7f7;border:1px solid #ffd2d2;color:#7d1111;font-size:13px}
-@media(max-width:900px){
- nav{display:none}.menu{display:block}.hero-grid,.about,.contact,.research{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr 1fr}.hero{min-height:auto;padding:80px 0}.cta{display:block}.cta .btn{margin-top:20px}.footer-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:560px){
- section{padding:65px 0}.grid3,.grid4{grid-template-columns:1fr}.hero p{font-size:16px}h1{letter-spacing:-2.5px}.xc{font-size:110px}.stats{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Xynera Club — communauté de développeurs, innovation numérique, Web3, blockchain et éducation technologique.">
+  <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
+  <!-- Font Awesome pour les icônes sociales -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* === RESET & VARIABLES === */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      background: #fff;
+      color: #111;
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* === THEMES (clair/sombre) === */
+    body.dark {
+      background: #0a0a0a;
+      color: #eee;
+    }
+    body.dark .card { background: #181818; border-color: #2a2a2a; }
+    body.dark .card p { color: #aaa; }
+    body.dark .section-head p { color: #aaa; }
+    body.dark .about-box { background: #1a1a1a; border-left-color: #e50914; color: #ddd; }
+    body.dark .about-box span { color: #bbb; }
+    body.dark .notice { background: #2a1515; border-color: #5a2a2a; color: #f0b0b0; }
+    body.dark header { background: rgba(10,10,10,.94); border-color: #2a2a2a; }
+    body.dark .btn-outline { border-color: #444; background: transparent; color: #eee; }
+    body.dark .btn-outline:hover { border-color: #fff; }
+    body.dark .menu { color: #eee; }
+    body.dark .nav a { color: #ddd; }
+    body.dark .nav a:hover { color: #e50914; }
+    body.dark .hero { background: linear-gradient(120deg, #050505, #121212); }
+    body.dark .hero p { color: #bbb; }
+    body.dark .hero-card { background: linear-gradient(145deg, #181818, #0e0e0e); border-color: #292929; }
+    body.dark .stat { border-color: #292929; }
+    body.dark .stat small { color: #999; }
+    body.dark .video-area { border-color: #555; background: #151515; }
+    body.dark .field input, body.dark .field textarea { background: #1a1a1a; border-color: #333; color: #eee; }
+    body.dark .field label { color: #ddd; }
+    body.dark .cta { background: #1a1a1a; }
+    body.dark .cta p { color: #aaa; }
+    body.dark footer { background: #050505; }
+    body.dark .footer-grid a { color: #aaa; }
+    body.dark .footer-bottom { border-color: #2a2a2a; color: #666; }
+
+    /* === LAYOUT === */
+    :root {
+      --max: 1180px; --radius: 22px;
+    }
+    .container { width: min(92%, var(--max)); margin: auto; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 21px; border-radius: 12px; font-weight: 800;
+      border: 1px solid transparent; cursor: pointer; transition: 0.25s;
+    }
+    .btn-red { background: #e50914; color: #fff; }
+    .btn-red:hover { background: #bd0710; transform: translateY(-2px); }
+    .btn-dark { background: #111; color: #fff; }
+    .btn-outline { border-color: #ddd; background: #fff; }
+    .btn-outline:hover { border-color: #111; }
+
+    /* === HEADER === */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,255,255,.94); backdrop-filter: blur(14px);
+      border-bottom: 1px solid #eee;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav {
+      height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 25px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 950; letter-spacing: -1px; font-size: 21px;
+    }
+    .logo img {
+      height: 40px; width: auto; border-radius: 8px;
+    }
+    nav {
+      display: flex; gap: 22px; font-size: 14px; font-weight: 700;
+    }
+    nav a:hover { color: #e50914; }
+    .menu { display: none; background: none; border: 0; font-size: 27px; cursor: pointer; }
+
+    /* === THEME TOGGLE === */
+    .theme-toggle {
+      background: none; border: none; font-size: 24px; cursor: pointer;
+      color: inherit; transition: transform 0.3s;
+      display: flex; align-items: center;
+    }
+    .theme-toggle:hover { transform: rotate(30deg); }
+
+    /* === HERO === */
+    .hero {
+      background: linear-gradient(120deg, #fafafa, #f0f0f0);
+      min-height: 690px; display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      transition: background 0.3s;
+    }
+    .hero:before {
+      content: ""; position: absolute;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: rgba(229,9,20,.08); filter: blur(70px);
+      right: -120px; top: -80px;
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.15fr .85fr; gap: 55px;
+      align-items: center; position: relative; z-index: 2;
+    }
+    .eyebrow {
+      display: inline-flex; gap: 8px; align-items: center;
+      border: 1px solid #ddd; background: #fff;
+      padding: 7px 11px; border-radius: 99px; color: #555;
+      font-size: 12px; font-weight: 800; margin-bottom: 18px;
+    }
+    body.dark .eyebrow { background: #1a1a1a; border-color: #333; color: #ccc; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #e50914; box-shadow: 0 0 12px rgba(229,9,20,.45);
+    }
+    h1 { font-size: clamp(45px, 6vw, 76px); line-height: .98; letter-spacing: -4px; margin-bottom: 22px; }
+    h1 span { color: #1f7aff; }
+    .hero p { color: #555; font-size: 18px; max-width: 670px; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+    .hero-card {
+      background: linear-gradient(145deg, #ffffff, #f5f5f5);
+      border: 1px solid #e0e0e0; border-radius: 28px; padding: 28px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.08);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .xc {
+      height: 280px; display: grid; place-items: center;
+      font-size: 160px; font-weight: 1000; font-style: italic;
+      letter-spacing: -25px;
+      background: linear-gradient(135deg, #111 25%, #2b72ff 58%, #e50914 85%);
+      -webkit-background-clip: text; color: transparent;
+      position: relative;
+    }
+    .xc:after {
+      content: ""; position: absolute;
+      width: 210px; height: 18px; background: #e50914;
+      transform: rotate(-40deg); border-radius: 99px; opacity: .9;
+    }
+    .stats {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 20px;
+    }
+    .stat {
+      border: 1px solid #e0e0e0; border-radius: 16px; padding: 14px; text-align: center;
+      transition: border-color 0.3s;
+    }
+    .stat strong { display: block; font-size: 24px; }
+    .stat small { color: #777; }
+
+    /* === SECTIONS === */
+    section { padding: 90px 0; }
+    .section-head { max-width: 760px; margin-bottom: 42px; }
+    .kicker {
+      color: #e50914; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 2px; font-size: 12px;
+    }
+    .section-head h2 {
+      font-size: clamp(31px, 4vw, 48px); line-height: 1.05;
+      margin: 8px 0 15px; letter-spacing: -2px;
+    }
+    .section-head p { color: #666; }
+    .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+
+    .card {
+      border: 1px solid #e8e8e8; border-radius: var(--radius);
+      padding: 25px; background: #fff;
+      transition: 0.25s;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 18px 45px rgba(0,0,0,.08); }
+    .icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: grid; place-items: center;
+      background: #111; color: #fff; font-weight: 900; margin-bottom: 18px;
+    }
+    .icon.red { background: #e50914; }
+    .card h3 { margin-bottom: 8px; }
+    .card p { color: #666; font-size: 14px; }
+
+    .about {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 55px; align-items: center;
+    }
+    .about-box {
+      background: #f5f5f5; border-radius: 28px; padding: 32px;
+      border-left: 5px solid #e50914; transition: 0.3s;
+    }
+    .about-box strong { font-size: 38px; display: block; line-height: 1; }
+    .about-box span { color: #555; }
+    .list { list-style: none; display: grid; gap: 12px; margin-top: 20px; }
+    .list li { display: flex; gap: 10px; }
+    .list li:before { content: "✓"; color: #e50914; font-weight: 900; }
+
+    .service-number { font-size: 12px; color: #e50914; font-weight: 900; }
+    .project { overflow: hidden; padding: 0; }
+    .project-body { padding: 22px; }
+    .project-cover {
+      height: 190px; background: linear-gradient(135deg, #111, #2a2a2a);
+      display: grid; place-items: center; color: #fff;
+      font-size: 42px; font-weight: 950; letter-spacing: -2px;
+    }
+    .tag {
+      display: inline-block; padding: 5px 9px; background: #f3f3f3;
+      border-radius: 99px; font-size: 11px; font-weight: 800;
+      margin: 4px 4px 0 0;
+    }
+    .team-card { text-align: center; }
+    .avatar {
+      width: 90px; height: 90px; border-radius: 50%; background: #111;
+      color: #fff; display: grid; place-items: center; margin: 0 auto 15px;
+      font-size: 25px; font-weight: 950;
+      border: 4px solid #fff; box-shadow: 0 0 0 1px #ddd;
+    }
+    .team-card:first-child .avatar { background: #e50914; }
+    .role { font-size: 12px; color: #e50914; font-weight: 900; text-transform: uppercase; }
+
+    .video-area {
+      border: 2px dashed #ccc; border-radius: 24px; padding: 30px; text-align: center;
+      background: #fafafa; transition: 0.3s;
+    }
+    .video-area input { display: none; }
+    .upload-label { display: inline-flex; cursor: pointer; }
+    .video-preview { display: none; margin-top: 25px; }
+    .video-preview video { width: 100%; max-height: 520px; border-radius: 18px; background: #000; }
+
+    .research { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .research .card { min-height: 200px; }
+
+    .cta {
+      background: #111; color: #fff; border-radius: 30px;
+      padding: 50px; display: flex; justify-content: space-between;
+      align-items: center; gap: 30px; transition: 0.3s;
+    }
+    .cta p { color: #aaa; max-width: 650px; }
+    .contact { display: grid; grid-template-columns: .8fr 1.2fr; gap: 30px; }
+
+    form { display: grid; gap: 14px; }
+    .field { display: grid; gap: 7px; }
+    .field label { font-size: 13px; font-weight: 800; }
+    .field input, .field textarea {
+      width: 100%; padding: 14px; border: 1px solid #ddd;
+      border-radius: 12px; font: inherit; transition: border-color 0.3s;
+    }
+    .field input:focus, .field textarea:focus { border-color: #e50914; outline: none; }
+    .field textarea { min-height: 150px; resize: vertical; }
+
+    /* === FOOTER === */
+    footer {
+      background: #080808; color: #fff; padding: 50px 0 25px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 35px;
+    }
+    .footer-grid p, .footer-grid a { color: #999; font-size: 14px; }
+    .footer-grid a:hover { color: #e50914; }
+    .footer-grid h4 { margin-bottom: 13px; font-size: 16px; }
+    .social-icons {
+      display: flex; gap: 15px; margin-top: 15px;
+    }
+    .social-icons a {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #1a1a1a; color: #fff; transition: 0.3s;
+      font-size: 18px;
+    }
+    .social-icons a:hover { background: #e50914; transform: translateY(-3px); }
+    .footer-bottom {
+      border-top: 1px solid #242424; margin-top: 35px;
+      padding-top: 20px; color: #777; font-size: 12px;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+    .footer-bottom a { color: #999; }
+    .footer-bottom a:hover { color: #e50914; }
+
+    .notice {
+      margin-top: 20px; padding: 15px; border-radius: 12px;
+      background: #fff7f7; border: 1px solid #ffd2d2; color: #7d1111; font-size: 13px;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 900px) {
+      nav { display: none; }
+      .menu { display: block; }
+      .hero-grid, .about, .contact, .research { grid-template-columns: 1fr; }
+      .grid3 { grid-template-columns: 1fr 1fr; }
+      .grid4 { grid-template-columns: 1fr 1fr; }
+      .hero { min-height: auto; padding: 80px 0; }
+      .cta { display: block; }
+      .cta .btn { margin-top: 20px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { flex-direction: column; align-items: center; text-align: center; }
+    }
+    @media (max-width: 560px) {
+      section { padding: 65px 0; }
+      .grid3, .grid4 { grid-template-columns: 1fr; }
+      .hero p { font-size: 16px; }
+      h1 { letter-spacing: -2.5px; }
+      .xc { font-size: 110px; }
+      .stats { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .nav { flex-wrap: wrap; }
+      .logo img { height: 32px; }
+    }
+    /* Animation d'apparition des cartes */
+    .card { opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s forwards; }
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+    .card:nth-child(6) { animation-delay: 0.6s; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  </style>
 </head>
 <body>
 
 <header>
   <div class="container nav">
-    <a href="#accueil" class="logo"><div class="logo-mark"><span>X</span></div>XYNERA CLUB</a>
+    <a href="#accueil" class="logo">
+      <!-- LOGO : remplacez le src par le chemin exact de votre fichier logo-xynera.png -->
+      <img src="logo-xynera.png" alt="Xynera Club">
+      XYNERA CLUB
+    </a>
     <nav>
-      <a href="#about">À propos</a><a href="#services">Services</a><a href="#academy">Academy</a>
-      <a href="#research">Research</a><a href="#projects">Projets</a><a href="#team">Équipe</a><a href="#contact">Contact</a>
+      <a href="#about">À propos</a>
+      <a href="#services">Services</a>
+      <a href="#academy">Academy</a>
+      <a href="#research">Research</a>
+      <a href="#projects">Projets</a>
+      <a href="#team">Équipe</a>
+      <a href="#contact">Contact</a>
     </nav>
-    <button class="menu" aria-label="Menu" onclick="toggleMenu()">☰</button>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" id="themeToggle" aria-label="Changer le thème">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="menu" aria-label="Menu" onclick="toggleMenu()">☰</button>
+    </div>
   </div>
 </header>
 
 <main>
-<section class="hero" id="accueil">
-  <div class="container hero-grid">
-    <div>
-      <div class="eyebrow"><span class="dot"></span> DEVELOPER • WEB3 • DIGITAL INNOVATION</div>
-      <h1>Nous construisons le <span>futur numérique.</span></h1>
-      <p>Xynera Club réunit des développeurs et étudiants passionnés qui mettent leurs compétences en commun pour créer des applications, des sites web, des solutions Web3 et transmettre des connaissances technologiques.</p>
-      <div class="actions">
-        <a class="btn btn-red" href="#services">Découvrir nos services</a>
-        <a class="btn" style="border-color:#444;color:#fff;background:#111" href="#contact">Travailler avec nous</a>
+  <!-- HERO -->
+  <section class="hero" id="accueil">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> DEVELOPER • WEB3 • DIGITAL INNOVATION</div>
+        <h1>Nous construisons le <span>futur numérique.</span></h1>
+        <p>Xynera Club réunit des développeurs et étudiants passionnés qui mettent leurs compétences en commun pour créer des applications, des sites web, des solutions Web3 et transmettre des connaissances technologiques.</p>
+        <div class="actions">
+          <a class="btn btn-red" href="#services">Découvrir nos services</a>
+          <a class="btn btn-outline" href="#contact">Travailler avec nous</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="xc">XC</div>
+        <div class="stats">
+          <div class="stat"><strong>15+</strong><small>Développeurs</small></div>
+          <div class="stat"><strong>Web3</strong><small>Innovation</small></div>
+          <div class="stat"><strong>∞</strong><small>Idées à construire</small></div>
+        </div>
       </div>
     </div>
-    <div class="hero-card">
-      <div class="xc">XC</div>
-      <div class="stats">
-        <div class="stat"><strong>15+</strong><small>Développeurs</small></div>
-        <div class="stat"><strong>Web3</strong><small>Innovation</small></div>
-        <div class="stat"><strong>∞</strong><small>Idées à construire</small></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container about">
+      <div>
+        <div class="section-head">
+          <div class="kicker">Qui sommes-nous ?</div>
+          <h2>Une équipe. Des compétences. Une vision.</h2>
+          <p>Xynera Club est une communauté de développeurs et d'étudiants qui travaillent ensemble pour transformer des idées en solutions numériques utiles.</p>
+        </div>
+        <ul class="list">
+          <li>Création d'applications et de plateformes web</li>
+          <li>Solutions Web3, DApps et blockchain</li>
+          <li>Formation et vulgarisation des technologies numériques</li>
+          <li>Recherche et analyse de projets Web3</li>
+          <li>Accompagnement des institutions, entrepreneurs et organisations</li>
+        </ul>
+      </div>
+      <div class="about-box">
+        <strong>15+</strong>
+        <span>développeurs et étudiants réunis autour d'une même ambition.</span>
+        <p style="margin-top:20px"><b>Fondateur :</b> Djamil Yakonga</p>
+        <p style="margin-top:8px;color:#555">Le club valorise la collaboration, l'apprentissage continu, la créativité et la mise en pratique.</p>
+        <div style="display:flex;gap:8px;margin-top:18px">
+          <span style="width:42px;height:8px;border-radius:99px;background:#0757d9"></span>
+          <span style="width:42px;height:8px;border-radius:99px;background:#e50914"></span>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="about">
-<div class="container about">
-  <div>
-    <div class="section-head"><div class="kicker">Qui sommes-nous ?</div><h2>Une équipe. Des compétences. Une vision.</h2><p>Xynera Club est une communauté de développeurs et d'étudiants qui travaillent ensemble pour transformer des idées en solutions numériques utiles.</p></div>
-    <ul class="list">
-      <li>Création d'applications et de plateformes web</li>
-      <li>Solutions Web3, DApps et blockchain</li>
-      <li>Formation et vulgarisation des technologies numériques</li>
-      <li>Recherche et analyse de projets Web3</li>
-      <li>Accompagnement des institutions, entrepreneurs et organisations</li>
-    </ul>
-  </div>
-  <div class="about-box">
-    <strong>15+</strong>
-    <span>développeurs et étudiants réunis autour d'une même ambition.</span>
-    <p style="margin-top:20px"><b>Fondateur :</b> Djamil Yakonga</p>
-    <p style="margin-top:8px;color:#555">Le club valorise la collaboration, l'apprentissage continu, la créativité et la mise en pratique.</p><div style="display:flex;gap:8px;margin-top:18px"><span style="width:42px;height:8px;border-radius:99px;background:#0757d9"></span><span style="width:42px;height:8px;border-radius:99px;background:#e50914"></span></div>
-  </div>
-</div>
-</section>
+  <!-- SERVICES -->
+  <section class="dark" id="services">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Nos expertises</div>
+        <h2>Des solutions numériques de l'idée au produit.</h2>
+        <p>Nous combinons développement, design, technologie blockchain et éducation pour répondre aux besoins réels.</p>
+      </div>
+      <div class="grid3">
+        <article class="card"><div class="icon red">01</div><h3>Développement</h3><p>Sites web, applications web, interfaces modernes, plateformes et solutions personnalisées.</p></article>
+        <article class="card"><div class="icon">02</div><h3>Web3 & DApps</h3><p>Conception d'expériences décentralisées, intégration de wallets et interaction avec des réseaux blockchain.</p></article>
+        <article class="card"><div class="icon">03</div><h3>Blockchain</h3><p>Exploration des architectures blockchain, transactions, données on-chain et smart contracts.</p></article>
+        <article class="card"><div class="icon red">04</div><h3>Formation</h3><p>Programmes pédagogiques sur blockchain, crypto, wallets, DApps, sécurité et Web3.</p></article>
+        <article class="card"><div class="icon">05</div><h3>Research</h3><p>Étude de projets Web3, tokenomics, documentation, architecture et facteurs de risque.</p></article>
+        <article class="card"><div class="icon">06</div><h3>Accompagnement</h3><p>Orientation numérique pour institutions, entrepreneurs, associations et porteurs de projets.</p></article>
+      </div>
+    </div>
+  </section>
 
-<section class="dark" id="services">
-<div class="container">
-<div class="section-head"><div class="kicker">Nos expertises</div><h2>Des solutions numériques de l'idée au produit.</h2><p>Nous combinons développement, design, technologie blockchain et éducation pour répondre aux besoins réels.</p></div>
-<div class="grid3">
-  <article class="card"><div class="icon red">01</div><h3>Développement</h3><p>Sites web, applications web, interfaces modernes, plateformes et solutions personnalisées.</p></article>
-  <article class="card"><div class="icon">02</div><h3>Web3 & DApps</h3><p>Conception d'expériences décentralisées, intégration de wallets et interaction avec des réseaux blockchain.</p></article>
-  <article class="card"><div class="icon">03</div><h3>Blockchain</h3><p>Exploration des architectures blockchain, transactions, données on-chain et smart contracts.</p></article>
-  <article class="card"><div class="icon red">04</div><h3>Formation</h3><p>Programmes pédagogiques sur blockchain, crypto, wallets, DApps, sécurité et Web3.</p></article>
-  <article class="card"><div class="icon">05</div><h3>Research</h3><p>Étude de projets Web3, tokenomics, documentation, architecture et facteurs de risque.</p></article>
-  <article class="card"><div class="icon">06</div><h3>Accompagnement</h3><p>Orientation numérique pour institutions, entrepreneurs, associations et porteurs de projets.</p></article>
-</div>
-</div>
-</section>
+  <!-- ACADEMY -->
+  <section id="academy">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Xynera Academy</div>
+        <h2>Apprendre en comprenant et en pratiquant.</h2>
+        <p>Une future plateforme de formation organisée par niveaux et modules.</p>
+      </div>
+      <div class="grid3">
+        <article class="card"><span class="service-number">NIVEAU 01</span><h3>Fondamentaux</h3><p>Blockchain, cryptomonnaies, wallets, réseaux, transactions et bonnes pratiques de sécurité.</p></article>
+        <article class="card"><span class="service-number">NIVEAU 02</span><h3>Web3 pratique</h3><p>DApps, exchanges, interaction avec des applications décentralisées, tokenomics et lecture de projets.</p></article>
+        <article class="card"><span class="service-number">NIVEAU 03</span><h3>Builder</h3><p>Architecture Web3, smart contracts, intégration blockchain et conception de produits numériques.</p></article>
+      </div>
+    </div>
+  </section>
 
-<section id="academy">
-<div class="container">
-<div class="section-head"><div class="kicker">Xynera Academy</div><h2>Apprendre en comprenant et en pratiquant.</h2><p>Une future plateforme de formation organisée par niveaux et modules.</p></div>
-<div class="grid3">
-  <article class="card"><span class="service-number">NIVEAU 01</span><h3>Fondamentaux</h3><p>Blockchain, cryptomonnaies, wallets, réseaux, transactions et bonnes pratiques de sécurité.</p></article>
-  <article class="card"><span class="service-number">NIVEAU 02</span><h3>Web3 pratique</h3><p>DApps, exchanges, interaction avec des applications décentralisées, tokenomics et lecture de projets.</p></article>
-  <article class="card"><span class="service-number">NIVEAU 03</span><h3>Builder</h3><p>Architecture Web3, smart contracts, intégration blockchain et conception de produits numériques.</p></article>
-</div>
-</div>
-</section>
+  <!-- RESEARCH -->
+  <section class="dark" id="research">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Xynera Research</div>
+        <h2>Comprendre les projets Web3 avant de les utiliser.</h2>
+        <p>Une approche éducative et analytique, sans promesse de rendement financier.</p>
+      </div>
+      <div class="research">
+        <article class="card"><h3>Analyse du projet</h3><p>Mission, utilité, équipe, documentation, écosystème et cas d'usage.</p></article>
+        <article class="card"><h3>Tokenomics</h3><p>Offre, distribution, mécanismes du token, utilité et informations publiques disponibles.</p></article>
+        <article class="card"><h3>Smart contracts</h3><p>Lecture et compréhension des informations publiques liées aux contrats lorsque les données sont disponibles.</p></article>
+        <article class="card"><h3>Risques & transparence</h3><p>Identifier les points à vérifier, les signaux d'alerte et les informations manquantes.</p></article>
+      </div>
+    </div>
+  </section>
 
-<section class="dark" id="research">
-<div class="container">
-<div class="section-head"><div class="kicker">Xynera Research</div><h2>Comprendre les projets Web3 avant de les utiliser.</h2><p>Une approche éducative et analytique, sans promesse de rendement financier.</p></div>
-<div class="research">
-  <article class="card"><h3>Analyse du projet</h3><p>Mission, utilité, équipe, documentation, écosystème et cas d'usage.</p></article>
-  <article class="card"><h3>Tokenomics</h3><p>Offre, distribution, mécanismes du token, utilité et informations publiques disponibles.</p></article>
-  <article class="card"><h3>Smart contracts</h3><p>Lecture et compréhension des informations publiques liées aux contrats lorsque les données sont disponibles.</p></article>
-  <article class="card"><h3>Risques & transparence</h3><p>Identifier les points à vérifier, les signaux d'alerte et les informations manquantes.</p></article>
-</div>
-</div>
-</section>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Portfolio</div>
+        <h2>Nos projets</h2>
+        <p>Cette zone peut être enrichie au fur et à mesure des réalisations du Club.</p>
+      </div>
+      <div class="grid3">
+        <article class="card project"><div class="project-cover">BETIX</div><div class="project-body"><h3>Betix</h3><p>Plateforme numérique de billetterie et gestion d'événements.</p><span class="tag">Web</span><span class="tag">Web3</span></div></article>
+        <article class="card project"><div class="project-cover">NESTIFY</div><div class="project-body"><h3>Nestify</h3><p>Solution numérique orientée location et services.</p><span class="tag">App</span><span class="tag">Digital</span></div></article>
+        <article class="card project"><div class="project-cover">WORKLY</div><div class="project-body"><h3>Workly</h3><p>Projet numérique destiné à connecter services et opportunités.</p><span class="tag">Platform</span><span class="tag">Innovation</span></div></article>
+      </div>
+    </div>
+  </section>
 
-<section id="projects">
-<div class="container">
-<div class="section-head"><div class="kicker">Portfolio</div><h2>Nos projets</h2><p>Cette zone peut être enrichie au fur et à mesure des réalisations du Club.</p></div>
-<div class="grid3">
-  <article class="card project"><div class="project-cover">BETIX</div><div class="project-body"><h3>Betix</h3><p>Plateforme numérique de billetterie et gestion d'événements.</p><span class="tag">Web</span><span class="tag">Web3</span></div></article>
-  <article class="card project"><div class="project-cover">NESTIFY</div><div class="project-body"><h3>Nestify</h3><p>Solution numérique orientée location et services.</p><span class="tag">App</span><span class="tag">Digital</span></div></article>
-  <article class="card project"><div class="project-cover">WORKLY</div><div class="project-body"><h3>Workly</h3><p>Projet numérique destiné à connecter services et opportunités.</p><span class="tag">Platform</span><span class="tag">Innovation</span></div></article>
-</div>
-</div>
-</section>
+  <!-- TEAM -->
+  <section class="dark" id="team">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Notre équipe</div>
+        <h2>Plus de 15 développeurs, une seule direction.</h2>
+        <p>Les profils réels pourront être ajoutés depuis cette section au fur et à mesure.</p>
+      </div>
+      <div class="grid4">
+        <article class="card team-card"><div class="avatar">DY</div><h3>Djamil Yakonga</h3><div class="role">Fondateur</div><p>Vision, coordination et développement de l'écosystème Xynera Club.</p></article>
+        <article class="card team-card"><div class="avatar">DEV</div><h3>Développeur</h3><div class="role">Web / App</div><p>Profil à compléter.</p></article>
+        <article class="card team-card"><div class="avatar">W3</div><h3>Développeur</h3><div class="role">Web3</div><p>Profil à compléter.</p></article>
+        <article class="card team-card"><div class="avatar">UX</div><h3>Designer</h3><div class="role">UI / UX</div><p>Profil à compléter.</p></article>
+      </div>
+    </div>
+  </section>
 
-<section class="dark" id="team">
-<div class="container">
-<div class="section-head"><div class="kicker">Notre équipe</div><h2>Plus de 15 développeurs, une seule direction.</h2><p>Les profils réels pourront être ajoutés depuis cette section au fur et à mesure.</p></div>
-<div class="grid4">
-  <article class="card team-card"><div class="avatar">DY</div><h3>Djamil Yakonga</h3><div class="role">Fondateur</div><p>Vision, coordination et développement de l'écosystème Xynera Club.</p></article>
-  <article class="card team-card"><div class="avatar">DEV</div><h3>Développeur</h3><div class="role">Web / App</div><p>Profil à compléter.</p></article>
-  <article class="card team-card"><div class="avatar">W3</div><h3>Développeur</h3><div class="role">Web3</div><p>Profil à compléter.</p></article>
-  <article class="card team-card"><div class="avatar">UX</div><h3>Designer</h3><div class="role">UI / UX</div><p>Profil à compléter.</p></article>
-</div>
-</div>
-</section>
+  <!-- MEDIA -->
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Xynera Media</div>
+        <h2>Présentez votre équipe en vidéo.</h2>
+        <p>Cette interface permet de sélectionner une vidéo depuis l'appareil et de la prévisualiser directement dans le navigateur. Pour la publication définitive, connectez-la à votre hébergement ou CMS.</p>
+      </div>
+      <div class="video-area">
+        <label class="btn btn-red upload-label" for="videoInput"><i class="fas fa-video"></i> + Ajouter une vidéo</label>
+        <input id="videoInput" type="file" accept="video/*">
+        <div id="videoPreview" class="video-preview"><video id="player" controls></video></div>
+      </div>
+    </div>
+  </section>
 
-<section>
-<div class="container">
-<div class="section-head"><div class="kicker">Xynera Media</div><h2>Présentez votre équipe en vidéo.</h2><p>Cette interface permet de sélectionner une vidéo depuis l'appareil et de la prévisualiser directement dans le navigateur. Pour la publication définitive, connectez-la à votre hébergement ou CMS.</p></div>
-<div class="video-area">
-  <label class="btn btn-red upload-label" for="videoInput">+ Ajouter une vidéo</label>
-  <input id="videoInput" type="file" accept="video/*">
-  <div id="videoPreview" class="video-preview"><video id="player" controls></video></div>
-</div>
-</div>
-</section>
+  <!-- CTA -->
+  <section>
+    <div class="container">
+      <div class="cta">
+        <div>
+          <h2>Une idée ? Construisons-la ensemble.</h2>
+          <p>Institutions, entrepreneurs, organisations et porteurs de projets peuvent présenter leur besoin à l'équipe Xynera Club.</p>
+        </div>
+        <a href="#contact" class="btn btn-red">Nous contacter</a>
+      </div>
+    </div>
+  </section>
 
-<section>
-<div class="container">
-<div class="cta"><div><h2>Une idée ? Construisons-la ensemble.</h2><p>Institutions, entrepreneurs, organisations et porteurs de projets peuvent présenter leur besoin à l'équipe Xynera Club.</p></div><a href="#contact" class="btn btn-red">Nous contacter</a></div>
-</div>
-</section>
-
-<section id="contact">
-<div class="container contact">
-<div><div class="section-head"><div class="kicker">Contact</div><h2>Parlons de votre projet.</h2><p>Utilisez le formulaire pour demander une présentation, une collaboration ou une information.</p></div><div class="notice">Démo front-end : ce formulaire affiche un message local. Pour recevoir réellement les demandes, connectez-le à Supabase, Formspree, un backend ou votre service d'email.</div></div>
-<form id="contactForm">
-<div class="field"><label>Nom</label><input required placeholder="Votre nom"></div>
-<div class="field"><label>Email</label><input required type="email" placeholder="vous@example.com"></div>
-<div class="field"><label>Sujet</label><input required placeholder="Développement, formation, Web3..."></div>
-<div class="field"><label>Message</label><textarea required placeholder="Expliquez votre besoin..."></textarea></div>
-<button class="btn btn-red" type="submit">Envoyer la demande</button>
-<div id="formMessage" style="display:none;font-weight:800;color:#16803c">Merci ! Votre demande est prête à être connectée à votre système de réception.</div>
-</form>
-</div>
-</section>
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container contact">
+      <div>
+        <div class="section-head">
+          <div class="kicker">Contact</div>
+          <h2>Parlons de votre projet.</h2>
+          <p>Utilisez le formulaire pour demander une présentation, une collaboration ou une information.</p>
+        </div>
+        <div class="notice"><i class="fas fa-info-circle"></i> Démo front-end : ce formulaire affiche un message local. Pour recevoir réellement les demandes, connectez-le à Supabase, Formspree, un backend ou votre service d'email.</div>
+      </div>
+      <form id="contactForm">
+        <div class="field"><label>Nom</label><input required placeholder="Votre nom"></div>
+        <div class="field"><label>Email</label><input required type="email" placeholder="vous@example.com"></div>
+        <div class="field"><label>Sujet</label><input required placeholder="Développement, formation, Web3..."></div>
+        <div class="field"><label>Message</label><textarea required placeholder="Expliquez votre besoin..."></textarea></div>
+        <button class="btn btn-red" type="submit"><i class="fas fa-paper-plane"></i> Envoyer la demande</button>
+        <div id="formMessage" style="display:none;font-weight:800;color:#16803c;margin-top:10px;"><i class="fas fa-check-circle"></i> Merci ! Votre demande est prête à être connectée à votre système de réception.</div>
+      </form>
+    </div>
+  </section>
 </main>
 
+<!-- FOOTER -->
 <footer>
-<div class="container">
-<div class="footer-grid">
-<div><div class="logo" style="color:#fff"><div class="logo-mark"><span>X</span></div>XYNERA CLUB</div><p style="margin-top:15px">Build. Learn. Analyze. Innovate.</p></div>
-<div><h4>Explorer</h4><a href="#about">À propos</a><br><a href="#services">Services</a><br><a href="#projects">Projets</a></div>
-<div><h4>Apprendre</h4><a href="#academy">Academy</a><br><a href="#research">Research</a><br><a href="#team">Équipe</a></div>
-<div><h4>Contact</h4><a href="#contact">Demander une collaboration</a><br><a href="#accueil">Retour en haut</a></div>
-</div>
-<div class="footer-bottom">© <span id="year"></span> Xynera Club. Tous droits réservés.</div>
-</div>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="color:#fff;">
+          <img src="logo-xynera.png" alt="Xynera Club" style="height:40px;width:auto;border-radius:8px;">
+          XYNERA CLUB
+        </div>
+        <p style="margin-top:15px;">Build. Learn. Analyze. Innovate.</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p style="margin-top:15px;font-size:13px;color:#999;">
+          <i class="fas fa-envelope"></i> contact@xyneraclub.com<br>
+          <i class="fas fa-phone"></i> +243 123 456 789
+        </p>
+      </div>
+      <div>
+        <h4>Explorer</h4>
+        <a href="#about">À propos</a><br>
+        <a href="#services">Services</a><br>
+        <a href="#projects">Projets</a>
+      </div>
+      <div>
+        <h4>Apprendre</h4>
+        <a href="#academy">Academy</a><br>
+        <a href="#research">Research</a><br>
+        <a href="#team">Équipe</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="#contact">Demander une collaboration</a><br>
+        <a href="#accueil">Retour en haut</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Xynera Club. Tous droits réservés.</span>
+      <span>
+        <a href="#">Mentions légales</a> • <a href="#">Politique de confidentialité</a> • <a href="#">Cookies</a>
+      </span>
+    </div>
+  </div>
 </footer>
 
 <script>
-function toggleMenu(){
-  const nav=document.querySelector('nav');
-  const visible=nav.style.display==='flex';
-  nav.style.display=visible?'none':'flex';
-  nav.style.position='absolute';
-  nav.style.top='74px';
-  nav.style.left='0';
-  nav.style.right='0';
-  nav.style.background='#fff';
-  nav.style.padding='20px';
-  nav.style.flexDirection='column';
-}
-document.getElementById('year').textContent=new Date().getFullYear();
+  // === MENU MOBILE ===
+  function toggleMenu() {
+    const nav = document.querySelector('nav');
+    const visible = nav.style.display === 'flex';
+    nav.style.display = visible ? 'none' : 'flex';
+    nav.style.position = 'absolute';
+    nav.style.top = '74px';
+    nav.style.left = '0';
+    nav.style.right = '0';
+    nav.style.background = document.body.classList.contains('dark') ? '#0a0a0a' : '#fff';
+    nav.style.padding = '20px';
+    nav.style.flexDirection = 'column';
+    nav.style.borderBottom = '1px solid #ddd';
+  }
 
-const input=document.getElementById('videoInput');
-const preview=document.getElementById('videoPreview');
-const player=document.getElementById('player');
-let videoUrl=null;
-input.addEventListener('change',function(){
-  const file=this.files[0];
-  if(!file)return;
-  if(videoUrl)URL.revokeObjectURL(videoUrl);
-  videoUrl=URL.createObjectURL(file);
-  player.src=videoUrl;
-  preview.style.display='block';
-  player.play().catch(()=>{});
-});
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', () => {
+      if (window.innerWidth < 901) document.querySelector('nav').style.display = 'none';
+    });
+  });
 
-document.getElementById('contactForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  document.getElementById('formMessage').style.display='block';
-  this.reset();
-});
+  // === THEME TOGGLE (Dark / Light) ===
+  const toggleBtn = document.getElementById('themeToggle');
+  const icon = toggleBtn.querySelector('i');
 
-document.querySelectorAll('nav a').forEach(a=>{
-  a.addEventListener('click',()=>{if(window.innerWidth<901)document.querySelector('nav').style.display='none';});
-});
+  function setTheme(theme) {
+    if (theme === 'dark') {
+      document.body.classList.add('dark');
+      icon.className = 'fas fa-sun';
+    } else {
+      document.body.classList.remove('dark');
+      icon.className = 'fas fa-moon';
+    }
+    localStorage.setItem('theme', theme);
+  }
+
+  // Charger le thème sauvegardé
+  const saved = localStorage.getItem('theme') || 'light';
+  setTheme(saved);
+
+  toggleBtn.addEventListener('click', () => {
+    const current = document.body.classList.contains('dark') ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    // Mettre à jour le fond du menu mobile si ouvert
+    const nav = document.querySelector('nav');
+    if (nav.style.display === 'flex') {
+      nav.style.background = next === 'dark' ? '#0a0a0a' : '#fff';
+    }
+  });
+
+  // === VIDEO PREVIEW ===
+  const input = document.getElementById('videoInput');
+  const preview = document.getElementById('videoPreview');
+  const player = document.getElementById('player');
+  let videoUrl = null;
+
+  input.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    if (videoUrl) URL.revokeObjectURL(videoUrl);
+    videoUrl = URL.createObjectURL(file);
+    player.src = videoUrl;
+    preview.style.display = 'block';
+    player.play().catch(() => {});
+  });
+
+  // === FORMULAIRE DE CONTACT ===
+  document.getElementById('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('formMessage').style.display = 'block';
+    this.reset();
+  });
+
+  // === ANNÉE COURANTE ===
+  document.getElementById('year').textContent = new Date().getFullYear();
 </script>
+
 </body>
 </html>
