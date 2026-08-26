@@ -254,7 +254,7 @@
     .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
     .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
 
-    /* --- NOUVELLE SECTION MARKETING "POUR QUI ?" --- */
+    /* --- SECTION MARKETING "POUR QUI ?" --- */
     .marketing-target {
       background: #f8f8f8;
       border-top: 3px solid #e50914;
@@ -333,7 +333,7 @@
       content: "•"; color: #e50914; font-weight: 900; font-size: 22px; line-height: 1;
     }
 
-    /* --- ÉQUIPE AVEC DRAPEAUX --- */
+    /* --- ÉQUIPE (DRAPEAUX À CÔTÉ DU PAYS) --- */
     .team-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
     }
@@ -342,9 +342,16 @@
       padding: 18px 12px; text-align: center; transition: 0.25s;
     }
     .team-member:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); }
-    .team-member .flag { font-size: 24px; display: block; margin-bottom: 6px; }
     .team-member strong { display: block; font-size: 17px; font-weight: 700; }
-    .team-member .location { font-size: 14px; color: #888; margin-top: 4px; }
+    .team-member .location {
+      font-size: 14px;
+      color: #888;
+      margin-top: 4px;
+    }
+    .team-member .location .flag {
+      font-size: 20px;
+      margin-left: 6px;
+    }
 
     /* --- CLIENTS / PROJETS --- */
     .client-grid {
@@ -835,7 +842,7 @@
       </div>
     </section>
 
-    <!-- TEAM -->
+    <!-- TEAM (DRAPEAUX À CÔTÉ DU PAYS) -->
     <section id="team">
       <div class="container">
         <div class="section-head">
@@ -844,18 +851,54 @@
           <p>Des développeurs, chercheurs et designers unis par la même passion pour l'innovation.</p>
         </div>
         <div class="team-grid">
-          <div class="team-member"><span class="flag">🇨🇩</span><strong>Djamil</strong><span class="location">RDC, Kinshasa</span></div>
-          <div class="team-member"><span class="flag">🇧🇪</span><strong>Florentin</strong><span class="location">Belgique</span></div>
-          <div class="team-member"><span class="flag">🇨🇩</span><strong>Marie-Claire</strong><span class="location">RDC, Goma</span></div>
-          <div class="team-member"><span class="flag">🇨🇮</span><strong>Abdoul Karim</strong><span class="location">Côte d'Ivoire</span></div>
-          <div class="team-member"><span class="flag">🇫🇷</span><strong>Sophie N.</strong><span class="location">France, Paris</span></div>
-          <div class="team-member"><span class="flag">🇨🇩</span><strong>Jean-Pierre</strong><span class="location">RDC, Lubumbashi</span></div>
-          <div class="team-member"><span class="flag">🇰🇪</span><strong>Grace A.</strong><span class="location">Kenya, Nairobi</span></div>
-          <div class="team-member"><span class="flag">🇳🇬</span><strong>Michael O.</strong><span class="location">Nigeria, Lagos</span></div>
-          <div class="team-member"><span class="flag">🇧🇪</span><strong>Chloé D.</strong><span class="location">Belgique, Bruxelles</span></div>
-          <div class="team-member"><span class="flag">🇲🇦</span><strong>Hamza M.</strong><span class="location">Maroc, Casablanca</span></div>
-          <div class="team-member"><span class="flag">🇨🇩</span><strong>Esther K.</strong><span class="location">RDC, Bukavu</span></div>
-          <div class="team-member"><span class="flag">🇨🇦</span><strong>David W.</strong><span class="location">Canada, Montréal</span></div>
+          <div class="team-member">
+            <strong>Djamil</strong>
+            <span class="location">RDC, Kinshasa <span class="flag">🇨🇩</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Florentin</strong>
+            <span class="location">Belgique <span class="flag">🇧🇪</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Marie-Claire</strong>
+            <span class="location">RDC, Goma <span class="flag">🇨🇩</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Abdoul Karim</strong>
+            <span class="location">Côte d'Ivoire <span class="flag">🇨🇮</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Sophie N.</strong>
+            <span class="location">France, Paris <span class="flag">🇫🇷</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Jean-Pierre</strong>
+            <span class="location">RDC, Lubumbashi <span class="flag">🇨🇩</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Grace A.</strong>
+            <span class="location">Kenya, Nairobi <span class="flag">🇰🇪</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Michael O.</strong>
+            <span class="location">Nigeria, Lagos <span class="flag">🇳🇬</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Chloé D.</strong>
+            <span class="location">Belgique, Bruxelles <span class="flag">🇧🇪</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Hamza M.</strong>
+            <span class="location">Maroc, Casablanca <span class="flag">🇲🇦</span></span>
+          </div>
+          <div class="team-member">
+            <strong>Esther K.</strong>
+            <span class="location">RDC, Bukavu <span class="flag">🇨🇩</span></span>
+          </div>
+          <div class="team-member">
+            <strong>David W.</strong>
+            <span class="location">Canada, Montréal <span class="flag">🇨🇦</span></span>
+          </div>
         </div>
       </div>
     </section>
