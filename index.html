@@ -7,20 +7,20 @@
   <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* --- RESET & BASE (Polices unifiées) --- */
+    /* --- RESET & BASE --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', sans-serif;
       background: #ffffff;
       color: #1a1a1a;
-      line-height: 1.8;
+      line-height: 1.7;
       transition: background 0.3s, color 0.3s;
     }
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
-    /* --- LOADER --- */
+    /* --- LOADER (4 secondes) --- */
     .loader-container {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #fff; display: flex; justify-content: center; align-items: center;
@@ -69,8 +69,12 @@
     body.dark .copy-btn:hover { background: #e50914; color: #fff; }
     body.dark .client-logo { background: #161616; border-color: #2a2a2a; }
     body.dark .menu { color: #eee; }
+    body.dark .teaser-cta { background: linear-gradient(135deg, #0a0a0a, #161616); border-bottom-color: #e50914; }
+    body.dark .modal-content { background: #1a1a1a; border-color: #333; }
+    body.dark .help-btn { background: #e50914; color: #fff; }
+    body.dark .help-btn:hover { background: #bd0710; }
 
-    /* --- MISE EN PAGE GÉNÉRALE --- */
+    /* --- CONTENEUR & BOUTONS --- */
     .container { width: min(92%, 1160px); margin: 0 auto; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -86,6 +90,11 @@
     .btn-success:hover { background: #08732f; transform: translateY(-3px); }
     .btn-secondary { background: #666; color: #fff; }
     .btn-secondary:hover { background: #444; transform: translateY(-3px); }
+    .btn-lg { padding: 22px 55px; font-size: 22px; border-radius: 60px; font-weight: 800; letter-spacing: 0.5px; }
+    .btn-red-lg { background: #e50914; color: #fff; border: 2px solid #e50914; }
+    .btn-red-lg:hover { background: #bd0710; transform: scale(1.04); box-shadow: 0 15px 40px rgba(229,9,20,0.3); }
+    .btn-outline-light { border: 2px solid #fff; color: #fff; background: transparent; }
+    .btn-outline-light:hover { background: #fff; color: #111; transform: scale(1.04); }
 
     /* --- EN-TÊTE --- */
     header {
@@ -101,9 +110,13 @@
       font-weight: 800; font-size: 22px; letter-spacing: -0.5px;
     }
     .logo img { height: 52px; width: auto; border-radius: 10px; }
-    nav { display: flex; gap: 28px; font-weight: 600; font-size: 14px; }
+    nav {
+      display: flex; gap: 28px; font-weight: 600; font-size: 14px;
+      align-items: center;
+    }
     nav a:hover { color: #e50914; }
     .menu { display: none; background: none; border: 0; font-size: 28px; cursor: pointer; }
+    .close-menu { display: none; background: none; border: 0; font-size: 28px; cursor: pointer; color: inherit; }
     .theme-toggle {
       background: none; border: none; font-size: 22px; cursor: pointer;
       color: inherit; transition: transform 0.3s; display: flex; align-items: center;
@@ -113,18 +126,18 @@
     /* --- HÉROS --- */
     .hero {
       background: linear-gradient(120deg, #f8f8f8, #efefef);
-      min-height: 620px; display: flex; align-items: center;
-      padding: 60px 0; transition: background 0.3s;
+      min-height: 560px; display: flex; align-items: center;
+      padding: 50px 0; transition: background 0.3s;
     }
     .hero-grid {
-      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px;
+      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 50px;
       align-items: center;
     }
     .eyebrow {
       display: inline-flex; gap: 10px; align-items: center;
       border: 1px solid #ddd; background: #fff; padding: 6px 14px;
       border-radius: 99px; font-size: 12px; font-weight: 700; color: #555;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
     .eyebrow .dot {
       width: 8px; height: 8px; border-radius: 50%; background: #e50914;
@@ -132,167 +145,211 @@
     }
     h1 { font-size: clamp(42px, 6vw, 72px); line-height: 1.05; letter-spacing: -3px; margin-bottom: 20px; font-weight: 800; }
     h1 span { color: #1f7aff; }
-    .hero p { font-size: 18px; color: #555; max-width: 600px; margin-bottom: 30px; line-height: 1.9; }
+    .hero p { font-size: 18px; color: #555; max-width: 600px; margin-bottom: 25px; line-height: 1.8; }
     .actions { display: flex; gap: 15px; flex-wrap: wrap; }
 
     .hero-card {
       background: #fff; border: 1px solid #e8e8e8; border-radius: 28px;
-      padding: 35px 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+      padding: 30px 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.06);
       transition: 0.3s; text-align: center;
     }
     .hero-card .tech-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
     }
     .tech-badge {
       background: #f5f5f5; border: 1px solid #eee; border-radius: 14px;
-      padding: 14px 8px; font-weight: 700; font-size: 14px; color: #222;
+      padding: 12px 8px; font-weight: 700; font-size: 14px; color: #222;
     }
     .tech-badge i { margin-right: 8px; color: #e50914; }
     .stats {
       display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
     }
     .stat {
-      border: 1px solid #eee; border-radius: 16px; padding: 16px 10px;
+      border: 1px solid #eee; border-radius: 16px; padding: 14px 10px;
     }
-    .stat strong { display: block; font-size: 26px; font-weight: 800; }
+    .stat strong { display: block; font-size: 24px; font-weight: 800; }
     .stat small { color: #777; font-size: 13px; }
 
-    /* --- SECTIONS (ORDRE ET ESPACEMENT) --- */
-    section { padding: 100px 0; }
-    .section-head { max-width: 760px; margin-bottom: 50px; }
+    /* --- TEASER MARKETING --- */
+    .teaser-cta {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: #fff;
+      text-align: center;
+      padding: 60px 20px;
+      border-bottom: 4px solid #e50914;
+      transition: 0.3s;
+    }
+    .teaser-cta .container { max-width: 900px; }
+    .teaser-cta h2 {
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 800;
+      margin-bottom: 15px;
+      letter-spacing: -1px;
+    }
+    .teaser-cta h2 span { color: #e50914; }
+    .teaser-cta p {
+      font-size: 19px;
+      color: #ccc;
+      max-width: 720px;
+      margin: 0 auto 35px;
+      line-height: 1.8;
+    }
+    .teaser-buttons {
+      display: flex;
+      gap: 25px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* --- SECTIONS --- */
+    section { padding: 70px 0; }
+    .section-head { max-width: 760px; margin-bottom: 35px; }
     .kicker {
       color: #e50914; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 2px; font-size: 12px; margin-bottom: 8px; display: block;
+      letter-spacing: 2px; font-size: 12px; margin-bottom: 6px; display: block;
     }
     .section-head h2 {
       font-size: clamp(32px, 4vw, 46px); font-weight: 800; letter-spacing: -2px;
-      line-height: 1.1; margin-bottom: 18px;
+      line-height: 1.1; margin-bottom: 15px;
     }
-    .section-head p { font-size: 18px; color: #666; line-height: 1.8; }
-    .section-head h2 + p { margin-top: 5px; }
+    .section-head p { font-size: 18px; color: #666; line-height: 1.7; }
 
-    /* --- GRILLES --- */
-    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
-    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
     .card {
       background: #fff; border: 1px solid #e8e8e8; border-radius: 24px;
-      padding: 30px; transition: 0.3s;
+      padding: 25px; transition: 0.3s;
     }
     .card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
     .card .icon {
-      width: 52px; height: 52px; border-radius: 16px; background: #111;
+      width: 48px; height: 48px; border-radius: 14px; background: #111;
       color: #fff; display: grid; place-items: center; font-weight: 900;
-      margin-bottom: 18px; font-size: 20px;
+      margin-bottom: 16px; font-size: 18px;
     }
     .card .icon.red { background: #e50914; }
-    .card h3 { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
-    .card p { color: #666; font-size: 15px; line-height: 1.8; }
+    .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .card p { color: #666; font-size: 15px; line-height: 1.7; }
+
+    /* --- GUIDE (nouvelle section) --- */
+    .guide-steps {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;
+      margin-top: 20px;
+    }
+    .guide-step {
+      background: #f9f9f9; border-radius: 20px; padding: 25px;
+      text-align: center; border: 1px solid #eee; transition: 0.3s;
+    }
+    .guide-step:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+    .guide-step .num {
+      display: inline-block; width: 44px; height: 44px; border-radius: 50%;
+      background: #e50914; color: #fff; font-weight: 900; line-height: 44px;
+      font-size: 20px; margin-bottom: 15px;
+    }
+    .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
 
     /* --- À PROPOS --- */
     .about-wrapper {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
     }
     .about-box {
-      background: #f5f5f5; border-radius: 28px; padding: 40px;
+      background: #f5f5f5; border-radius: 28px; padding: 30px;
       border-left: 6px solid #e50914; transition: 0.3s;
     }
-    .about-box strong { font-size: 42px; display: block; line-height: 1.1; font-weight: 800; }
-    .about-box span { color: #555; font-size: 18px; }
+    .about-box strong { font-size: 38px; display: block; line-height: 1.1; font-weight: 800; }
+    .about-box span { color: #555; font-size: 17px; }
     .about-text h4 {
-      font-size: 20px; font-weight: 800; color: #e50914;
-      margin: 30px 0 10px; text-transform: uppercase; letter-spacing: 1px;
+      font-size: 17px; font-weight: 800; color: #e50914;
+      margin: 20px 0 6px; text-transform: uppercase; letter-spacing: 1px;
     }
     .about-text h4:first-of-type { margin-top: 0; }
-    .about-text p { margin-bottom: 20px; line-height: 1.9; color: #333; }
+    .about-text p { margin-bottom: 12px; line-height: 1.7; color: #333; }
     body.dark .about-text p { color: #ccc; }
     .values-list {
       list-style: none; margin-top: 5px;
     }
     .values-list li {
       display: flex; gap: 12px; align-items: flex-start;
-      padding: 10px 0; border-bottom: 1px solid #eee;
-      font-size: 15px; line-height: 1.7;
+      padding: 6px 0; border-bottom: 1px solid #eee;
+      font-size: 15px; line-height: 1.6;
     }
     body.dark .values-list li { border-bottom-color: #2a2a2a; }
     .values-list li::before {
-      content: "•"; color: #e50914; font-weight: 900; font-size: 24px; line-height: 1;
+      content: "•"; color: #e50914; font-weight: 900; font-size: 22px; line-height: 1;
     }
 
-    /* --- ÉQUIPE (LISTE SIMPLE) --- */
+    /* --- ÉQUIPE --- */
     .team-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
     }
     .team-member {
       background: #fff; border: 1px solid #e8e8e8; border-radius: 16px;
-      padding: 22px 15px; text-align: center; transition: 0.25s;
+      padding: 18px 12px; text-align: center; transition: 0.25s;
     }
     .team-member:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); }
-    .team-member strong { display: block; font-size: 18px; font-weight: 700; }
+    .team-member strong { display: block; font-size: 17px; font-weight: 700; }
     .team-member .location { font-size: 14px; color: #888; margin-top: 4px; }
 
     /* --- CLIENTS / PROJETS --- */
     .client-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
     }
     .client-logo {
       background: #f9f9f9; border: 1px solid #e8e8e8; border-radius: 20px;
-      padding: 30px 15px; text-align: center; transition: 0.3s;
+      padding: 25px 15px; text-align: center; transition: 0.3s;
       display: flex; flex-direction: column; align-items: center;
     }
     .client-logo:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
-    .client-logo i { font-size: 32px; color: #1f7aff; margin-bottom: 12px; }
-    .client-logo strong { font-size: 18px; display: block; }
+    .client-logo i { font-size: 30px; color: #1f7aff; margin-bottom: 10px; }
+    .client-logo strong { font-size: 17px; display: block; }
     .client-logo span { font-size: 13px; color: #888; }
 
     .project { overflow: hidden; padding: 0; }
     .project-cover {
-      height: 180px; background: linear-gradient(135deg, #111, #2a2a2a);
+      height: 170px; background: linear-gradient(135deg, #111, #2a2a2a);
       display: grid; place-items: center; color: #fff;
-      font-size: 40px; font-weight: 900; letter-spacing: -2px;
+      font-size: 38px; font-weight: 900; letter-spacing: -2px;
     }
-    .project-body { padding: 25px; }
+    .project-body { padding: 20px; }
     .tag {
       display: inline-block; padding: 4px 12px; background: #f0f0f0;
       border-radius: 99px; font-size: 11px; font-weight: 700; margin: 5px 5px 0 0;
     }
 
-    /* --- RECHERCHE --- */
-    .research-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+    .research-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-    /* --- VIDÉO --- */
     .video-area {
-      border: 2px dashed #ccc; border-radius: 24px; padding: 40px;
+      border: 2px dashed #ccc; border-radius: 24px; padding: 35px;
       text-align: center; background: #fafafa; transition: 0.3s;
     }
     .video-area input { display: none; }
-    .video-preview { display: none; margin-top: 30px; }
-    .video-preview video { width: 100%; max-height: 550px; border-radius: 18px; background: #000; }
+    .video-preview { display: none; margin-top: 25px; }
+    .video-preview video { width: 100%; max-height: 500px; border-radius: 18px; background: #000; }
 
-    /* --- CTA --- */
     .cta {
       background: #111; color: #fff; border-radius: 30px;
-      padding: 60px; display: flex; justify-content: space-between;
-      align-items: center; gap: 40px;
+      padding: 45px; display: flex; justify-content: space-between;
+      align-items: center; gap: 30px;
     }
-    .cta h2 { font-size: 32px; font-weight: 800; }
+    .cta h2 { font-size: 30px; font-weight: 800; }
     .cta p { color: #aaa; max-width: 600px; font-size: 17px; }
 
     /* --- CONTACT (WIZARD) --- */
-    .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 50px; align-items: start; }
+    .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
     .service-request-box {
-      background: #f9f9f9; border-radius: 28px; padding: 40px;
+      background: #f9f9f9; border-radius: 28px; padding: 35px;
       border: 1px solid #eee; transition: 0.3s;
     }
     .step-indicator {
-      display: flex; justify-content: space-between; margin-bottom: 35px; position: relative;
+      display: flex; justify-content: space-between; margin-bottom: 30px; position: relative;
     }
     .step-indicator::before {
       content: ''; position: absolute; top: 50%; left: 15%; right: 15%;
       height: 2px; background: #ddd; z-index: 0;
     }
     .step {
-      background: #fff; padding: 8px 20px; border-radius: 30px;
+      background: #fff; padding: 8px 18px; border-radius: 30px;
       border: 2px solid #ddd; font-size: 13px; font-weight: 700; color: #888;
       z-index: 1; transition: 0.3s;
     }
@@ -303,10 +360,10 @@
     .step-panel.active { display: block; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-    .field { display: grid; gap: 8px; margin-bottom: 20px; }
+    .field { display: grid; gap: 6px; margin-bottom: 16px; }
     .field label { font-size: 14px; font-weight: 700; }
     .field input, .field textarea, .field select {
-      width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 14px;
+      width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px;
       font: inherit; transition: 0.2s; background: #fff;
     }
     .field input:focus, .field textarea:focus, .field select:focus {
@@ -315,79 +372,114 @@
 
     .price-display {
       background: #fff; border: 2px solid #e50914; border-radius: 16px;
-      padding: 18px 25px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 20px; margin: 18px 0; display: flex; justify-content: space-between; align-items: center;
       flex-wrap: wrap;
     }
-    .price-display .amount { font-size: 30px; font-weight: 900; color: #e50914; }
+    .price-display .amount { font-size: 28px; font-weight: 900; color: #e50914; }
 
     .payment-details-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0 18px;
     }
     .payment-item {
-      background: #fff; border: 1px solid #e8e8e8; border-radius: 16px;
-      padding: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;
+      background: #fff; border: 1px solid #e8e8e8; border-radius: 14px;
+      padding: 12px 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
     }
     .payment-icon {
-      width: 48px; height: 48px; border-radius: 14px; background: #f0f0f0;
-      display: grid; place-items: center; font-size: 22px; flex-shrink: 0;
+      width: 44px; height: 44px; border-radius: 12px; background: #f0f0f0;
+      display: grid; place-items: center; font-size: 20px; flex-shrink: 0;
     }
-    .payment-info { flex: 1; min-width: 120px; }
+    .payment-info { flex: 1; min-width: 100px; }
     .payment-info strong { display: block; font-size: 14px; }
     .payment-info .network { font-size: 12px; color: #888; word-break: break-all; display: block; }
     .copy-btn {
-      background: #f0f0f0; border: none; border-radius: 8px; padding: 6px 14px;
+      background: #f0f0f0; border: none; border-radius: 8px; padding: 6px 12px;
       cursor: pointer; font-size: 13px; transition: 0.2s; color: #333;
     }
     .copy-btn:hover { background: #e50914; color: #fff; }
 
-    .payment-note { font-size: 13px; color: #888; margin: 10px 0 20px; font-style: italic; }
+    .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
     .upload-receipt {
-      border: 2px dashed #ccc; border-radius: 16px; padding: 30px;
+      border: 2px dashed #ccc; border-radius: 16px; padding: 25px;
       text-align: center; cursor: pointer; transition: 0.3s; background: #fafafa;
     }
     .upload-receipt:hover { border-color: #e50914; }
     .upload-receipt input { display: none; }
-    .file-name { font-size: 13px; color: #888; margin-top: 10px; }
-    .wizard-nav { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
+    .file-name { font-size: 13px; color: #888; margin-top: 8px; }
+    .wizard-nav { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
 
     .notice {
-      padding: 18px; border-radius: 14px; background: #fff7f7;
-      border: 1px solid #ffd2d2; color: #7d1111; font-size: 14px; margin-bottom: 25px;
+      padding: 16px; border-radius: 14px; background: #fff7f7;
+      border: 1px solid #ffd2d2; color: #7d1111; font-size: 14px; margin-bottom: 20px;
     }
     .list { list-style: none; }
-    .list li { display: flex; gap: 12px; align-items: flex-start; padding: 6px 0; }
+    .list li { display: flex; gap: 12px; align-items: flex-start; padding: 5px 0; }
     .list li::before { content: "✓"; color: #e50914; font-weight: 900; }
 
-    /* --- DISCLAIMER --- */
+    /* --- DISCLAIMER ÉLARGI --- */
     .disclaimer {
       background: #f8f8f8; border-top: 3px solid #e50914;
-      padding: 40px 0; font-size: 14px; color: #666; line-height: 1.9;
+      padding: 40px 0; font-size: 14px; color: #555; line-height: 1.9;
     }
-    .disclaimer strong { color: #111; }
+    .disclaimer strong { color: #111; display: block; font-size: 16px; margin-bottom: 12px; }
+    .disclaimer p { margin-bottom: 12px; }
+    .disclaimer ul { margin: 10px 0 10px 25px; }
+    .disclaimer ul li { margin-bottom: 6px; }
 
-    /* --- PIED DE PAGE --- */
+    /* --- BOUTON D'AIDE FLOTTANT --- */
+    .help-btn {
+      position: fixed; bottom: 30px; right: 30px;
+      background: #e50914; color: #fff; border: none;
+      border-radius: 60px; padding: 16px 28px; font-size: 18px;
+      font-weight: 700; cursor: pointer; box-shadow: 0 8px 30px rgba(229,9,20,0.3);
+      transition: 0.3s; z-index: 900; display: flex; align-items: center; gap: 12px;
+    }
+    .help-btn:hover { transform: scale(1.05); background: #bd0710; }
+
+    /* --- MODALE D'AIDE --- */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+      z-index: 1000; justify-content: center; align-items: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #fff; max-width: 580px; width: 90%; border-radius: 28px;
+      padding: 40px; position: relative; max-height: 90vh; overflow-y: auto;
+      border: 1px solid #eee; animation: fadeUp 0.3s ease;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 20px; font-size: 28px;
+      background: none; border: none; cursor: pointer; color: #888;
+      transition: 0.2s;
+    }
+    .modal-close:hover { color: #e50914; transform: rotate(90deg); }
+    .modal-content h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .modal-content p { color: #555; margin-bottom: 20px; }
+    .modal-content .field { margin-bottom: 14px; }
+
+    /* --- FOOTER --- */
     footer {
-      background: #080808; color: #fff; padding: 60px 0 30px;
+      background: #080808; color: #fff; padding: 50px 0 25px;
     }
     .footer-grid {
-      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 35px;
     }
     .footer-grid p, .footer-grid a { color: #999; font-size: 14px; line-height: 2; }
     .footer-grid a:hover { color: #e50914; }
-    .footer-grid h4 { font-size: 16px; font-weight: 700; margin-bottom: 15px; }
+    .footer-grid h4 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
 
     .social-footer {
-      display: flex; justify-content: center; gap: 18px; margin: 30px 0 20px;
+      display: flex; justify-content: center; gap: 16px; margin: 25px 0 18px;
     }
     .social-footer a {
       display: flex; align-items: center; justify-content: center;
-      width: 46px; height: 46px; border-radius: 50%; background: #1a1a1a;
-      color: #fff; transition: 0.3s; font-size: 20px;
+      width: 44px; height: 44px; border-radius: 50%; background: #1a1a1a;
+      color: #fff; transition: 0.3s; font-size: 18px;
     }
     .social-footer a:hover { background: #e50914; transform: translateY(-4px); }
 
     .footer-bottom {
-      border-top: 1px solid #242424; padding-top: 25px;
+      border-top: 1px solid #242424; padding-top: 20px;
       color: #777; font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap;
     }
     .footer-bottom a { color: #999; }
@@ -395,30 +487,41 @@
 
     /* --- RESPONSIVE --- */
     @media (max-width: 992px) {
-      nav { display: none; }
+      nav { display: none; flex-direction: column; position: absolute; top: 80px; left: 0; right: 0;
+            background: #fff; padding: 25px; border-bottom: 1px solid #ddd; gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+      nav.open { display: flex; }
       .menu { display: block; }
+      .close-menu { display: none; }
+      .nav .close-menu { display: block; }
       .hero-grid, .about-wrapper, .contact-wrapper { grid-template-columns: 1fr; }
       .grid3, .grid4, .team-grid { grid-template-columns: 1fr 1fr; }
       .client-grid, .payment-details-grid { grid-template-columns: 1fr 1fr; }
       .research-grid { grid-template-columns: 1fr; }
+      .guide-steps { grid-template-columns: 1fr 1fr; }
       .cta { flex-direction: column; text-align: center; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .wizard-nav { flex-direction: column; }
       .wizard-nav .btn { width: 100%; }
       .step-indicator { flex-wrap: wrap; justify-content: center; gap: 10px; }
       .step-indicator::before { display: none; }
+      .teaser-buttons { flex-direction: column; align-items: center; }
+      .btn-lg { width: 100%; max-width: 380px; justify-content: center; }
     }
     @media (max-width: 600px) {
-      section { padding: 60px 0; }
+      section { padding: 50px 0; }
       .grid3, .grid4, .team-grid, .client-grid, .payment-details-grid { grid-template-columns: 1fr; }
+      .guide-steps { grid-template-columns: 1fr; }
       .hero-grid { gap: 30px; }
       .hero-card .tech-grid { grid-template-columns: 1fr 1fr; }
-      .cta { padding: 30px; }
-      .service-request-box { padding: 20px; }
+      .cta { padding: 25px; }
+      .service-request-box { padding: 18px; }
       .footer-grid { grid-template-columns: 1fr; }
       .social-footer { flex-wrap: wrap; }
+      .teaser-cta { padding: 40px 15px; }
+      .modal-content { padding: 25px; }
+      .help-btn { padding: 14px 20px; font-size: 15px; bottom: 20px; right: 20px; }
     }
-    /* Animation douce */
     .card { opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s forwards; }
     .card:nth-child(1) { animation-delay: 0.1s; }
     .card:nth-child(2) { animation-delay: 0.2s; }
@@ -442,16 +545,17 @@
         <img src="logo-xynera.png" alt="Xynera Club">
         Xynera Club
       </a>
-      <nav>
+      <nav id="mainNav">
         <a href="#about">À propos</a>
         <a href="#services">Services</a>
         <a href="#projects">Projets</a>
         <a href="#team">Équipe</a>
         <a href="#contact">Contact</a>
+        <button class="close-menu" id="closeMenuBtn" aria-label="Fermer le menu">✕</button>
       </nav>
       <div style="display:flex;align-items:center;gap:15px;">
         <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-        <button class="menu" onclick="toggleMenu()">☰</button>
+        <button class="menu" id="menuBtn" aria-label="Ouvrir le menu">☰</button>
       </div>
     </div>
   </header>
@@ -485,6 +589,62 @@
       </div>
     </section>
 
+    <!-- TEASER MARKETING -->
+    <section class="teaser-cta">
+      <div class="container">
+        <h2>Prêt à bâtir l'<span>avenir numérique</span> ?</h2>
+        <p>
+          Que vous ayez une idée de projet à concrétiser ou que vous souhaitiez intégrer une équipe dynamique de passionnés, 
+          Xynera Club est votre porte d'entrée vers l'innovation. Rejoignez un écosystème où la technologie, la collaboration 
+          et la créativité se rencontrent pour façonner le monde de demain.
+        </p>
+        <div class="teaser-buttons">
+          <a href="#contact" class="btn btn-red-lg">
+            <i class="fas fa-rocket"></i> Demander un service
+          </a>
+          <a href="mailto:contact@xyneraclub.com?subject=Demande d'adhésion - Xynera Club" class="btn btn-outline-light">
+            <i class="fas fa-users"></i> Rejoindre le club
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- GUIDE : Comment demander un service -->
+    <section id="guide">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Guide</span>
+          <h2>Comment demander un service ?</h2>
+          <p>Suivez ces étapes simples pour bénéficier de notre expertise.</p>
+        </div>
+        <div class="guide-steps">
+          <div class="guide-step">
+            <div class="num">1</div>
+            <h4>Choisissez votre prestation</h4>
+            <p>Parcourez notre offre et sélectionnez le service qui correspond à votre besoin (développement, Web3, audit, formation, etc.).</p>
+          </div>
+          <div class="guide-step">
+            <div class="num">2</div>
+            <h4>Effectuez le paiement</h4>
+            <p>Utilisez l'un des moyens de paiement proposés (Airtel Money, M-Pesa, cryptos). Le montant exact est affiché avant validation.</p>
+          </div>
+          <div class="guide-step">
+            <div class="num">3</div>
+            <h4>Envoyez votre reçu</h4>
+            <p>Remplissez le formulaire avec vos coordonnées et téléchargez la capture d'écran de votre transaction.</p>
+          </div>
+          <div class="guide-step">
+            <div class="num">4</div>
+            <h4>Confirmation</h4>
+            <p>Notre équipe valide votre demande sous 24h et vous contacte pour démarrer le projet ou la formation.</p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="#contact" class="btn btn-red">Commencer maintenant</a>
+        </div>
+      </div>
+    </section>
+
     <!-- ABOUT -->
     <section id="about">
       <div class="container">
@@ -512,8 +672,8 @@
           <div class="about-box">
             <strong>15+</strong>
             <span>développeurs et étudiants réunis autour d'une même ambition.</span>
-            <p style="margin-top:25px; font-weight:700;">Fondateur : Djamil</p>
-            <div style="display:flex;gap:10px;margin-top:20px;">
+            <p style="margin-top:20px; font-weight:700;">Fondateur : Djamil</p>
+            <div style="display:flex;gap:10px;margin-top:15px;">
               <span style="width:50px;height:8px;border-radius:99px;background:#0757d9;"></span>
               <span style="width:50px;height:8px;border-radius:99px;background:#e50914;"></span>
             </div>
@@ -644,9 +804,9 @@
         <div class="contact-wrapper">
           <div>
             <div class="notice"><i class="fas fa-info-circle"></i> Ce formulaire vous guide en 3 étapes. Tous les champs sont obligatoires.</div>
-            <div style="background:#f5f5f5; border-radius:20px; padding:30px; margin-top:20px;">
+            <div style="background:#f5f5f5; border-radius:20px; padding:25px; margin-top:20px;">
               <h4 style="color:#e50914; font-size:18px;">Pourquoi Xynera Club ?</h4>
-              <ul class="list" style="margin-top:10px;">
+              <ul class="list" style="margin-top:8px;">
                 <li>Expertise reconnue en Web3 et développement</li>
                 <li>Équipe de 15+ développeurs passionnés</li>
                 <li>Paiements sécurisés via multiples canaux</li>
@@ -690,7 +850,7 @@
                 <span><strong>Service :</strong> <span id="selectedServiceName">-</span></span>
                 <span class="amount" id="selectedServicePrice">$0</span>
               </div>
-              <p style="font-weight:700; margin:15px 0 10px;">Effectuez le paiement à l'un des comptes ci-dessous :</p>
+              <p style="font-weight:700; margin:12px 0 8px;">Effectuez le paiement à l'un des comptes ci-dessous :</p>
               
               <div class="payment-details-grid">
                 <div class="payment-item">
@@ -734,7 +894,7 @@
 
             <!-- Étape 3 -->
             <div class="step-panel" id="panel3">
-              <p style="font-weight:700; margin-bottom:20px;">Remplissez vos coordonnées et joignez la capture du paiement :</p>
+              <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et joignez la capture du paiement :</p>
               
               <form id="finalRequestForm" action="https://formspree.io/f/xjyvbkyp" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="service_name" id="hiddenServiceName">
@@ -759,8 +919,8 @@
                 <div class="field">
                   <label><i class="fas fa-file-image"></i> Capture d'écran du paiement (Reçu)</label>
                   <div class="upload-receipt" id="uploadArea">
-                    <i class="fas fa-cloud-upload-alt" style="font-size:36px; color:#888;"></i>
-                    <p style="margin:10px 0;">Cliquez pour télécharger ou glissez-déposez</p>
+                    <i class="fas fa-cloud-upload-alt" style="font-size:32px; color:#888;"></i>
+                    <p style="margin:8px 0;">Cliquez pour télécharger ou glissez-déposez</p>
                     <input type="file" name="receiptFile" accept="image/*" id="receiptFile" required>
                     <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
                   </div>
@@ -769,7 +929,7 @@
                   <button class="btn btn-secondary" id="step3Back"><i class="fas fa-arrow-left"></i> Précédent</button>
                   <button type="submit" class="btn btn-red"><i class="fas fa-check-circle"></i> Soumettre ma demande</button>
                 </div>
-                <div id="finalMessage" style="display:none; margin-top:20px; padding:15px; background:#d4edda; color:#155724; border-radius:12px; font-weight:700;">
+                <div id="finalMessage" style="display:none; margin-top:18px; padding:14px; background:#d4edda; color:#155724; border-radius:12px; font-weight:700;">
                   <i class="fas fa-check-circle"></i> Votre demande a été reçue ! Notre équipe vous contactera sous 24h.
                 </div>
               </form>
@@ -778,13 +938,71 @@
         </div>
       </div>
     </section>
+
+    <!-- SECTION : Envoyer une proposition / discuter avec l'équipe (avant paiement) -->
+    <section id="discuss" style="background:#f5f5f5;">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Échange & proposition</span>
+          <h2>Discuter avec notre équipe</h2>
+          <p>Vous avez un projet, une idée, ou souhaitez simplement en savoir plus ? Envoyez-nous un message, nous vous répondrons dans les plus brefs délais.</p>
+        </div>
+        <div style="max-width:700px; margin:0 auto;">
+          <form id="proposalForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
+            <div class="field">
+              <label><i class="fas fa-user"></i> Votre nom</label>
+              <input type="text" name="proposal_name" placeholder="Votre nom" required>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-envelope"></i> Votre email</label>
+              <input type="email" name="proposal_email" placeholder="votre@email.com" required>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-phone"></i> Téléphone (optionnel)</label>
+              <input type="tel" name="proposal_phone" placeholder="+243 ...">
+            </div>
+            <div class="field">
+              <label><i class="fas fa-tag"></i> Sujet</label>
+              <select name="proposal_subject">
+                <option value="general">Demande d'information générale</option>
+                <option value="project">Proposition de projet</option>
+                <option value="partnership">Partenariat</option>
+                <option value="collab">Collaboration / Rejoindre le club</option>
+                <option value="support">Support / Assistance</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-comment"></i> Votre message</label>
+              <textarea name="proposal_message" rows="5" placeholder="Décrivez votre besoin, votre idée, votre question..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-red" style="width:100%;"><i class="fas fa-paper-plane"></i> Envoyer la proposition</button>
+            <div id="proposalMessage" style="display:none; margin-top:15px; padding:12px; background:#d4edda; color:#155724; border-radius:10px; font-weight:700;">
+              <i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons dans les 24h.
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- DISCLAIMER -->
+  <!-- DISCLAIMER ÉLARGI -->
   <section class="disclaimer" id="disclaimer">
     <div class="container">
-      <strong>Clause de non-responsabilité :</strong>
-      <p>Les informations fournies sur ce site sont à caractère éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques ou en investissement. Xynera Club décline toute responsabilité quant aux pertes ou dommages résultant de l'utilisation des informations diffusées. Chaque utilisateur est seul responsable de ses décisions. Nous encourageons toujours une recherche personnelle approfondie (DYOR) avant toute action.</p>
+      <strong>Clause de non-responsabilité – Informations importantes</strong>
+      
+      <p>Les informations fournies sur ce site web (Xynera Club) sont diffusées à titre purement éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques, fiscaux ou en investissement. Xynera Club n'est pas un conseiller en investissement, ni un intermédiaire financier.</p>
+
+      <p><strong>Risques liés aux cryptomonnaies et aux actifs numériques :</strong> Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés, notamment la volatilité des prix, les risques de sécurité, les risques réglementaires et les risques de perte totale de capital. Aucun rendement n'est garanti. Les performances passées ne préjugent pas des résultats futurs. Chaque investisseur ou utilisateur doit effectuer ses propres recherches (DYOR) et consulter un professionnel avant toute décision.</p>
+
+      <p><strong>Protection des données :</strong> Les informations personnelles collectées via les formulaires de ce site sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers sans votre consentement explicite, conformément à la législation en vigueur (RGPD). Vous disposez d'un droit d'accès, de rectification et de suppression de vos données en nous contactant à : <a href="mailto:contact@xyneraclub.com" style="color:#e50914;">contact@xyneraclub.com</a>.</p>
+
+      <p><strong>Responsabilité :</strong> Xynera Club décline toute responsabilité quant aux pertes, dommages directs ou indirects, préjudices financiers ou autres, résultant de l'utilisation des informations diffusées sur ce site, des liens externes, ou des décisions prises en conséquence. Les utilisateurs sont seuls responsables de leurs actions et investissements. Nous vous encourageons vivement à consulter un professionnel qualifié avant toute démarche.</p>
+
+      <p><strong>Propriété intellectuelle :</strong> L'ensemble du contenu de ce site (textes, images, logos, vidéos) est la propriété exclusive de Xynera Club ou de ses partenaires. Toute reproduction, distribution ou utilisation sans autorisation préalable est interdite.</p>
+
+      <p><strong>Liens externes :</strong> Ce site peut contenir des liens vers des sites tiers. Xynera Club n'est pas responsable du contenu, des politiques de confidentialité ou des pratiques de ces sites.</p>
+
+      <p><em>Dernière mise à jour : 2026 – Xynera Club.</em></p>
     </div>
   </section>
 
@@ -804,7 +1022,7 @@
         </div>
         <div><h4>Explorer</h4><a href="#about">À propos</a><br><a href="#services">Services</a><br><a href="#projects">Projets</a></div>
         <div><h4>Apprendre</h4><a href="#academy">Academy</a><br><a href="#research">Research</a><br><a href="#team">Équipe</a></div>
-        <div><h4>Contact</h4><a href="#contact">Demander</a><br><a href="#disclaimer">Disclaimer</a><br><a href="#accueil">Haut</a></div>
+        <div><h4>Contact</h4><a href="#contact">Demander</a><br><a href="#discuss">Proposition</a><br><a href="#disclaimer">Disclaimer</a><br><a href="#accueil">Haut</a></div>
       </div>
 
       <div class="social-footer">
@@ -822,8 +1040,40 @@
     </div>
   </footer>
 
+  <!-- BOUTON D'AIDE FLOTTANT -->
+  <button class="help-btn" id="helpBtn" aria-label="Aide et contact">
+    <i class="fas fa-life-ring"></i> Aide
+  </button>
+
+  <!-- MODALE D'AIDE -->
+  <div class="modal-overlay" id="helpModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModalBtn">✕</button>
+      <h3>Comment pouvons-nous vous aider ?</h3>
+      <p>Utilisez ce formulaire pour poser une question, demander un devis, ou nous contacter avant toute démarche. Nous vous répondons sous 24h.</p>
+      <form id="helpForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
+        <div class="field">
+          <label><i class="fas fa-user"></i> Votre nom</label>
+          <input type="text" name="help_name" placeholder="Votre nom" required>
+        </div>
+        <div class="field">
+          <label><i class="fas fa-envelope"></i> Votre email</label>
+          <input type="email" name="help_email" placeholder="votre@email.com" required>
+        </div>
+        <div class="field">
+          <label><i class="fas fa-comment"></i> Message</label>
+          <textarea name="help_message" rows="4" placeholder="Votre question ou demande..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-red" style="width:100%;">Envoyer</button>
+        <div id="helpMessage" style="display:none; margin-top:12px; padding:10px; background:#d4edda; color:#155724; border-radius:10px;">
+          <i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons rapidement.
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    // --- FONCTIONS UTILITAIRES ---
+    // --- FONCTIONS ---
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
         alert('✅ ' + text + ' copié dans le presse-papiers !');
@@ -832,25 +1082,34 @@
       });
     }
 
-    function toggleMenu() {
-      const nav = document.querySelector('nav');
-      const visible = nav.style.display === 'flex';
-      nav.style.display = visible ? 'none' : 'flex';
-      nav.style.position = 'absolute';
-      nav.style.top = '80px';
-      nav.style.left = '0';
-      nav.style.right = '0';
-      nav.style.background = document.body.classList.contains('dark') ? '#0a0a0a' : '#fff';
-      nav.style.padding = '25px';
-      nav.style.flexDirection = 'column';
-      nav.style.borderBottom = '1px solid #ddd';
-      nav.style.boxShadow = '0 10px 30px rgba(0,0,0,0.05)';
-      nav.style.gap = '15px';
+    // --- MENU MOBILE : ouverture/fermeture ---
+    const menuBtn = document.getElementById('menuBtn');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    const mainNav = document.getElementById('mainNav');
+
+    function toggleMenu(open) {
+      if (open === undefined) open = !mainNav.classList.contains('open');
+      mainNav.classList.toggle('open', open);
+      menuBtn.style.display = open ? 'none' : 'block';
+      closeMenuBtn.style.display = open ? 'block' : 'none';
+      if (open) {
+        mainNav.style.display = 'flex';
+      } else {
+        mainNav.style.display = '';
+      }
     }
-    document.querySelectorAll('nav a').forEach(a => {
-      a.addEventListener('click', () => {
-        if (window.innerWidth < 992) document.querySelector('nav').style.display = 'none';
+
+    menuBtn.addEventListener('click', () => toggleMenu(true));
+    closeMenuBtn.addEventListener('click', () => toggleMenu(false));
+    // Fermer le menu lors d'un clic sur un lien
+    mainNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 992) toggleMenu(false);
       });
+    });
+    // Réinitialiser sur redimensionnement
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 992) toggleMenu(false);
     });
 
     // --- THÈME ---
@@ -871,14 +1130,19 @@
     toggleBtn.addEventListener('click', () => {
       const current = document.body.classList.contains('dark') ? 'dark' : 'light';
       setTheme(current === 'dark' ? 'light' : 'dark');
-      const nav = document.querySelector('nav');
-      if (nav.style.display === 'flex') nav.style.background = document.body.classList.contains('dark') ? '#0a0a0a' : '#fff';
     });
 
-    // --- LOADER ---
-    window.addEventListener('load', () => {
-      document.getElementById('loader').classList.add('hidden');
+    // --- LOADER (4 secondes) ---
+    const loader = document.getElementById('loader');
+    const startTime = Date.now();
+    window.addEventListener('load', function() {
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, 4000 - elapsed);
+      setTimeout(() => { loader.classList.add('hidden'); }, remaining);
     });
+    setTimeout(() => {
+      if (!loader.classList.contains('hidden')) { loader.classList.add('hidden'); }
+    }, 6000);
 
     // --- VIDÉO ---
     const videoInput = document.getElementById('videoInput');
@@ -895,7 +1159,7 @@
       player.play().catch(() => {});
     });
 
-    // --- WIZARD (ÉTAPES) ---
+    // --- WIZARD (étapes) ---
     const serviceSelect = document.getElementById('serviceSelect');
     const step1Next = document.getElementById('step1Next');
     const step2Next = document.getElementById('step2Next');
@@ -993,30 +1257,59 @@
       }
     });
 
-    // --- SOUMISSION FORMSPREE ---
-    document.getElementById('finalRequestForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = this;
-      const formData = new FormData(form);
-
-      fetch(form.action, {
-        method: form.method,
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      })
-      .then(response => {
-        if (response.ok) {
-          document.getElementById('finalMessage').style.display = 'block';
-          form.reset();
-          fileNameDisplay.textContent = 'Aucun fichier sélectionné';
-          document.querySelector('#finalMessage').innerHTML = '<i class="fas fa-check-circle"></i> Votre demande a été reçue ! Notre équipe vous contactera sous 24h.';
-        } else {
-          alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-        }
-      })
-      .catch(() => {
-        alert('Erreur de connexion. Vérifiez votre internet.');
+    // --- SOUMISSION FORMULAIRES (3 formulaires) ---
+    function handleFormSubmit(formId, messageId) {
+      const form = document.getElementById(formId);
+      if (!form) return;
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch(this.action, {
+          method: this.method,
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+          if (response.ok) {
+            document.getElementById(messageId).style.display = 'block';
+            this.reset();
+            // Pour le formulaire final, on réinitialise aussi l'affichage du fichier
+            if (formId === 'finalRequestForm') {
+              document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
+            }
+          } else {
+            alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+          }
+        })
+        .catch(() => {
+          alert('Erreur de connexion. Vérifiez votre internet.');
+        });
       });
+    }
+
+    handleFormSubmit('finalRequestForm', 'finalMessage');
+    handleFormSubmit('proposalForm', 'proposalMessage');
+    handleFormSubmit('helpForm', 'helpMessage');
+
+    // --- MODALE D'AIDE ---
+    const helpBtn = document.getElementById('helpBtn');
+    const helpModal = document.getElementById('helpModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    helpBtn.addEventListener('click', () => {
+      helpModal.classList.add('active');
+    });
+    closeModalBtn.addEventListener('click', () => {
+      helpModal.classList.remove('active');
+    });
+    helpModal.addEventListener('click', (e) => {
+      if (e.target === helpModal) {
+        helpModal.classList.remove('active');
+      }
+    });
+    // Fermer avec la touche Échap
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') helpModal.classList.remove('active');
     });
 
     // --- ANNÉE ---
