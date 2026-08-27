@@ -460,13 +460,36 @@
     .copy-btn:hover { background: #e50914; color: #fff; }
 
     .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
+
+    /* --- UPLOAD AVEC APERÇU --- */
     .upload-receipt {
-      border: 2px dashed #ccc; border-radius: 16px; padding: 25px;
-      text-align: center; cursor: pointer; transition: 0.3s; background: #fafafa;
+      border: 2px dashed #ccc;
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      background: #fafafa;
     }
     .upload-receipt:hover { border-color: #e50914; }
     .upload-receipt input { display: none; }
     .file-name { font-size: 13px; color: #888; margin-top: 8px; }
+    .file-preview {
+      margin-top: 15px;
+      display: none;
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid #eee;
+      overflow: hidden;
+    }
+    .file-preview img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .file-preview.active { display: block; }
+
     .wizard-nav { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
 
     .notice {
@@ -842,7 +865,7 @@
       </div>
     </section>
 
-    <!-- TEAM (DRAPEAUX À CÔTÉ DU PAYS) -->
+    <!-- TEAM -->
     <section id="team">
       <div class="container">
         <div class="section-head">
@@ -1032,7 +1055,7 @@
               </div>
             </div>
 
-            <!-- Étape 3 -->
+            <!-- Étape 3 (avec aperçu de l'image) -->
             <div class="step-panel" id="panel3">
               <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et joignez la capture du paiement :</p>
               
@@ -1063,6 +1086,9 @@
                     <p style="margin:8px 0;">Cliquez pour télécharger ou glissez-déposez</p>
                     <input type="file" name="receiptFile" accept="image/*" id="receiptFile" required>
                     <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
+                    <div class="file-preview" id="filePreview">
+                      <img id="previewImage" src="#" alt="Aperçu du reçu">
+                    </div>
                   </div>
                 </div>
                 <div class="wizard-nav">
@@ -1366,13 +1392,31 @@
       step2Label.classList.add('active');
     });
 
-    // --- UPLOAD ---
+    // --- UPLOAD AVEC APERÇU DE L'IMAGE ---
     const fileInput = document.getElementById('receiptFile');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
     const uploadArea = document.getElementById('uploadArea');
+    const filePreview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
 
-    fileInput.addEventListener('change', function() {
-      fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Aucun fichier sélectionné';
+    fileInput.addEventListener('change', function(e) {
+      const file = this.files[0];
+      if (file) {
+        // Afficher le nom du fichier
+        fileNameDisplay.textContent = file.name;
+
+        // Afficher l'aperçu
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          previewImage.src = event.target.result;
+          filePreview.classList.add('active');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        fileNameDisplay.textContent = 'Aucun fichier sélectionné';
+        filePreview.classList.remove('active');
+        previewImage.src = '#';
+      }
     });
 
     uploadArea.addEventListener('click', function(e) {
@@ -1391,17 +1435,25 @@
       this.style.borderColor = '#ccc';
       if (e.dataTransfer.files.length > 0) {
         fileInput.files = e.dataTransfer.files;
-        fileNameDisplay.textContent = e.dataTransfer.files[0].name;
+        // Déclencher l'événement change manuellement
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
       }
     });
 
-    // --- SOUMISSION FORMULAIRES ---
+    // --- SOUMISSION FORMULAIRES AVEC GESTION D'ERREUR AMÉLIORÉE ---
     function handleFormSubmit(formId, messageId) {
       const form = document.getElementById(formId);
       if (!form) return;
       form.addEventListener('submit', function(e) {
         e.preventDefault();
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
         const formData = new FormData(this);
+
         fetch(this.action, {
           method: this.method,
           body: formData,
@@ -1411,15 +1463,35 @@
           if (response.ok) {
             document.getElementById(messageId).style.display = 'block';
             this.reset();
+            // Réinitialiser l'aperçu pour le formulaire final
             if (formId === 'finalRequestForm') {
               document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
+              document.getElementById('filePreview').classList.remove('active');
+              document.getElementById('previewImage').src = '#';
             }
+            // Faire défiler vers le message
+            document.getElementById(messageId).scrollIntoView({ behavior: 'smooth', block: 'center' });
           } else {
-            alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+            // Essayer de lire le message d'erreur de Formspree
+            response.json().then(data => {
+              let errorMsg = 'Erreur lors de l\'envoi. ';
+              if (data && data.error) {
+                errorMsg += data.error;
+              } else {
+                errorMsg += 'Veuillez réessayer ou contacter le support.';
+              }
+              alert(errorMsg);
+            }).catch(() => {
+              alert('Erreur lors de l\'envoi. Veuillez réessayer ou contacter le support.');
+            });
           }
         })
         .catch(() => {
           alert('Erreur de connexion. Vérifiez votre internet.');
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
         });
       });
     }
