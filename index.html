@@ -461,19 +461,35 @@
 
     .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
 
-    /* --- UPLOAD AVEC APERÇU --- */
+    /* --- UPLOAD REMPLACÉ PAR CHAMP URL (pour éviter l'erreur Formspree) --- */
     .upload-receipt {
       border: 2px dashed #ccc;
       border-radius: 16px;
       padding: 25px;
       text-align: center;
-      cursor: pointer;
       transition: 0.3s;
       background: #fafafa;
     }
     .upload-receipt:hover { border-color: #e50914; }
-    .upload-receipt input { display: none; }
-    .file-name { font-size: 13px; color: #888; margin-top: 8px; }
+    .upload-receipt input[type="url"] {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font: inherit;
+      background: #fff;
+      margin-top: 10px;
+    }
+    .upload-receipt input[type="url"]:focus {
+      border-color: #e50914;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(229,9,20,0.05);
+    }
+    .upload-receipt .hint {
+      font-size: 13px;
+      color: #888;
+      margin-top: 8px;
+    }
     .file-preview {
       margin-top: 15px;
       display: none;
@@ -1055,11 +1071,11 @@
               </div>
             </div>
 
-            <!-- Étape 3 (avec aperçu de l'image) -->
+            <!-- Étape 3 (remplacement du fichier par un champ URL) -->
             <div class="step-panel" id="panel3">
-              <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et joignez la capture du paiement :</p>
+              <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et collez le lien de votre reçu :</p>
               
-              <form id="finalRequestForm" action="https://formspree.io/f/xjyvbkyp" method="POST" enctype="multipart/form-data">
+              <form id="finalRequestForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
                 <input type="hidden" name="service_name" id="hiddenServiceName">
                 <input type="hidden" name="service_price" id="hiddenServicePrice">
 
@@ -1080,14 +1096,14 @@
                   <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
                 </div>
                 <div class="field">
-                  <label><i class="fas fa-file-image"></i> Capture d'écran du paiement (Reçu)</label>
-                  <div class="upload-receipt" id="uploadArea">
+                  <label><i class="fas fa-link"></i> Lien du reçu (capture d'écran)</label>
+                  <div class="upload-receipt">
                     <i class="fas fa-cloud-upload-alt" style="font-size:32px; color:#888;"></i>
-                    <p style="margin:8px 0;">Cliquez pour télécharger ou glissez-déposez</p>
-                    <input type="file" name="receiptFile" accept="image/*" id="receiptFile" required>
-                    <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
-                    <div class="file-preview" id="filePreview">
-                      <img id="previewImage" src="#" alt="Aperçu du reçu">
+                    <p style="margin:8px 0;">Collez ici le lien public de votre image (Imgur, Google Drive, etc.)</p>
+                    <input type="url" name="receiptUrl" placeholder="https://exemple.com/mon-reçu.png" required>
+                    <div class="hint">Hébergez votre image sur Imgur (gratuit) et collez le lien direct.</div>
+                    <div class="file-preview" id="urlPreview">
+                      <img id="previewUrlImage" src="#" alt="Aperçu du reçu">
                     </div>
                   </div>
                 </div>
@@ -1392,56 +1408,23 @@
       step2Label.classList.add('active');
     });
 
-    // --- UPLOAD AVEC APERÇU DE L'IMAGE ---
-    const fileInput = document.getElementById('receiptFile');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const uploadArea = document.getElementById('uploadArea');
-    const filePreview = document.getElementById('filePreview');
-    const previewImage = document.getElementById('previewImage');
+    // --- APERÇU DU LIEN URL (image distante) ---
+    const urlInput = document.querySelector('input[name="receiptUrl"]');
+    const urlPreview = document.getElementById('urlPreview');
+    const previewUrlImage = document.getElementById('previewUrlImage');
 
-    fileInput.addEventListener('change', function(e) {
-      const file = this.files[0];
-      if (file) {
-        // Afficher le nom du fichier
-        fileNameDisplay.textContent = file.name;
-
-        // Afficher l'aperçu
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          previewImage.src = event.target.result;
-          filePreview.classList.add('active');
-        };
-        reader.readAsDataURL(file);
+    urlInput.addEventListener('input', function() {
+      const url = this.value.trim();
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        previewUrlImage.src = url;
+        urlPreview.classList.add('active');
       } else {
-        fileNameDisplay.textContent = 'Aucun fichier sélectionné';
-        filePreview.classList.remove('active');
-        previewImage.src = '#';
+        urlPreview.classList.remove('active');
+        previewUrlImage.src = '#';
       }
     });
 
-    uploadArea.addEventListener('click', function(e) {
-      if (e.target.tagName !== 'INPUT') fileInput.click();
-    });
-    uploadArea.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#e50914';
-    });
-    uploadArea.addEventListener('dragleave', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#ccc';
-    });
-    uploadArea.addEventListener('drop', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#ccc';
-      if (e.dataTransfer.files.length > 0) {
-        fileInput.files = e.dataTransfer.files;
-        // Déclencher l'événement change manuellement
-        const event = new Event('change', { bubbles: true });
-        fileInput.dispatchEvent(event);
-      }
-    });
-
-    // --- SOUMISSION FORMULAIRES AVEC GESTION D'ERREUR AMÉLIORÉE ---
+    // --- SOUMISSION FORMULAIRES ---
     function handleFormSubmit(formId, messageId) {
       const form = document.getElementById(formId);
       if (!form) return;
@@ -1463,16 +1446,14 @@
           if (response.ok) {
             document.getElementById(messageId).style.display = 'block';
             this.reset();
-            // Réinitialiser l'aperçu pour le formulaire final
+            // Réinitialiser l'aperçu
             if (formId === 'finalRequestForm') {
-              document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
-              document.getElementById('filePreview').classList.remove('active');
-              document.getElementById('previewImage').src = '#';
+              urlPreview.classList.remove('active');
+              previewUrlImage.src = '#';
             }
             // Faire défiler vers le message
             document.getElementById(messageId).scrollIntoView({ behavior: 'smooth', block: 'center' });
           } else {
-            // Essayer de lire le message d'erreur de Formspree
             response.json().then(data => {
               let errorMsg = 'Erreur lors de l\'envoi. ';
               if (data && data.error) {
