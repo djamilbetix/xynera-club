@@ -7,7 +7,7 @@
   <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* --- RESET & BASE --- */
+    /* --- TOUT LE STYLE (identique à la version précédente, mais avec les ajouts pour le guide) --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -20,7 +20,6 @@
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
-    /* --- LOADER --- */
     .loader-container {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #fff; display: flex; justify-content: center; align-items: center;
@@ -39,7 +38,6 @@
       100% { transform: translateY(-30px) scale(1); opacity: 1; }
     }
 
-    /* --- THEME SOMBRE --- */
     body.dark { background: #0a0a0a; color: #eaeaea; }
     body.dark header { background: rgba(10,10,10,0.95); border-color: #2a2a2a; }
     body.dark .card, body.dark .team-member { background: #161616; border-color: #2a2a2a; }
@@ -82,7 +80,6 @@
     body.dark .link-guide { background: #1a1a1a; border-color: #333; }
     body.dark .link-guide .step { color: #ccc; }
 
-    /* --- SPINNER POUR LES BOUTONS --- */
     .spinner {
       display: inline-block;
       width: 20px;
@@ -97,7 +94,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* --- CONTENEUR & BOUTONS --- */
     .container { width: min(92%, 1160px); margin: 0 auto; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -120,7 +116,6 @@
     .btn-outline-light { border: 2px solid #fff; color: #fff; background: transparent; }
     .btn-outline-light:hover { background: #fff; color: #111; transform: scale(1.04); }
 
-    /* --- EN-TÊTE --- */
     header {
       position: sticky; top: 0; z-index: 100;
       background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
@@ -147,7 +142,6 @@
     }
     .theme-toggle:hover { transform: rotate(25deg); }
 
-    /* --- HÉROS --- */
     .hero {
       background: linear-gradient(120deg, #f8f8f8, #efefef);
       min-height: 560px; display: flex; align-items: center;
@@ -194,7 +188,6 @@
     .stat strong { display: block; font-size: 24px; font-weight: 800; }
     .stat small { color: #777; font-size: 13px; }
 
-    /* --- TEASER --- */
     .teaser-cta {
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: #fff;
@@ -225,7 +218,6 @@
       flex-wrap: wrap;
     }
 
-    /* --- SECTIONS --- */
     section { padding: 70px 0; }
     .section-head { max-width: 760px; margin-bottom: 35px; }
     .kicker {
@@ -255,7 +247,6 @@
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .card p { color: #666; font-size: 15px; line-height: 1.7; }
 
-    /* --- GUIDE --- */
     .guide-steps {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;
       margin-top: 20px;
@@ -273,7 +264,6 @@
     .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
     .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
 
-    /* --- MARKETING --- */
     .marketing-target {
       background: #f8f8f8;
       border-top: 3px solid #e50914;
@@ -305,11 +295,8 @@
       margin-bottom: 40px;
     }
     .target-item {
-      background: #fff;
-      border: 1px solid #e8e8e8;
-      border-radius: 20px;
-      padding: 25px 15px;
-      transition: 0.3s;
+      background: #fff; border: 1px solid #e8e8e8; border-radius: 20px;
+      padding: 25px 15px; transition: 0.3s;
     }
     .target-item:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
     .target-item i {
@@ -322,7 +309,6 @@
     .target-item p { color: #666; font-size: 14px; line-height: 1.6; margin: 0; }
     body.dark .target-item p { color: #aaa; }
 
-    /* --- ABOUT --- */
     .about-wrapper {
       display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
     }
@@ -352,7 +338,6 @@
       content: "•"; color: #e50914; font-weight: 900; font-size: 22px; line-height: 1;
     }
 
-    /* --- ÉQUIPE --- */
     .team-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
     }
@@ -372,7 +357,6 @@
       margin-left: 6px;
     }
 
-    /* --- CLIENTS --- */
     .client-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
     }
@@ -386,7 +370,6 @@
     .client-logo strong { font-size: 17px; display: block; }
     .client-logo span { font-size: 13px; color: #888; }
 
-    /* --- PROJETS --- */
     .project { overflow: hidden; padding: 0; }
     .project-cover {
       height: 170px; background: linear-gradient(135deg, #111, #2a2a2a);
@@ -417,7 +400,6 @@
     .cta h2 { font-size: 30px; font-weight: 800; }
     .cta p { color: #aaa; max-width: 600px; font-size: 17px; }
 
-    /* --- CONTACT WIZARD --- */
     .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
     .service-request-box {
       background: #f9f9f9; border-radius: 28px; padding: 35px;
@@ -490,7 +472,6 @@
     .list li { display: flex; gap: 12px; align-items: flex-start; padding: 5px 0; }
     .list li::before { content: "✓"; color: #e50914; font-weight: 900; }
 
-    /* --- DISCLAIMER --- */
     .disclaimer {
       background: #f8f8f8; border-top: 3px solid #e50914;
       padding: 40px 0; font-size: 14px; color: #555; line-height: 1.9;
@@ -500,7 +481,6 @@
     .disclaimer ul { margin: 10px 0 10px 25px; }
     .disclaimer ul li { margin-bottom: 6px; }
 
-    /* --- BOUTON AIDE FLOTTANT --- */
     .help-btn {
       position: fixed; bottom: 30px; right: 30px;
       background: #e50914; color: #fff; border: none;
@@ -510,7 +490,6 @@
     }
     .help-btn:hover { transform: scale(1.05); background: #bd0710; }
 
-    /* --- MODALE AIDE --- */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
@@ -532,7 +511,6 @@
     .modal-content p { color: #555; margin-bottom: 20px; }
     .modal-content .field { margin-bottom: 14px; }
 
-    /* --- FOOTER --- */
     footer {
       background: #080808; color: #fff; padding: 50px 0 25px;
     }
@@ -593,6 +571,22 @@
     .link-guide .step strong { color: #e50914; }
     .link-guide a { color: #e50914; text-decoration: underline; }
 
+    .link-preview {
+      margin-top: 10px;
+      display: none;
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid #eee;
+      overflow: hidden;
+    }
+    .link-preview img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .link-preview.active { display: block; }
+
     .support-row {
       display: flex;
       flex-wrap: wrap;
@@ -631,7 +625,17 @@
       border-color: #e50914;
     }
 
-    /* --- RESPONSIVE --- */
+    .error-box {
+      background: #fff7f7;
+      border: 1px solid #ffd2d2;
+      color: #7d1111;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+      display: none;
+      font-weight: 600;
+    }
+
     @media (max-width: 992px) {
       nav { display: none; flex-direction: column; position: absolute; top: 80px; left: 0; right: 0;
             background: #fff; padding: 25px; border-bottom: 1px solid #ddd; gap: 15px;
@@ -710,7 +714,7 @@
   </header>
 
   <main>
-    <!-- HERO (contenu simplifié pour lisibilité, mais gardez vos textes) -->
+    <!-- HERO -->
     <section class="hero" id="accueil">
       <div class="container hero-grid">
         <div>
@@ -1030,7 +1034,7 @@
               </div>
             </div>
 
-            <!-- Étape 3 : Champ Lien + Guide + Bouton Support -->
+            <!-- Étape 3 : Champ Lien + Guide + Bouton Support (sans téléchargement de fichier) -->
             <div class="step-panel" id="panel3">
               <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et fournissez le lien de votre reçu :</p>
               
@@ -1055,7 +1059,7 @@
                   <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
                 </div>
 
-                <!-- 📸 Lien du reçu + GUIDE + BOUTON SUPPORT -->
+                <!-- 📸 Lien du reçu + GUIDE + BOUTON SUPPORT (AU LIEU DU TÉLÉCHARGEMENT) -->
                 <div class="field">
                   <label><i class="fas fa-link"></i> Lien du reçu (capture d'écran)</label>
                   <input type="url" name="receipt_link" id="receiptLink" placeholder="https://exemple.com/mon-reçu.png" required>
@@ -1082,7 +1086,7 @@
                   </div>
                 </div>
 
-                <!-- Zone d'erreur (si besoin) -->
+                <!-- Zone d'erreur -->
                 <div class="error-box" id="errorBox" style="display:none;"></div>
 
                 <div class="wizard-nav">
@@ -1463,7 +1467,7 @@
       });
     });
 
-    // --- SOUMISSION FORMULAIRE SUPPORT (VERS FORMSPREE) ---
+    // --- SOUMISSION FORMULAIRE SUPPORT ---
     document.getElementById('supportForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const form = this;
@@ -1537,7 +1541,7 @@
       });
     });
 
-    // --- MODALE SUPPORT (ouverture depuis le bouton "Contacter le support") ---
+    // --- MODALE SUPPORT ---
     const supportModal = document.getElementById('supportModal');
     const openSupportBtn = document.getElementById('openSupportBtn');
     const closeSupportModalBtn = document.getElementById('closeSupportModalBtn');
