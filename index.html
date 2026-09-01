@@ -474,14 +474,34 @@
 
     .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
 
-    /* --- CHAMP LIEN (remplace l'upload) --- */
-    .link-help {
-      font-size: 12px;
-      color: #888;
-      margin-top: 6px;
-      line-height: 1.5;
+    /* --- UPLOAD AVEC APERÇU --- */
+    .upload-receipt {
+      border: 2px dashed #ccc;
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      background: #fafafa;
     }
-    .link-help a { color: #e50914; text-decoration: underline; }
+    .upload-receipt:hover { border-color: #e50914; }
+    .upload-receipt input { display: none; }
+    .file-name { font-size: 13px; color: #888; margin-top: 8px; }
+    .file-preview {
+      margin-top: 15px;
+      display: none;
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid #eee;
+      overflow: hidden;
+    }
+    .file-preview img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .file-preview.active { display: block; }
 
     .wizard-nav { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
 
@@ -866,7 +886,7 @@
       </div>
     </section>
 
-    <!-- CONTACT WIZARD (AVEC LIEN AU LIEU DU FICHIER) -->
+    <!-- CONTACT WIZARD (AVEC TÉLÉCHARGEMENT DE FICHIER) -->
     <section id="contact">
       <div class="container">
         <div class="section-head">
@@ -966,11 +986,12 @@
               </div>
             </div>
 
-            <!-- Étape 3 (champ LIEN à la place du fichier) -->
+            <!-- Étape 3 (Téléchargement de fichier VRAI) -->
             <div class="step-panel" id="panel3">
-              <p style="font-weight:700; margin-bottom:18px;" data-lang="final-instruction">Remplissez vos coordonnées et joignez le lien de votre reçu :</p>
+              <p style="font-weight:700; margin-bottom:18px;" data-lang="final-instruction">Remplissez vos coordonnées et joignez la capture du paiement :</p>
               
-              <form id="finalRequestForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
+              <!-- ✅ Action modifiée vers send_request.php + enctype ajouté -->
+              <form id="finalRequestForm" action="send_request.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="service_name" id="hiddenServiceName">
                 <input type="hidden" name="service_price" id="hiddenServicePrice">
 
@@ -991,12 +1012,17 @@
                   <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
                 </div>
                 
-                <!-- 🔗 CHAMP LIEN (remplace l'upload) -->
+                <!-- ✅ Champ de téléchargement de fichier avec aperçu -->
                 <div class="field">
-                  <label><i class="fas fa-link"></i> <span data-lang="label-link">Lien du reçu (capture d'écran)</span></label>
-                  <input type="url" name="receipt_link" placeholder="https://exemple.com/mon-reçu.png" required>
-                  <div class="link-help" data-lang="link-help">
-                    Hébergez votre image sur <a href="https://imgur.com/upload" target="_blank">Imgur</a> (gratuit) et collez le lien direct.
+                  <label><i class="fas fa-file-image"></i> <span data-lang="label-upload">Capture d'écran du paiement (Reçu)</span></label>
+                  <div class="upload-receipt" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:32px; color:#888;"></i>
+                    <p style="margin:8px 0;" data-lang="upload-text">Cliquez pour télécharger ou glissez-déposez</p>
+                    <input type="file" name="receiptFile" accept="image/*" id="receiptFile" required>
+                    <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
+                    <div class="file-preview" id="filePreview">
+                      <img id="previewImage" src="#" alt="Aperçu du reçu">
+                    </div>
                   </div>
                 </div>
 
@@ -1023,7 +1049,7 @@
           <p data-lang="prop-desc">Vous avez un projet, une idée, ou souhaitez simplement en savoir plus ? Envoyez-nous un message, nous vous répondrons dans les plus brefs délais.</p>
         </div>
         <div style="max-width:700px; margin:0 auto;">
-          <form id="proposalForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
+          <form id="proposalForm" action="send_request.php" method="POST">
             <div class="field">
               <label><i class="fas fa-user"></i> <span data-lang="label-name">Votre nom</span></label>
               <input type="text" name="proposal_name" placeholder="Votre nom" required>
@@ -1116,7 +1142,7 @@
       <button class="modal-close" id="closeModalBtn">✕</button>
       <h3 data-lang="help-modal-title">Comment pouvons-nous vous aider ?</h3>
       <p data-lang="help-modal-desc">Utilisez ce formulaire pour poser une question, demander un devis, ou nous contacter avant toute démarche. Nous vous répondons sous 24h.</p>
-      <form id="helpForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
+      <form id="helpForm" action="send_request.php" method="POST">
         <div class="field">
           <label><i class="fas fa-user"></i> <span data-lang="label-name">Votre nom</span></label>
           <input type="text" name="help_name" placeholder="Votre nom" required>
@@ -1138,7 +1164,7 @@
   </div>
 
   <script>
-    // --- TRADUCTIONS ---
+    // --- TRADUCTIONS (extrait simplifié pour l'exemple) ---
     const translations = {
       fr: {
         'site-name': 'Xynera Club',
@@ -1266,13 +1292,13 @@
         'payment-note': 'Envoyez le montant exact et conservez la capture d\'écran.',
         'btn-prev': 'Précédent',
         'btn-paid': 'J\'ai effectué le paiement',
-        'final-instruction': 'Remplissez vos coordonnées et joignez le lien de votre reçu :',
+        'final-instruction': 'Remplissez vos coordonnées et joignez la capture du paiement :',
         'label-name': 'Nom complet',
         'label-email': 'Email',
         'label-phone': 'Téléphone (WhatsApp / Mobile)',
         'label-tx': 'Référence de la transaction',
-        'label-link': 'Lien du reçu (capture d\'écran)',
-        'link-help': 'Hébergez votre image sur Imgur (gratuit) et collez le lien direct.',
+        'label-upload': 'Capture d\'écran du paiement (Reçu)',
+        'upload-text': 'Cliquez pour télécharger ou glissez-déposez',
         'btn-submit': 'Soumettre ma demande',
         'success-msg': 'Votre demande a été reçue ! Notre équipe vous contactera sous 24h.',
         'prop-kicker': 'Échange & proposition',
@@ -1435,13 +1461,13 @@
         'payment-note': 'Send the exact amount and keep the screenshot.',
         'btn-prev': 'Previous',
         'btn-paid': 'I made the payment',
-        'final-instruction': 'Fill in your details and provide the link to your receipt:',
+        'final-instruction': 'Fill in your details and attach the payment screenshot:',
         'label-name': 'Full name',
         'label-email': 'Email',
         'label-phone': 'Phone (WhatsApp / Mobile)',
         'label-tx': 'Transaction reference',
-        'label-link': 'Receipt link (screenshot)',
-        'link-help': 'Host your image on Imgur (free) and paste the direct link.',
+        'label-upload': 'Payment screenshot (Receipt)',
+        'upload-text': 'Click to upload or drag and drop',
         'btn-submit': 'Submit my request',
         'success-msg': 'Your request has been received! Our team will contact you within 24 hours.',
         'prop-kicker': 'Exchange & proposal',
@@ -1488,7 +1514,6 @@
         const key = el.getAttribute('data-lang');
         if (translations[lang] && translations[lang][key]) {
           if (el.tagName === 'SELECT') {
-            // Géré via les options
           } else {
             el.innerHTML = translations[lang][key];
           }
@@ -1675,8 +1700,94 @@
       step2Label.classList.add('active');
     });
 
-    // --- SOUMISSION FORMSPREE (JSON classique, sans fichier) ---
-    function handleFormSubmit(formId, messageId) {
+    // --- UPLOAD AVEC APERÇU ---
+    const fileInput = document.getElementById('receiptFile');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const uploadArea = document.getElementById('uploadArea');
+    const filePreview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
+
+    fileInput.addEventListener('change', function(e) {
+      const file = this.files[0];
+      if (file) {
+        fileNameDisplay.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          previewImage.src = event.target.result;
+          filePreview.classList.add('active');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        fileNameDisplay.textContent = 'Aucun fichier sélectionné';
+        filePreview.classList.remove('active');
+        previewImage.src = '#';
+      }
+    });
+
+    uploadArea.addEventListener('click', function(e) {
+      if (e.target.tagName !== 'INPUT') fileInput.click();
+    });
+    uploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.style.borderColor = '#e50914';
+    });
+    uploadArea.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      this.style.borderColor = '#ccc';
+    });
+    uploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.style.borderColor = '#ccc';
+      if (e.dataTransfer.files.length > 0) {
+        fileInput.files = e.dataTransfer.files;
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
+      }
+    });
+
+    // --- SOUMISSION VERS PHP (avec fichier) ---
+    document.getElementById('finalRequestForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const formData = new FormData(form);
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      const finalMsg = document.getElementById('finalMessage');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+      fetch('send_request.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text())
+      .then(data => {
+        if (data.includes('✅')) {
+          finalMsg.style.display = 'block';
+          finalMsg.style.background = '#d4edda';
+          finalMsg.style.color = '#155724';
+          finalMsg.innerHTML = '<i class="fas fa-check-circle"></i> ' + data;
+          form.reset();
+          document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
+          document.getElementById('filePreview').classList.remove('active');
+          document.getElementById('previewImage').src = '#';
+          finalMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          alert('❌ Erreur : ' + data);
+        }
+      })
+      .catch(() => {
+        alert('❌ Erreur de connexion. Vérifiez votre internet.');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      });
+    });
+
+    // Soumissions pour les autres formulaires (proposition, aide)
+    function handleSimpleSubmit(formId, messageId) {
       const form = document.getElementById(formId);
       if (!form) return;
       form.addEventListener('submit', function(e) {
@@ -1685,37 +1796,22 @@
         const originalText = submitBtn.innerHTML;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-
-        const data = {};
-        const formData = new FormData(this);
-        for (let [key, value] of formData.entries()) {
-          data[key] = value;
-        }
-
-        fetch(form.action, {
+        const data = new FormData(this);
+        fetch('send_request.php', {
           method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
+          body: data
         })
-        .then(response => {
-          if (response.ok) {
+        .then(response => response.text())
+        .then(text => {
+          if (text.includes('✅')) {
             document.getElementById(messageId).style.display = 'block';
             form.reset();
             document.getElementById(messageId).scrollIntoView({ behavior: 'smooth', block: 'center' });
           } else {
-            response.json().then(err => {
-              alert('Erreur: ' + (err.error || 'Veuillez réessayer.'));
-            }).catch(() => {
-              alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-            });
+            alert('Erreur : ' + text);
           }
         })
-        .catch(() => {
-          alert('Erreur de connexion. Vérifiez votre internet.');
-        })
+        .catch(() => alert('Erreur de connexion.'))
         .finally(() => {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalText;
@@ -1723,9 +1819,8 @@
       });
     }
 
-    handleFormSubmit('finalRequestForm', 'finalMessage');
-    handleFormSubmit('proposalForm', 'proposalMessage');
-    handleFormSubmit('helpForm', 'helpMessage');
+    handleSimpleSubmit('proposalForm', 'proposalMessage');
+    handleSimpleSubmit('helpForm', 'helpMessage');
 
     // --- MODALE D'AIDE ---
     const helpBtn = document.getElementById('helpBtn');
