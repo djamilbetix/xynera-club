@@ -20,7 +20,7 @@
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
-    /* --- LOADER --- */
+    /* --- LOADER PAGe (au chargement) --- */
     .loader-container {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #fff; display: flex; justify-content: center; align-items: center;
@@ -37,6 +37,21 @@
     @keyframes bounce {
       0% { transform: translateY(0) scale(0.8); opacity: 0.4; }
       100% { transform: translateY(-30px) scale(1); opacity: 1; }
+    }
+
+    /* --- SPINNER SUR LE BOUTON (cercle tournant) --- */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     /* --- THEME SOMBRE --- */
@@ -78,6 +93,19 @@
     body.dark .marketing-target { background: #121212; border-bottom: 3px solid #e50914; }
     body.dark .marketing-target .target-item { background: #1a1a1a; border-color: #333; }
     body.dark .marketing-target .target-item p { color: #aaa; }
+    body.dark .error-box { background: #2a1515; border-color: #5a2a2a; color: #f0b0b0; }
+
+    /* --- MESSAGES D'ERREUR --- */
+    .error-box {
+      background: #fff7f7;
+      border: 1px solid #ffd2d2;
+      color: #7d1111;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+      display: none;
+      font-weight: 600;
+    }
 
     /* --- CONTENEUR & BOUTONS --- */
     .container { width: min(92%, 1160px); margin: 0 auto; }
@@ -267,7 +295,7 @@
     .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
     .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
 
-    /* --- SECTION MARKETING "POUR QUI ?" --- */
+    /* --- MARKETING TARGET --- */
     .marketing-target {
       background: #f8f8f8;
       border-top: 3px solid #e50914;
@@ -316,7 +344,7 @@
     .target-item p { color: #666; font-size: 14px; line-height: 1.6; margin: 0; }
     body.dark .target-item p { color: #aaa; }
 
-    /* --- À PROPOS --- */
+    /* --- ABOUT --- */
     .about-wrapper {
       display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
     }
@@ -410,7 +438,7 @@
     .cta h2 { font-size: 30px; font-weight: 800; }
     .cta p { color: #aaa; max-width: 600px; font-size: 17px; }
 
-    /* --- CONTACT (WIZARD) --- */
+    /* --- CONTACT WIZARD --- */
     .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
     .service-request-box {
       background: #f9f9f9; border-radius: 28px; padding: 35px;
@@ -471,7 +499,6 @@
       cursor: pointer; font-size: 13px; transition: 0.2s; color: #333;
     }
     .copy-btn:hover { background: #e50914; color: #fff; }
-
     .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
 
     /* --- UPLOAD AVEC APERÇU --- */
@@ -523,7 +550,7 @@
     .disclaimer ul { margin: 10px 0 10px 25px; }
     .disclaimer ul li { margin-bottom: 6px; }
 
-    /* --- BOUTON D'AIDE FLOTTANT --- */
+    /* --- BOUTON AIDE FLOTTANT --- */
     .help-btn {
       position: fixed; bottom: 30px; right: 30px;
       background: #e50914; color: #fff; border: none;
@@ -533,7 +560,7 @@
     }
     .help-btn:hover { transform: scale(1.05); background: #bd0710; }
 
-    /* --- MODALE D'AIDE --- */
+    /* --- MODALE AIDE --- */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
@@ -634,7 +661,7 @@
 </head>
 <body>
 
-  <!-- LOADER -->
+  <!-- LOADER PAGE -->
   <div class="loader-container" id="loader">
     <div class="bouncing-loader"><span></span><span></span><span></span></div>
   </div>
@@ -706,7 +733,7 @@
       </div>
     </section>
 
-    <!-- MARKETING TARGET -->
+    <!-- MARKETING -->
     <section class="marketing-target" id="marketing">
       <div class="container">
         <h2><span data-lang="mkt-title1">Vous avez un projet </span><span data-lang="mkt-title2">numérique</span> ?</h2>
@@ -886,7 +913,7 @@
       </div>
     </section>
 
-    <!-- CONTACT WIZARD (AVEC TÉLÉCHARGEMENT DE FICHIER) -->
+    <!-- CONTACT WIZARD AVEC PHP ET SPINNER -->
     <section id="contact">
       <div class="container">
         <div class="section-head">
@@ -986,11 +1013,10 @@
               </div>
             </div>
 
-            <!-- Étape 3 (Téléchargement de fichier VRAI) -->
+            <!-- Étape 3 (avec PHP et spinner) -->
             <div class="step-panel" id="panel3">
               <p style="font-weight:700; margin-bottom:18px;" data-lang="final-instruction">Remplissez vos coordonnées et joignez la capture du paiement :</p>
               
-              <!-- ✅ Action modifiée vers send_request.php + enctype ajouté -->
               <form id="finalRequestForm" action="send_request.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="service_name" id="hiddenServiceName">
                 <input type="hidden" name="service_price" id="hiddenServicePrice">
@@ -1011,8 +1037,8 @@
                   <label><i class="fas fa-hashtag"></i> <span data-lang="label-tx">Référence de la transaction</span></label>
                   <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
                 </div>
-                
-                <!-- ✅ Champ de téléchargement de fichier avec aperçu -->
+
+                <!-- Upload fichier -->
                 <div class="field">
                   <label><i class="fas fa-file-image"></i> <span data-lang="label-upload">Capture d'écran du paiement (Reçu)</span></label>
                   <div class="upload-receipt" id="uploadArea">
@@ -1026,9 +1052,14 @@
                   </div>
                 </div>
 
+                <!-- Zone d'erreur -->
+                <div class="error-box" id="errorBox"></div>
+
                 <div class="wizard-nav">
                   <button class="btn btn-secondary" id="step3Back" data-lang="btn-prev"><i class="fas fa-arrow-left"></i> Précédent</button>
-                  <button type="submit" class="btn btn-red" data-lang="btn-submit"><i class="fas fa-check-circle"></i> Soumettre ma demande</button>
+                  <button type="submit" class="btn btn-red" id="submitBtn" data-lang="btn-submit">
+                    <i class="fas fa-check-circle"></i> Soumettre ma demande
+                  </button>
                 </div>
                 <div id="finalMessage" style="display:none; margin-top:18px; padding:14px; background:#d4edda; color:#155724; border-radius:12px; font-weight:700;">
                   <i class="fas fa-check-circle"></i> <span data-lang="success-msg">Votre demande a été reçue ! Notre équipe vous contactera sous 24h.</span>
@@ -1164,7 +1195,7 @@
   </div>
 
   <script>
-    // --- TRADUCTIONS (extrait simplifié pour l'exemple) ---
+    // --- TRADUCTIONS (extrait pour ne pas surcharger) ---
     const translations = {
       fr: {
         'site-name': 'Xynera Club',
@@ -1604,7 +1635,7 @@
       setTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    // --- LOADER (4 secondes) ---
+    // --- LOADER PAGE (4 secondes) ---
     const loader = document.getElementById('loader');
     const startTime = Date.now();
     window.addEventListener('load', function() {
@@ -1700,7 +1731,7 @@
       step2Label.classList.add('active');
     });
 
-    // --- UPLOAD AVEC APERÇU ---
+    // --- UPLOAD APERÇU ---
     const fileInput = document.getElementById('receiptFile');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
     const uploadArea = document.getElementById('uploadArea');
@@ -1745,17 +1776,22 @@
       }
     });
 
-    // --- SOUMISSION VERS PHP (avec fichier) ---
-    document.getElementById('finalRequestForm').addEventListener('submit', function(e) {
+    // --- ENVOI VERS PHP AVEC SPINNER ET GESTION D'ERREUR ---
+    const finalForm = document.getElementById('finalRequestForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorBox = document.getElementById('errorBox');
+
+    finalForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      const form = this;
-      const formData = new FormData(form);
-      const submitBtn = form.querySelector('button[type="submit"]');
+      const formData = new FormData(this);
       const originalText = submitBtn.innerHTML;
       const finalMsg = document.getElementById('finalMessage');
 
+      // Désactiver le bouton et afficher le spinner
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+      submitBtn.innerHTML = '<span class="spinner"></span> Envoi en cours...';
+      errorBox.style.display = 'none';
+      finalMsg.style.display = 'none';
 
       fetch('send_request.php', {
         method: 'POST',
@@ -1763,22 +1799,30 @@
       })
       .then(response => response.text())
       .then(data => {
+        // Si le retour contient "✅" (succès)
         if (data.includes('✅')) {
           finalMsg.style.display = 'block';
-          finalMsg.style.background = '#d4edda';
-          finalMsg.style.color = '#155724';
           finalMsg.innerHTML = '<i class="fas fa-check-circle"></i> ' + data;
-          form.reset();
+          this.reset();
           document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
           document.getElementById('filePreview').classList.remove('active');
           document.getElementById('previewImage').src = '#';
           finalMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
-          alert('❌ Erreur : ' + data);
+          // Affichage de l'erreur renvoyée par le PHP
+          errorBox.style.display = 'block';
+          errorBox.innerHTML = '<strong>Erreur :</strong> ' + data;
+          // Si l'erreur indique que la fonction mail est désactivée, on donne une astuce
+          if (data.toLowerCase().includes('mail') || data.toLowerCase().includes('function')) {
+            errorBox.innerHTML += '<br><br><strong>💡 Solution :</strong> Contactez votre hébergeur pour activer la fonction PHP <code>mail()</code>, ou utilisez un plugin SMTP (PHPMailer).';
+          }
+          errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       })
-      .catch(() => {
-        alert('❌ Erreur de connexion. Vérifiez votre internet.');
+      .catch(err => {
+        errorBox.style.display = 'block';
+        errorBox.innerHTML = '<strong>Erreur réseau :</strong> Impossible de contacter le serveur. Vérifiez votre connexion internet ou réessayez plus tard.';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
       .finally(() => {
         submitBtn.disabled = false;
@@ -1794,8 +1838,10 @@
         e.preventDefault();
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
+        const msg = document.getElementById(messageId);
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+        submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
+
         const data = new FormData(this);
         fetch('send_request.php', {
           method: 'POST',
@@ -1804,9 +1850,10 @@
         .then(response => response.text())
         .then(text => {
           if (text.includes('✅')) {
-            document.getElementById(messageId).style.display = 'block';
-            form.reset();
-            document.getElementById(messageId).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            msg.style.display = 'block';
+            msg.innerHTML = '<i class="fas fa-check-circle"></i> ' + text;
+            this.reset();
+            msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
           } else {
             alert('Erreur : ' + text);
           }
@@ -1822,7 +1869,7 @@
     handleSimpleSubmit('proposalForm', 'proposalMessage');
     handleSimpleSubmit('helpForm', 'helpMessage');
 
-    // --- MODALE D'AIDE ---
+    // --- MODALE AIDE ---
     const helpBtn = document.getElementById('helpBtn');
     const helpModal = document.getElementById('helpModal');
     const closeModalBtn = document.getElementById('closeModalBtn');
@@ -1844,6 +1891,17 @@
 
     // --- ANNÉE ---
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // --- VÉRIFICATION PHP : si le script renvoie "mail() disabled", on affiche un message d'info ---
+    // On fait un test silencieux
+    fetch('send_request.php?test=1')
+      .then(res => res.text())
+      .then(text => {
+        if (text.includes('mail()')) {
+          console.warn('La fonction mail() est peut-être désactivée sur ce serveur.');
+        }
+      })
+      .catch(() => {});
   </script>
 
 </body>
