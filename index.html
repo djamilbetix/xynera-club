@@ -7,7 +7,7 @@
   <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* --- RESET & BASE --- */
+    /* --- STYLES COMPLETS (version stable) --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -20,7 +20,6 @@
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
-    /* --- LOADER PAGe (au chargement) --- */
     .loader-container {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #fff; display: flex; justify-content: center; align-items: center;
@@ -39,22 +38,6 @@
       100% { transform: translateY(-30px) scale(1); opacity: 1; }
     }
 
-    /* --- SPINNER SUR LE BOUTON (cercle tournant) --- */
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.8s linear infinite;
-      margin-right: 8px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* --- THEME SOMBRE --- */
     body.dark { background: #0a0a0a; color: #eaeaea; }
     body.dark header { background: rgba(10,10,10,0.95); border-color: #2a2a2a; }
     body.dark .card, body.dark .team-member { background: #161616; border-color: #2a2a2a; }
@@ -95,7 +78,6 @@
     body.dark .marketing-target .target-item p { color: #aaa; }
     body.dark .error-box { background: #2a1515; border-color: #5a2a2a; color: #f0b0b0; }
 
-    /* --- MESSAGES D'ERREUR --- */
     .error-box {
       background: #fff7f7;
       border: 1px solid #ffd2d2;
@@ -107,7 +89,6 @@
       font-weight: 600;
     }
 
-    /* --- CONTENEUR & BOUTONS --- */
     .container { width: min(92%, 1160px); margin: 0 auto; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -129,7 +110,6 @@
     .btn-outline-light { border: 2px solid #fff; color: #fff; background: transparent; }
     .btn-outline-light:hover { background: #fff; color: #111; transform: scale(1.04); }
 
-    /* --- EN-TÊTE --- */
     header {
       position: sticky; top: 0; z-index: 100;
       background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
@@ -169,7 +149,6 @@
     .lang-btn:hover { background: #f0f0f0; }
     body.dark .lang-btn:hover { background: #2a2a2a; }
 
-    /* --- HÉROS --- */
     .hero {
       background: linear-gradient(120deg, #f8f8f8, #efefef);
       min-height: 560px; display: flex; align-items: center;
@@ -216,7 +195,6 @@
     .stat strong { display: block; font-size: 24px; font-weight: 800; }
     .stat small { color: #777; font-size: 13px; }
 
-    /* --- TEASER MARKETING --- */
     .teaser-cta {
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: #fff;
@@ -247,7 +225,6 @@
       flex-wrap: wrap;
     }
 
-    /* --- SECTIONS --- */
     section { padding: 70px 0; }
     .section-head { max-width: 760px; margin-bottom: 35px; }
     .kicker {
@@ -277,7 +254,6 @@
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .card p { color: #666; font-size: 15px; line-height: 1.7; }
 
-    /* --- GUIDE --- */
     .guide-steps {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;
       margin-top: 20px;
@@ -295,7 +271,6 @@
     .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
     .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
 
-    /* --- MARKETING TARGET --- */
     .marketing-target {
       background: #f8f8f8;
       border-top: 3px solid #e50914;
@@ -344,7 +319,6 @@
     .target-item p { color: #666; font-size: 14px; line-height: 1.6; margin: 0; }
     body.dark .target-item p { color: #aaa; }
 
-    /* --- ABOUT --- */
     .about-wrapper {
       display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
     }
@@ -374,7 +348,6 @@
       content: "•"; color: #e50914; font-weight: 900; font-size: 22px; line-height: 1;
     }
 
-    /* --- ÉQUIPE --- */
     .team-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
     }
@@ -394,7 +367,6 @@
       margin-left: 6px;
     }
 
-    /* --- CLIENTS / PROJETS --- */
     .client-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
     }
@@ -438,7 +410,6 @@
     .cta h2 { font-size: 30px; font-weight: 800; }
     .cta p { color: #aaa; max-width: 600px; font-size: 17px; }
 
-    /* --- CONTACT WIZARD --- */
     .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
     .service-request-box {
       background: #f9f9f9; border-radius: 28px; padding: 35px;
@@ -501,7 +472,6 @@
     .copy-btn:hover { background: #e50914; color: #fff; }
     .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
 
-    /* --- UPLOAD AVEC APERÇU --- */
     .upload-receipt {
       border: 2px dashed #ccc;
       border-radius: 16px;
@@ -540,7 +510,6 @@
     .list li { display: flex; gap: 12px; align-items: flex-start; padding: 5px 0; }
     .list li::before { content: "✓"; color: #e50914; font-weight: 900; }
 
-    /* --- DISCLAIMER --- */
     .disclaimer {
       background: #f8f8f8; border-top: 3px solid #e50914;
       padding: 40px 0; font-size: 14px; color: #555; line-height: 1.9;
@@ -550,7 +519,6 @@
     .disclaimer ul { margin: 10px 0 10px 25px; }
     .disclaimer ul li { margin-bottom: 6px; }
 
-    /* --- BOUTON AIDE FLOTTANT --- */
     .help-btn {
       position: fixed; bottom: 30px; right: 30px;
       background: #e50914; color: #fff; border: none;
@@ -560,7 +528,6 @@
     }
     .help-btn:hover { transform: scale(1.05); background: #bd0710; }
 
-    /* --- MODALE AIDE --- */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
@@ -582,7 +549,6 @@
     .modal-content p { color: #555; margin-bottom: 20px; }
     .modal-content .field { margin-bottom: 14px; }
 
-    /* --- FOOTER --- */
     footer {
       background: #080808; color: #fff; padding: 50px 0 25px;
     }
@@ -610,7 +576,6 @@
     .footer-bottom a { color: #999; }
     .footer-bottom a:hover { color: #e50914; }
 
-    /* --- RESPONSIVE --- */
     @media (max-width: 992px) {
       nav { display: none; flex-direction: column; position: absolute; top: 80px; left: 0; right: 0;
             background: #fff; padding: 25px; border-bottom: 1px solid #ddd; gap: 15px;
@@ -661,7 +626,7 @@
 </head>
 <body>
 
-  <!-- LOADER PAGE -->
+  <!-- LOADER -->
   <div class="loader-container" id="loader">
     <div class="bouncing-loader"><span></span><span></span><span></span></div>
   </div>
@@ -671,21 +636,17 @@
     <div class="container nav">
       <a href="#accueil" class="logo">
         <img src="logo-xynera.png" alt="Xynera Club">
-        <span data-lang="site-name">Xynera Club</span>
+        <span>Xynera Club</span>
       </a>
       <nav id="mainNav">
-        <a href="#about" data-lang="nav-about">À propos</a>
-        <a href="#services" data-lang="nav-services">Services</a>
-        <a href="#projects" data-lang="nav-projects">Projets</a>
-        <a href="#team" data-lang="nav-team">Équipe</a>
-        <a href="#contact" data-lang="nav-contact">Contact</a>
+        <a href="#about">À propos</a>
+        <a href="#services">Services</a>
+        <a href="#projects">Projets</a>
+        <a href="#team">Équipe</a>
+        <a href="#contact">Contact</a>
         <button class="close-menu" id="closeMenuBtn" aria-label="Fermer le menu">✕</button>
       </nav>
       <div style="display:flex;align-items:center;gap:12px; flex-wrap:wrap;">
-        <div class="lang-switcher">
-          <button class="lang-btn active" data-lang-code="fr">FR</button>
-          <button class="lang-btn" data-lang-code="en">EN</button>
-        </div>
         <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
         <button class="menu" id="menuBtn" aria-label="Ouvrir le menu">☰</button>
       </div>
@@ -697,12 +658,12 @@
     <section class="hero" id="accueil">
       <div class="container hero-grid">
         <div>
-          <div class="eyebrow"><span class="dot"></span> <span data-lang="hero-badge">DEVELOPER • WEB3 • DIGITAL INNOVATION</span></div>
-          <h1><span data-lang="hero-title1">Nous construisons le</span> <span data-lang="hero-title2">futur numérique.</span></h1>
-          <p data-lang="hero-desc">Xynera Club réunit des développeurs et étudiants passionnés qui mettent leurs compétences en commun pour créer des applications, des sites web, des solutions Web3 et transmettre des connaissances technologiques.</p>
+          <div class="eyebrow"><span class="dot"></span> DEVELOPER • WEB3 • DIGITAL INNOVATION</div>
+          <h1>Nous construisons le <span>futur numérique.</span></h1>
+          <p>Xynera Club réunit des développeurs et étudiants passionnés qui mettent leurs compétences en commun pour créer des applications, des sites web, des solutions Web3 et transmettre des connaissances technologiques.</p>
           <div class="actions">
-            <a class="btn btn-red" href="#services" data-lang="hero-btn1">Découvrir nos services</a>
-            <a class="btn btn-outline" href="#contact" data-lang="hero-btn2">Travailler avec nous</a>
+            <a class="btn btn-red" href="#services">Découvrir nos services</a>
+            <a class="btn btn-outline" href="#contact">Travailler avec nous</a>
           </div>
         </div>
         <div class="hero-card">
@@ -713,9 +674,9 @@
             <div class="tech-badge"><i class="fas fa-brain"></i> AI & Data</div>
           </div>
           <div class="stats">
-            <div class="stat"><strong>15+</strong><small data-lang="stat-dev">Développeurs</small></div>
-            <div class="stat"><strong>Web3</strong><small data-lang="stat-innov">Innovation</small></div>
-            <div class="stat"><strong>∞</strong><small data-lang="stat-ideas">Idées à construire</small></div>
+            <div class="stat"><strong>15+</strong><small>Développeurs</small></div>
+            <div class="stat"><strong>Web3</strong><small>Innovation</small></div>
+            <div class="stat"><strong>∞</strong><small>Idées à construire</small></div>
           </div>
         </div>
       </div>
@@ -724,11 +685,11 @@
     <!-- TEASER -->
     <section class="teaser-cta">
       <div class="container">
-        <h2><span data-lang="teaser-title1">Prêt à bâtir l'</span><span data-lang="teaser-title2">avenir numérique</span> ?</h2>
-        <p data-lang="teaser-desc">Que vous ayez une idée de projet à concrétiser ou que vous souhaitiez intégrer une équipe dynamique de passionnés, Xynera Club est votre porte d'entrée vers l'innovation. Rejoignez un écosystème où la technologie, la collaboration et la créativité se rencontrent pour façonner le monde de demain.</p>
+        <h2>Prêt à bâtir l'<span>avenir numérique</span> ?</h2>
+        <p>Que vous ayez une idée de projet à concrétiser ou que vous souhaitiez intégrer une équipe dynamique de passionnés, Xynera Club est votre porte d'entrée vers l'innovation. Rejoignez un écosystème où la technologie, la collaboration et la créativité se rencontrent pour façonner le monde de demain.</p>
         <div class="teaser-buttons">
-          <a href="#contact" class="btn btn-red-lg" data-lang="teaser-btn1"><i class="fas fa-rocket"></i> Demander un service</a>
-          <a href="mailto:xenaryclub@gmail.com?subject=Demande d'adhésion - Xynera Club" class="btn btn-outline-light" data-lang="teaser-btn2"><i class="fas fa-users"></i> Rejoindre le club</a>
+          <a href="#contact" class="btn btn-red-lg"><i class="fas fa-rocket"></i> Demander un service</a>
+          <a href="mailto:xenaryclub@gmail.com?subject=Demande d'adhésion - Xynera Club" class="btn btn-outline-light"><i class="fas fa-users"></i> Rejoindre le club</a>
         </div>
       </div>
     </section>
@@ -736,16 +697,16 @@
     <!-- MARKETING -->
     <section class="marketing-target" id="marketing">
       <div class="container">
-        <h2><span data-lang="mkt-title1">Vous avez un projet </span><span data-lang="mkt-title2">numérique</span> ?</h2>
-        <p class="tagline" data-lang="mkt-desc">Vous voulez une application ou un site web pour votre entreprise, restaurant, école, activité privée ou autres ? <strong>N'hésitez pas à contacter Xynera Club.</strong> Nous concrétisons vos idées avec une équipe d'experts passionnés.</p>
+        <h2>Vous avez un projet <span>numérique</span> ?</h2>
+        <p class="tagline">Vous voulez une application ou un site web pour votre entreprise, restaurant, école, activité privée ou autres ? <strong>N'hésitez pas à contacter Xynera Club.</strong> Nous concrétisons vos idées avec une équipe d'experts passionnés.</p>
         <div class="target-grid">
-          <div class="target-item"><i class="fas fa-building"></i><h4 data-lang="mkt-biz">Entreprise</h4><p data-lang="mkt-biz-desc">Site vitrine, plateforme e-commerce, outils de gestion et solutions B2B.</p></div>
-          <div class="target-item"><i class="fas fa-utensils"></i><h4 data-lang="mkt-rest">Restaurant</h4><p data-lang="mkt-rest-desc">Menu en ligne, réservation de tables, commandes en ligne et application fidélité.</p></div>
-          <div class="target-item"><i class="fas fa-graduation-cap"></i><h4 data-lang="mkt-school">École</h4><p data-lang="mkt-school-desc">Portail de cours, plateforme de formation, gestion des notes et communication.</p></div>
-          <div class="target-item"><i class="fas fa-users"></i><h4 data-lang="mkt-private">Activité privée</h4><p data-lang="mkt-private-desc">Blog, portfolio, réseau social, événementiel et applications personnalisées.</p></div>
-          <div class="target-item"><i class="fas fa-plus-circle"></i><h4 data-lang="mkt-other">Autres</h4><p data-lang="mkt-other-desc">Startups, associations, collectivités, clubs sportifs et tout autre besoin.</p></div>
+          <div class="target-item"><i class="fas fa-building"></i><h4>Entreprise</h4><p>Site vitrine, plateforme e-commerce, outils de gestion et solutions B2B.</p></div>
+          <div class="target-item"><i class="fas fa-utensils"></i><h4>Restaurant</h4><p>Menu en ligne, réservation de tables, commandes en ligne et application fidélité.</p></div>
+          <div class="target-item"><i class="fas fa-graduation-cap"></i><h4>École</h4><p>Portail de cours, plateforme de formation, gestion des notes et communication.</p></div>
+          <div class="target-item"><i class="fas fa-users"></i><h4>Activité privée</h4><p>Blog, portfolio, réseau social, événementiel et applications personnalisées.</p></div>
+          <div class="target-item"><i class="fas fa-plus-circle"></i><h4>Autres</h4><p>Startups, associations, collectivités, clubs sportifs et tout autre besoin.</p></div>
         </div>
-        <a href="#contact" class="btn btn-red btn-lg" style="padding:18px 50px; font-size:20px;" data-lang="mkt-cta"><i class="fas fa-paper-plane"></i> Contactez-nous dès maintenant</a>
+        <a href="#contact" class="btn btn-red btn-lg" style="padding:18px 50px; font-size:20px;"><i class="fas fa-paper-plane"></i> Contactez-nous dès maintenant</a>
       </div>
     </section>
 
@@ -753,18 +714,18 @@
     <section id="guide">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="guide-kicker">Guide</span>
-          <h2 data-lang="guide-title">Comment demander un service ?</h2>
-          <p data-lang="guide-desc">Suivez ces étapes simples pour bénéficier de notre expertise.</p>
+          <span class="kicker">Guide</span>
+          <h2>Comment demander un service ?</h2>
+          <p>Suivez ces étapes simples pour bénéficier de notre expertise.</p>
         </div>
         <div class="guide-steps">
-          <div class="guide-step"><div class="num">1</div><h4 data-lang="g-step1-title">Choisissez votre prestation</h4><p data-lang="g-step1-desc">Parcourez notre offre et sélectionnez le service qui correspond à votre besoin (développement, Web3, audit, formation, etc.).</p></div>
-          <div class="guide-step"><div class="num">2</div><h4 data-lang="g-step2-title">Effectuez le paiement</h4><p data-lang="g-step2-desc">Utilisez l'un des moyens de paiement proposés (Airtel Money, M-Pesa, cryptos). Le montant exact est affiché avant validation.</p></div>
-          <div class="guide-step"><div class="num">3</div><h4 data-lang="g-step3-title">Envoyez votre reçu</h4><p data-lang="g-step3-desc">Remplissez le formulaire avec vos coordonnées et téléchargez la capture d'écran de votre transaction.</p></div>
-          <div class="guide-step"><div class="num">4</div><h4 data-lang="g-step4-title">Confirmation</h4><p data-lang="g-step4-desc">Notre équipe valide votre demande sous 24h et vous contacte pour démarrer le projet ou la formation.</p></div>
+          <div class="guide-step"><div class="num">1</div><h4>Choisissez votre prestation</h4><p>Parcourez notre offre et sélectionnez le service qui correspond à votre besoin (développement, Web3, audit, formation, etc.).</p></div>
+          <div class="guide-step"><div class="num">2</div><h4>Effectuez le paiement</h4><p>Utilisez l'un des moyens de paiement proposés (Airtel Money, M-Pesa, cryptos). Le montant exact est affiché avant validation.</p></div>
+          <div class="guide-step"><div class="num">3</div><h4>Envoyez votre reçu</h4><p>Remplissez le formulaire avec vos coordonnées et téléchargez la capture d'écran de votre transaction.</p></div>
+          <div class="guide-step"><div class="num">4</div><h4>Confirmation</h4><p>Notre équipe valide votre demande sous 24h et vous contacte pour démarrer le projet ou la formation.</p></div>
         </div>
         <div style="text-align:center; margin-top:30px;">
-          <a href="#contact" class="btn btn-red" data-lang="guide-cta">Commencer maintenant</a>
+          <a href="#contact" class="btn btn-red">Commencer maintenant</a>
         </div>
       </div>
     </section>
@@ -773,27 +734,27 @@
     <section id="about">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="about-kicker">Qui sommes-nous ?</span>
-          <h2 data-lang="about-title">Notre vision, notre mission.</h2>
-          <p data-lang="about-desc">Xynera Club est une communauté de développeurs et d'étudiants qui travaillent ensemble pour transformer des idées en solutions numériques utiles.</p>
+          <span class="kicker">Qui sommes-nous ?</span>
+          <h2>Notre vision, notre mission.</h2>
+          <p>Xynera Club est une communauté de développeurs et d'étudiants qui travaillent ensemble pour transformer des idées en solutions numériques utiles.</p>
         </div>
         <div class="about-wrapper">
           <div class="about-text">
-            <h4 data-lang="about-mission-title">Mission</h4>
-            <p data-lang="about-mission-desc">Notre mission est de démocratiser l'accès aux technologies de pointe, notamment le Web3, la blockchain et l'intelligence artificielle, en les rendant compréhensibles et applicables par tous. Nous formons, accompagnons et développons des solutions concrètes pour répondre aux défis numériques actuels.</p>
-            <h4 data-lang="about-vision-title">Vision</h4>
-            <p data-lang="about-vision-desc">Devenir un écosystème de référence en Afrique et dans le monde, où l'innovation technologique, la collaboration et l'éducation se rencontrent pour résoudre des problèmes concrets. Nous aspirons à créer un réseau de talents capables de façonner le futur numérique.</p>
-            <h4 data-lang="about-values-title">Valeurs</h4>
+            <h4>Mission</h4>
+            <p>Notre mission est de démocratiser l'accès aux technologies de pointe, notamment le Web3, la blockchain et l'intelligence artificielle, en les rendant compréhensibles et applicables par tous. Nous formons, accompagnons et développons des solutions concrètes pour répondre aux défis numériques actuels.</p>
+            <h4>Vision</h4>
+            <p>Devenir un écosystème de référence en Afrique et dans le monde, où l'innovation technologique, la collaboration et l'éducation se rencontrent pour résoudre des problèmes concrets. Nous aspirons à créer un réseau de talents capables de façonner le futur numérique.</p>
+            <h4>Valeurs</h4>
             <ul class="values-list">
-              <li><strong data-lang="val1-title">Collaboration</strong> – <span data-lang="val1-desc">Le collectif prime sur l'individualité. Les meilleures solutions naissent de l'intelligence collective.</span></li>
-              <li><strong data-lang="val2-title">Créativité</strong> – <span data-lang="val2-desc">Nous encourageons l'expérimentation et la prise de risque calculée.</span></li>
-              <li><strong data-lang="val3-title">Apprentissage continu</strong> – <span data-lang="val3-desc">La veille technologique et le partage de connaissances sont au cœur de notre démarche.</span></li>
-              <li><strong data-lang="val4-title">Intégrité</strong> – <span data-lang="val4-desc">Nous agissons avec transparence et éthique dans toutes nos relations et projets.</span></li>
+              <li><strong>Collaboration</strong> – Le collectif prime sur l'individualité. Les meilleures solutions naissent de l'intelligence collective.</li>
+              <li><strong>Créativité</strong> – Nous encourageons l'expérimentation et la prise de risque calculée.</li>
+              <li><strong>Apprentissage continu</strong> – La veille technologique et le partage de connaissances sont au cœur de notre démarche.</li>
+              <li><strong>Intégrité</strong> – Nous agissons avec transparence et éthique dans toutes nos relations et projets.</li>
             </ul>
           </div>
           <div class="about-box">
             <strong>15+</strong>
-            <span data-lang="about-box-text">développeurs et étudiants réunis autour d'une même ambition.</span>
+            <span>développeurs et étudiants réunis autour d'une même ambition.</span>
             <div style="display:flex;gap:10px;margin-top:15px;">
               <span style="width:50px;height:8px;border-radius:99px;background:#0757d9;"></span>
               <span style="width:50px;height:8px;border-radius:99px;background:#e50914;"></span>
@@ -807,17 +768,17 @@
     <section class="dark" id="services">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="serv-kicker">Nos expertises</span>
-          <h2 data-lang="serv-title">Des solutions numériques de l'idée au produit.</h2>
-          <p data-lang="serv-desc">Nous structurons notre accompagnement en 6 étapes clés, de la conception à la transmission du savoir.</p>
+          <span class="kicker">Nos expertises</span>
+          <h2>Des solutions numériques de l'idée au produit.</h2>
+          <p>Nous structurons notre accompagnement en 6 étapes clés, de la conception à la transmission du savoir.</p>
         </div>
         <div class="grid3">
-          <article class="card"><div class="icon red">01</div><h3 data-lang="serv1-title">Développement web & mobile</h3><p data-lang="serv1-desc">Conception de sites web, applications mobiles (React, Next.js, Flutter) avec une expérience utilisateur soignée.</p></article>
-          <article class="card"><div class="icon">02</div><h3 data-lang="serv2-title">Web3 & DApps</h3><p data-lang="serv2-desc">Création d'applications décentralisées, intégration de wallets et interaction avec les réseaux Ethereum, Solana ou Polygon.</p></article>
-          <article class="card"><div class="icon">03</div><h3 data-lang="serv3-title">Audit blockchain</h3><p data-lang="serv3-desc">Analyse de projets blockchain, vérification de smart contracts et recommandations pour minimiser les risques techniques.</p></article>
-          <article class="card"><div class="icon red">04</div><h3 data-lang="serv4-title">Recherche & innovation</h3><p data-lang="serv4-desc">Étude approfondie des tokenomics, des architectures décentralisées et des cas d'usage émergents.</p></article>
-          <article class="card"><div class="icon">05</div><h3 data-lang="serv5-title">Formation</h3><p data-lang="serv5-desc">Programmes pédagogiques modulaires (du débutant au builder) sur la blockchain, le Web3 et la sécurité.</p></article>
-          <article class="card"><div class="icon">06</div><h3 data-lang="serv6-title">Accompagnement</h3><p data-lang="serv6-desc">Conseil en transformation numérique et stratégie d'innovation pour institutions, entrepreneurs et associations.</p></article>
+          <article class="card"><div class="icon red">01</div><h3>Développement web & mobile</h3><p>Conception de sites web, applications mobiles (React, Next.js, Flutter) avec une expérience utilisateur soignée.</p></article>
+          <article class="card"><div class="icon">02</div><h3>Web3 & DApps</h3><p>Création d'applications décentralisées, intégration de wallets et interaction avec les réseaux Ethereum, Solana ou Polygon.</p></article>
+          <article class="card"><div class="icon">03</div><h3>Audit blockchain</h3><p>Analyse de projets blockchain, vérification de smart contracts et recommandations pour minimiser les risques techniques.</p></article>
+          <article class="card"><div class="icon red">04</div><h3>Recherche & innovation</h3><p>Étude approfondie des tokenomics, des architectures décentralisées et des cas d'usage émergents.</p></article>
+          <article class="card"><div class="icon">05</div><h3>Formation</h3><p>Programmes pédagogiques modulaires (du débutant au builder) sur la blockchain, le Web3 et la sécurité.</p></article>
+          <article class="card"><div class="icon">06</div><h3>Accompagnement</h3><p>Conseil en transformation numérique et stratégie d'innovation pour institutions, entrepreneurs et associations.</p></article>
         </div>
       </div>
     </section>
@@ -826,14 +787,14 @@
     <section id="projects">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="proj-kicker">Portfolio</span>
-          <h2 data-lang="proj-title">Nos réalisations</h2>
-          <p data-lang="proj-desc">Quelques projets développés par l'équipe Xynera Club.</p>
+          <span class="kicker">Portfolio</span>
+          <h2>Nos réalisations</h2>
+          <p>Quelques projets développés par l'équipe Xynera Club.</p>
         </div>
         <div class="grid3">
-          <article class="card project"><div class="project-cover">BETIX</div><div class="project-body"><h3>Betix</h3><p data-lang="proj1-desc">Plateforme numérique de billetterie et gestion d'événements avec paiement intégré.</p><span class="tag">Web</span><span class="tag">Web3</span></div></article>
-          <article class="card project"><div class="project-cover">NESTIFY</div><div class="project-body"><h3>Nestify</h3><p data-lang="proj2-desc">Solution numérique orientée location et services, avec système de réservation intelligent.</p><span class="tag">App</span><span class="tag">Digital</span></div></article>
-          <article class="card project"><div class="project-cover">WORKLY</div><div class="project-body"><h3>Workly</h3><p data-lang="proj3-desc">Plateforme connectant freelances et entreprises, avec gestion de contrats et paiements sécurisés.</p><span class="tag">Platform</span><span class="tag">Innovation</span></div></article>
+          <article class="card project"><div class="project-cover">BETIX</div><div class="project-body"><h3>Betix</h3><p>Plateforme numérique de billetterie et gestion d'événements avec paiement intégré.</p><span class="tag">Web</span><span class="tag">Web3</span></div></article>
+          <article class="card project"><div class="project-cover">NESTIFY</div><div class="project-body"><h3>Nestify</h3><p>Solution numérique orientée location et services, avec système de réservation intelligent.</p><span class="tag">App</span><span class="tag">Digital</span></div></article>
+          <article class="card project"><div class="project-cover">WORKLY</div><div class="project-body"><h3>Workly</h3><p>Plateforme connectant freelances et entreprises, avec gestion de contrats et paiements sécurisés.</p><span class="tag">Platform</span><span class="tag">Innovation</span></div></article>
         </div>
       </div>
     </section>
@@ -842,9 +803,9 @@
     <section class="dark" id="clients">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="cli-kicker">Partenaires</span>
-          <h2 data-lang="cli-title">Ils nous font confiance</h2>
-          <p data-lang="cli-desc">Des applications, plateformes et sites web développés par Xynera Club.</p>
+          <span class="kicker">Partenaires</span>
+          <h2>Ils nous font confiance</h2>
+          <p>Des applications, plateformes et sites web développés par Xynera Club.</p>
         </div>
         <div class="client-grid">
           <div class="client-logo"><i class="fas fa-store"></i><strong>Betix</strong><span>Billetterie</span></div>
@@ -863,9 +824,9 @@
     <section id="team">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="team-kicker">Notre équipe</span>
-          <h2 data-lang="team-title">12+ talents répartis à travers le monde</h2>
-          <p data-lang="team-desc">Des développeurs, chercheurs et designers unis par la même passion pour l'innovation.</p>
+          <span class="kicker">Notre équipe</span>
+          <h2>12+ talents répartis à travers le monde</h2>
+          <p>Des développeurs, chercheurs et designers unis par la même passion pour l'innovation.</p>
         </div>
         <div class="team-grid">
           <div class="team-member"><strong>Djamil</strong><span class="location">RDC, Kinshasa <span class="flag">🇨🇩</span></span></div>
@@ -888,12 +849,12 @@
     <section class="dark">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="media-kicker">Xynera Media</span>
-          <h2 data-lang="media-title">Présentez votre équipe en vidéo</h2>
-          <p data-lang="media-desc">Sélectionnez une vidéo depuis votre appareil pour la prévisualiser directement.</p>
+          <span class="kicker">Xynera Media</span>
+          <h2>Présentez votre équipe en vidéo</h2>
+          <p>Sélectionnez une vidéo depuis votre appareil pour la prévisualiser directement.</p>
         </div>
         <div class="video-area">
-          <label class="btn btn-red upload-label" for="videoInput"><i class="fas fa-video"></i> <span data-lang="media-btn">Ajouter une vidéo</span></label>
+          <label class="btn btn-red upload-label" for="videoInput"><i class="fas fa-video"></i> Ajouter une vidéo</label>
           <input id="videoInput" type="file" accept="video/*">
           <div id="videoPreview" class="video-preview"><video id="player" controls></video></div>
         </div>
@@ -905,73 +866,73 @@
       <div class="container">
         <div class="cta">
           <div>
-            <h2 data-lang="cta-title">Une idée ? Construisons-la ensemble.</h2>
-            <p data-lang="cta-desc">Institutions, entrepreneurs, organisations et porteurs de projets peuvent présenter leur besoin à l'équipe Xynera Club.</p>
+            <h2>Une idée ? Construisons-la ensemble.</h2>
+            <p>Institutions, entrepreneurs, organisations et porteurs de projets peuvent présenter leur besoin à l'équipe Xynera Club.</p>
           </div>
-          <a href="#contact" class="btn btn-red" data-lang="cta-btn">Nous contacter</a>
+          <a href="#contact" class="btn btn-red">Nous contacter</a>
         </div>
       </div>
     </section>
 
-    <!-- CONTACT WIZARD AVEC PHP ET SPINNER -->
+    <!-- CONTACT WIZARD -->
     <section id="contact">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="contact-kicker">Demande de service</span>
-          <h2 data-lang="contact-title">Choisissez votre prestation</h2>
-          <p data-lang="contact-desc">Sélectionnez un service, consultez le prix, effectuez le paiement et validez avec votre reçu.</p>
+          <span class="kicker">Demande de service</span>
+          <h2>Choisissez votre prestation</h2>
+          <p>Sélectionnez un service, consultez le prix, effectuez le paiement et validez avec votre reçu.</p>
         </div>
 
         <div class="contact-wrapper">
           <div>
-            <div class="notice"><i class="fas fa-info-circle"></i> <span data-lang="notice-text">Ce formulaire vous guide en 3 étapes. Tous les champs sont obligatoires.</span></div>
+            <div class="notice"><i class="fas fa-info-circle"></i> Ce formulaire vous guide en 3 étapes. Tous les champs sont obligatoires.</div>
             <div style="background:#f5f5f5; border-radius:20px; padding:25px; margin-top:20px;">
-              <h4 style="color:#e50914; font-size:18px;" data-lang="why-title">Pourquoi Xynera Club ?</h4>
+              <h4 style="color:#e50914; font-size:18px;">Pourquoi Xynera Club ?</h4>
               <ul class="list" style="margin-top:8px;">
-                <li data-lang="why1">Expertise reconnue en Web3 et développement</li>
-                <li data-lang="why2">Équipe de 15+ développeurs passionnés</li>
-                <li data-lang="why3">Paiements sécurisés via multiples canaux</li>
-                <li data-lang="why4">Support et accompagnement dédié</li>
+                <li>Expertise reconnue en Web3 et développement</li>
+                <li>Équipe de 15+ développeurs passionnés</li>
+                <li>Paiements sécurisés via multiples canaux</li>
+                <li>Support et accompagnement dédié</li>
               </ul>
             </div>
           </div>
 
           <div class="service-request-box">
             <div class="step-indicator">
-              <span class="step active" id="step1Label" data-lang="step1">1. Service</span>
-              <span class="step" id="step2Label" data-lang="step2">2. Paiement</span>
-              <span class="step" id="step3Label" data-lang="step3">3. Validation</span>
+              <span class="step active" id="step1Label">1. Service</span>
+              <span class="step" id="step2Label">2. Paiement</span>
+              <span class="step" id="step3Label">3. Validation</span>
             </div>
 
             <!-- Étape 1 -->
             <div class="step-panel active" id="panel1">
               <div class="field">
-                <label for="serviceSelect"><i class="fas fa-cogs"></i> <span data-lang="field-service">Quel service souhaitez-vous ?</span></label>
+                <label for="serviceSelect"><i class="fas fa-cogs"></i> Quel service souhaitez-vous ?</label>
                 <select id="serviceSelect">
-                  <option value="" data-lang="opt-placeholder">-- Choisissez une prestation --</option>
-                  <option value="web-basic" data-lang="opt-web-basic">Développement Web (Basique) - Site vitrine</option>
-                  <option value="web-adv" data-lang="opt-web-adv">Développement Web (Avancé) - E-commerce / SaaS</option>
-                  <option value="mobile" data-lang="opt-mobile">Application Mobile (iOS / Android)</option>
-                  <option value="web3-dapp" data-lang="opt-web3">DApp / Web3 (Intégration blockchain)</option>
-                  <option value="audit" data-lang="opt-audit">Audit de Smart Contracts</option>
-                  <option value="research" data-lang="opt-research">Analyse & Research (Tokenomics)</option>
-                  <option value="training" data-lang="opt-training">Formation (Academy - Session)</option>
-                  <option value="consulting" data-lang="opt-consulting">Consulting Stratégique</option>
+                  <option value="">-- Choisissez une prestation --</option>
+                  <option value="web-basic">Développement Web (Basique) - Site vitrine</option>
+                  <option value="web-adv">Développement Web (Avancé) - E-commerce / SaaS</option>
+                  <option value="mobile">Application Mobile (iOS / Android)</option>
+                  <option value="web3-dapp">DApp / Web3 (Intégration blockchain)</option>
+                  <option value="audit">Audit de Smart Contracts</option>
+                  <option value="research">Analyse & Research (Tokenomics)</option>
+                  <option value="training">Formation (Academy - Session)</option>
+                  <option value="consulting">Consulting Stratégique</option>
                 </select>
               </div>
               <div class="wizard-nav">
                 <span></span>
-                <button class="btn btn-red" id="step1Next" disabled data-lang="btn-continue">Continuer <i class="fas fa-arrow-right"></i></button>
+                <button class="btn btn-red" id="step1Next" disabled>Continuer <i class="fas fa-arrow-right"></i></button>
               </div>
             </div>
 
             <!-- Étape 2 -->
             <div class="step-panel" id="panel2">
               <div class="price-display">
-                <span><strong data-lang="service-label">Service :</strong> <span id="selectedServiceName">-</span></span>
+                <span><strong>Service :</strong> <span id="selectedServiceName">-</span></span>
                 <span class="amount" id="selectedServicePrice">$0</span>
               </div>
-              <p style="font-weight:700; margin:12px 0 8px;" data-lang="payment-instruction">Effectuez le paiement à l'un des comptes ci-dessous :</p>
+              <p style="font-weight:700; margin:12px 0 8px;">Effectuez le paiement à l'un des comptes ci-dessous :</p>
               
               <div class="payment-details-grid">
                 <div class="payment-item">
@@ -1006,44 +967,44 @@
                 </div>
               </div>
 
-              <p class="payment-note"><i class="fas fa-shield-alt"></i> <span data-lang="payment-note">Envoyez le montant exact et conservez la capture d'écran.</span></p>
+              <p class="payment-note"><i class="fas fa-shield-alt"></i> Envoyez le montant exact et conservez la capture d'écran.</p>
               <div class="wizard-nav">
-                <button class="btn btn-secondary" id="step2Back" data-lang="btn-prev"><i class="fas fa-arrow-left"></i> Précédent</button>
-                <button class="btn btn-success" id="step2Next" data-lang="btn-paid">J'ai effectué le paiement <i class="fas fa-arrow-right"></i></button>
+                <button class="btn btn-secondary" id="step2Back"><i class="fas fa-arrow-left"></i> Précédent</button>
+                <button class="btn btn-success" id="step2Next">J'ai effectué le paiement <i class="fas fa-arrow-right"></i></button>
               </div>
             </div>
 
-            <!-- Étape 3 (avec PHP et spinner) -->
+            <!-- Étape 3 (avec upload et PHP) -->
             <div class="step-panel" id="panel3">
-              <p style="font-weight:700; margin-bottom:18px;" data-lang="final-instruction">Remplissez vos coordonnées et joignez la capture du paiement :</p>
+              <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et joignez la capture du paiement :</p>
               
               <form id="finalRequestForm" action="send_request.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="service_name" id="hiddenServiceName">
                 <input type="hidden" name="service_price" id="hiddenServicePrice">
 
                 <div class="field">
-                  <label><i class="fas fa-user"></i> <span data-lang="label-name">Nom complet</span></label>
+                  <label><i class="fas fa-user"></i> Nom complet</label>
                   <input type="text" name="fullName" placeholder="Jean Dupont" required>
                 </div>
                 <div class="field">
-                  <label><i class="fas fa-envelope"></i> <span data-lang="label-email">Email</span></label>
+                  <label><i class="fas fa-envelope"></i> Email</label>
                   <input type="email" name="emailAddr" placeholder="jean@example.com" required>
                 </div>
                 <div class="field">
-                  <label><i class="fas fa-phone"></i> <span data-lang="label-phone">Téléphone (WhatsApp / Mobile)</span></label>
+                  <label><i class="fas fa-phone"></i> Téléphone (WhatsApp / Mobile)</label>
                   <input type="tel" name="phoneNum" placeholder="+243 123 456 789" required>
                 </div>
                 <div class="field">
-                  <label><i class="fas fa-hashtag"></i> <span data-lang="label-tx">Référence de la transaction</span></label>
+                  <label><i class="fas fa-hashtag"></i> Référence de la transaction</label>
                   <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
                 </div>
 
                 <!-- Upload fichier -->
                 <div class="field">
-                  <label><i class="fas fa-file-image"></i> <span data-lang="label-upload">Capture d'écran du paiement (Reçu)</span></label>
+                  <label><i class="fas fa-file-image"></i> Capture d'écran du paiement (Reçu)</label>
                   <div class="upload-receipt" id="uploadArea">
                     <i class="fas fa-cloud-upload-alt" style="font-size:32px; color:#888;"></i>
-                    <p style="margin:8px 0;" data-lang="upload-text">Cliquez pour télécharger ou glissez-déposez</p>
+                    <p style="margin:8px 0;">Cliquez pour télécharger ou glissez-déposez</p>
                     <input type="file" name="receiptFile" accept="image/*" id="receiptFile" required>
                     <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
                     <div class="file-preview" id="filePreview">
@@ -1056,13 +1017,13 @@
                 <div class="error-box" id="errorBox"></div>
 
                 <div class="wizard-nav">
-                  <button class="btn btn-secondary" id="step3Back" data-lang="btn-prev"><i class="fas fa-arrow-left"></i> Précédent</button>
-                  <button type="submit" class="btn btn-red" id="submitBtn" data-lang="btn-submit">
+                  <button class="btn btn-secondary" id="step3Back"><i class="fas fa-arrow-left"></i> Précédent</button>
+                  <button type="submit" class="btn btn-red" id="submitBtn">
                     <i class="fas fa-check-circle"></i> Soumettre ma demande
                   </button>
                 </div>
                 <div id="finalMessage" style="display:none; margin-top:18px; padding:14px; background:#d4edda; color:#155724; border-radius:12px; font-weight:700;">
-                  <i class="fas fa-check-circle"></i> <span data-lang="success-msg">Votre demande a été reçue ! Notre équipe vous contactera sous 24h.</span>
+                  <i class="fas fa-check-circle"></i> Votre demande a été reçue ! Notre équipe vous contactera sous 24h.
                 </div>
               </form>
             </div>
@@ -1075,41 +1036,41 @@
     <section id="discuss" style="background:#f5f5f5;">
       <div class="container">
         <div class="section-head">
-          <span class="kicker" data-lang="prop-kicker">Échange & proposition</span>
-          <h2 data-lang="prop-title">Discuter avec notre équipe</h2>
-          <p data-lang="prop-desc">Vous avez un projet, une idée, ou souhaitez simplement en savoir plus ? Envoyez-nous un message, nous vous répondrons dans les plus brefs délais.</p>
+          <span class="kicker">Échange & proposition</span>
+          <h2>Discuter avec notre équipe</h2>
+          <p>Vous avez un projet, une idée, ou souhaitez simplement en savoir plus ? Envoyez-nous un message, nous vous répondrons dans les plus brefs délais.</p>
         </div>
         <div style="max-width:700px; margin:0 auto;">
           <form id="proposalForm" action="send_request.php" method="POST">
             <div class="field">
-              <label><i class="fas fa-user"></i> <span data-lang="label-name">Votre nom</span></label>
+              <label><i class="fas fa-user"></i> Votre nom</label>
               <input type="text" name="proposal_name" placeholder="Votre nom" required>
             </div>
             <div class="field">
-              <label><i class="fas fa-envelope"></i> <span data-lang="label-email">Votre email</span></label>
+              <label><i class="fas fa-envelope"></i> Votre email</label>
               <input type="email" name="proposal_email" placeholder="votre@email.com" required>
             </div>
             <div class="field">
-              <label><i class="fas fa-phone"></i> <span data-lang="label-phone-opt">Téléphone (optionnel)</span></label>
+              <label><i class="fas fa-phone"></i> Téléphone (optionnel)</label>
               <input type="tel" name="proposal_phone" placeholder="+243 ...">
             </div>
             <div class="field">
-              <label><i class="fas fa-tag"></i> <span data-lang="label-subject">Sujet</span></label>
+              <label><i class="fas fa-tag"></i> Sujet</label>
               <select name="proposal_subject">
-                <option value="general" data-lang="subj-general">Demande d'information générale</option>
-                <option value="project" data-lang="subj-project">Proposition de projet</option>
-                <option value="partnership" data-lang="subj-partnership">Partenariat</option>
-                <option value="collab" data-lang="subj-collab">Collaboration / Rejoindre le club</option>
-                <option value="support" data-lang="subj-support">Support / Assistance</option>
+                <option value="general">Demande d'information générale</option>
+                <option value="project">Proposition de projet</option>
+                <option value="partnership">Partenariat</option>
+                <option value="collab">Collaboration / Rejoindre le club</option>
+                <option value="support">Support / Assistance</option>
               </select>
             </div>
             <div class="field">
-              <label><i class="fas fa-comment"></i> <span data-lang="label-message">Votre message</span></label>
+              <label><i class="fas fa-comment"></i> Votre message</label>
               <textarea name="proposal_message" rows="5" placeholder="Décrivez votre besoin..." required></textarea>
             </div>
-            <button type="submit" class="btn btn-red" style="width:100%;"><i class="fas fa-paper-plane"></i> <span data-lang="btn-send-prop">Envoyer la proposition</span></button>
+            <button type="submit" class="btn btn-red" style="width:100%;"><i class="fas fa-paper-plane"></i> Envoyer la proposition</button>
             <div id="proposalMessage" style="display:none; margin-top:15px; padding:12px; background:#d4edda; color:#155724; border-radius:10px; font-weight:700;">
-              <i class="fas fa-check-circle"></i> <span data-lang="prop-success">Votre message a été envoyé ! Nous vous répondrons dans les 24h.</span>
+              <i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons dans les 24h.
             </div>
           </form>
         </div>
@@ -1120,13 +1081,13 @@
   <!-- DISCLAIMER -->
   <section class="disclaimer" id="disclaimer">
     <div class="container">
-      <strong data-lang="disclaimer-title">Clause de non-responsabilité – Informations importantes</strong>
-      <p data-lang="disclaimer-p1">Les informations fournies sur ce site web (Xynera Club) sont diffusées à titre purement éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques, fiscaux ou en investissement. Xynera Club n'est pas un conseiller en investissement, ni un intermédiaire financier.</p>
-      <p><strong data-lang="disclaimer-risk-title">Risques liés aux cryptomonnaies et aux actifs numériques :</strong> <span data-lang="disclaimer-risk-desc">Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés, notamment la volatilité des prix, les risques de sécurité, les risques réglementaires et les risques de perte totale de capital. Aucun rendement n'est garanti. Les performances passées ne préjugent pas des résultats futurs. Chaque investisseur ou utilisateur doit effectuer ses propres recherches (DYOR) et consulter un professionnel avant toute décision.</span></p>
-      <p><strong data-lang="disclaimer-data-title">Protection des données :</strong> <span data-lang="disclaimer-data-desc">Les informations personnelles collectées via les formulaires de ce site sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers sans votre consentement explicite, conformément à la législation en vigueur (RGPD). Vous disposez d'un droit d'accès, de rectification et de suppression de vos données en nous contactant à : <a href="mailto:xenaryclub@gmail.com" style="color:#e50914;">xenaryclub@gmail.com</a>.</span></p>
-      <p><strong data-lang="disclaimer-responsibility-title">Responsabilité :</strong> <span data-lang="disclaimer-responsibility-desc">Xynera Club décline toute responsabilité quant aux pertes, dommages directs ou indirects, préjudices financiers ou autres, résultant de l'utilisation des informations diffusées sur ce site, des liens externes, ou des décisions prises en conséquence. Les utilisateurs sont seuls responsables de leurs actions et investissements. Nous vous encourageons vivement à consulter un professionnel qualifié avant toute démarche.</span></p>
-      <p><strong data-lang="disclaimer-ip-title">Propriété intellectuelle :</strong> <span data-lang="disclaimer-ip-desc">L'ensemble du contenu de ce site (textes, images, logos, vidéos) est la propriété exclusive de Xynera Club ou de ses partenaires. Toute reproduction, distribution ou utilisation sans autorisation préalable est interdite.</span></p>
-      <p><em data-lang="disclaimer-update">Dernière mise à jour : 2026 – Xynera Club.</em></p>
+      <strong>Clause de non-responsabilité – Informations importantes</strong>
+      <p>Les informations fournies sur ce site web (Xynera Club) sont diffusées à titre purement éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques, fiscaux ou en investissement. Xynera Club n'est pas un conseiller en investissement, ni un intermédiaire financier.</p>
+      <p><strong>Risques liés aux cryptomonnaies :</strong> Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés. Aucun rendement n'est garanti. Chaque investisseur doit effectuer ses propres recherches (DYOR).</p>
+      <p><strong>Protection des données :</strong> Vos informations personnelles sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers. Vous disposez d'un droit d'accès, de rectification et de suppression en nous contactant à : <a href="mailto:xenaryclub@gmail.com" style="color:#e50914;">xenaryclub@gmail.com</a>.</p>
+      <p><strong>Responsabilité :</strong> Xynera Club décline toute responsabilité quant aux pertes ou dommages résultant de l'utilisation des informations diffusées sur ce site.</p>
+      <p><strong>Propriété intellectuelle :</strong> L'ensemble du contenu de ce site est la propriété exclusive de Xynera Club. Toute reproduction sans autorisation est interdite.</p>
+      <p><em>Dernière mise à jour : 2026 – Xynera Club.</em></p>
     </div>
   </section>
 
@@ -1137,16 +1098,16 @@
         <div>
           <div class="logo" style="color:#fff;">
             <img src="logo-xynera.png" alt="Xynera Club" style="height:50px;width:auto;border-radius:8px;">
-            <span data-lang="site-name">Xynera Club</span>
+            <span>Xynera Club</span>
           </div>
           <p style="margin-top:15px;">Build. Learn. Analyze. Innovate.</p>
           <p style="margin-top:10px;font-size:13px;color:#999;">
             <i class="fas fa-envelope"></i> <a href="mailto:xenaryclub@gmail.com">xenaryclub@gmail.com</a>
           </p>
         </div>
-        <div><h4 data-lang="footer-explore">Explorer</h4><a href="#about" data-lang="nav-about">À propos</a><br><a href="#services" data-lang="nav-services">Services</a><br><a href="#projects" data-lang="nav-projects">Projets</a></div>
-        <div><h4 data-lang="footer-learn">Apprendre</h4><a href="#academy">Academy</a><br><a href="#research">Research</a><br><a href="#team" data-lang="nav-team">Équipe</a></div>
-        <div><h4 data-lang="footer-contact">Contact</h4><a href="#contact" data-lang="nav-contact">Demander</a><br><a href="#discuss" data-lang="footer-proposal">Proposition</a><br><a href="#disclaimer">Disclaimer</a><br><a href="#accueil">Haut</a></div>
+        <div><h4>Explorer</h4><a href="#about">À propos</a><br><a href="#services">Services</a><br><a href="#projects">Projets</a></div>
+        <div><h4>Apprendre</h4><a href="#academy">Academy</a><br><a href="#research">Research</a><br><a href="#team">Équipe</a></div>
+        <div><h4>Contact</h4><a href="#contact">Demander</a><br><a href="#discuss">Proposition</a><br><a href="#disclaimer">Disclaimer</a><br><a href="#accueil">Haut</a></div>
       </div>
       <div class="social-footer">
         <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -1164,421 +1125,38 @@
 
   <!-- HELP BUTTON -->
   <button class="help-btn" id="helpBtn" aria-label="Aide et contact">
-    <i class="fas fa-life-ring"></i> <span data-lang="help-btn">Aide</span>
+    <i class="fas fa-life-ring"></i> Aide
   </button>
 
   <!-- HELP MODAL -->
   <div class="modal-overlay" id="helpModal">
     <div class="modal-content">
       <button class="modal-close" id="closeModalBtn">✕</button>
-      <h3 data-lang="help-modal-title">Comment pouvons-nous vous aider ?</h3>
-      <p data-lang="help-modal-desc">Utilisez ce formulaire pour poser une question, demander un devis, ou nous contacter avant toute démarche. Nous vous répondons sous 24h.</p>
+      <h3>Comment pouvons-nous vous aider ?</h3>
+      <p>Utilisez ce formulaire pour poser une question, demander un devis, ou nous contacter avant toute démarche. Nous vous répondons sous 24h.</p>
       <form id="helpForm" action="send_request.php" method="POST">
         <div class="field">
-          <label><i class="fas fa-user"></i> <span data-lang="label-name">Votre nom</span></label>
+          <label><i class="fas fa-user"></i> Votre nom</label>
           <input type="text" name="help_name" placeholder="Votre nom" required>
         </div>
         <div class="field">
-          <label><i class="fas fa-envelope"></i> <span data-lang="label-email">Votre email</span></label>
+          <label><i class="fas fa-envelope"></i> Votre email</label>
           <input type="email" name="help_email" placeholder="votre@email.com" required>
         </div>
         <div class="field">
-          <label><i class="fas fa-comment"></i> <span data-lang="label-message">Message</span></label>
+          <label><i class="fas fa-comment"></i> Message</label>
           <textarea name="help_message" rows="4" placeholder="Votre question..." required></textarea>
         </div>
-        <button type="submit" class="btn btn-red" style="width:100%;"><span data-lang="btn-send">Envoyer</span></button>
+        <button type="submit" class="btn btn-red" style="width:100%;">Envoyer</button>
         <div id="helpMessage" style="display:none; margin-top:12px; padding:10px; background:#d4edda; color:#155724; border-radius:10px;">
-          <i class="fas fa-check-circle"></i> <span data-lang="help-success">Votre message a été envoyé ! Nous vous répondrons rapidement.</span>
+          <i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons rapidement.
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // --- TRADUCTIONS (extrait pour ne pas surcharger) ---
-    const translations = {
-      fr: {
-        'site-name': 'Xynera Club',
-        'nav-about': 'À propos',
-        'nav-services': 'Services',
-        'nav-projects': 'Projets',
-        'nav-team': 'Équipe',
-        'nav-contact': 'Contact',
-        'hero-badge': 'DEVELOPER • WEB3 • DIGITAL INNOVATION',
-        'hero-title1': 'Nous construisons le',
-        'hero-title2': 'futur numérique.',
-        'hero-desc': 'Xynera Club réunit des développeurs et étudiants passionnés qui mettent leurs compétences en commun pour créer des applications, des sites web, des solutions Web3 et transmettre des connaissances technologiques.',
-        'hero-btn1': 'Découvrir nos services',
-        'hero-btn2': 'Travailler avec nous',
-        'stat-dev': 'Développeurs',
-        'stat-innov': 'Innovation',
-        'stat-ideas': 'Idées à construire',
-        'teaser-title1': 'Prêt à bâtir l\'',
-        'teaser-title2': 'avenir numérique',
-        'teaser-desc': 'Que vous ayez une idée de projet à concrétiser ou que vous souhaitiez intégrer une équipe dynamique de passionnés, Xynera Club est votre porte d\'entrée vers l\'innovation. Rejoignez un écosystème où la technologie, la collaboration et la créativité se rencontrent pour façonner le monde de demain.',
-        'teaser-btn1': 'Demander un service',
-        'teaser-btn2': 'Rejoindre le club',
-        'mkt-title1': 'Vous avez un projet ',
-        'mkt-title2': 'numérique',
-        'mkt-desc': 'Vous voulez une application ou un site web pour votre entreprise, restaurant, école, activité privée ou autres ? <strong>N\'hésitez pas à contacter Xynera Club.</strong> Nous concrétisons vos idées avec une équipe d\'experts passionnés.',
-        'mkt-biz': 'Entreprise',
-        'mkt-biz-desc': 'Site vitrine, plateforme e-commerce, outils de gestion et solutions B2B.',
-        'mkt-rest': 'Restaurant',
-        'mkt-rest-desc': 'Menu en ligne, réservation de tables, commandes en ligne et application fidélité.',
-        'mkt-school': 'École',
-        'mkt-school-desc': 'Portail de cours, plateforme de formation, gestion des notes et communication.',
-        'mkt-private': 'Activité privée',
-        'mkt-private-desc': 'Blog, portfolio, réseau social, événementiel et applications personnalisées.',
-        'mkt-other': 'Autres',
-        'mkt-other-desc': 'Startups, associations, collectivités, clubs sportifs et tout autre besoin.',
-        'mkt-cta': 'Contactez-nous dès maintenant',
-        'guide-kicker': 'Guide',
-        'guide-title': 'Comment demander un service ?',
-        'guide-desc': 'Suivez ces étapes simples pour bénéficier de notre expertise.',
-        'g-step1-title': 'Choisissez votre prestation',
-        'g-step1-desc': 'Parcourez notre offre et sélectionnez le service qui correspond à votre besoin (développement, Web3, audit, formation, etc.).',
-        'g-step2-title': 'Effectuez le paiement',
-        'g-step2-desc': 'Utilisez l\'un des moyens de paiement proposés (Airtel Money, M-Pesa, cryptos). Le montant exact est affiché avant validation.',
-        'g-step3-title': 'Envoyez votre reçu',
-        'g-step3-desc': 'Remplissez le formulaire avec vos coordonnées et téléchargez la capture d\'écran de votre transaction.',
-        'g-step4-title': 'Confirmation',
-        'g-step4-desc': 'Notre équipe valide votre demande sous 24h et vous contacte pour démarrer le projet ou la formation.',
-        'guide-cta': 'Commencer maintenant',
-        'about-kicker': 'Qui sommes-nous ?',
-        'about-title': 'Notre vision, notre mission.',
-        'about-desc': 'Xynera Club est une communauté de développeurs et d\'étudiants qui travaillent ensemble pour transformer des idées en solutions numériques utiles.',
-        'about-mission-title': 'Mission',
-        'about-mission-desc': 'Notre mission est de démocratiser l\'accès aux technologies de pointe, notamment le Web3, la blockchain et l\'intelligence artificielle, en les rendant compréhensibles et applicables par tous. Nous formons, accompagnons et développons des solutions concrètes pour répondre aux défis numériques actuels.',
-        'about-vision-title': 'Vision',
-        'about-vision-desc': 'Devenir un écosystème de référence en Afrique et dans le monde, où l\'innovation technologique, la collaboration et l\'éducation se rencontrent pour résoudre des problèmes concrets. Nous aspirons à créer un réseau de talents capables de façonner le futur numérique.',
-        'about-values-title': 'Valeurs',
-        'val1-title': 'Collaboration',
-        'val1-desc': 'Le collectif prime sur l\'individualité. Les meilleures solutions naissent de l\'intelligence collective.',
-        'val2-title': 'Créativité',
-        'val2-desc': 'Nous encourageons l\'expérimentation et la prise de risque calculée.',
-        'val3-title': 'Apprentissage continu',
-        'val3-desc': 'La veille technologique et le partage de connaissances sont au cœur de notre démarche.',
-        'val4-title': 'Intégrité',
-        'val4-desc': 'Nous agissons avec transparence et éthique dans toutes nos relations et projets.',
-        'about-box-text': 'développeurs et étudiants réunis autour d\'une même ambition.',
-        'serv-kicker': 'Nos expertises',
-        'serv-title': 'Des solutions numériques de l\'idée au produit.',
-        'serv-desc': 'Nous structurons notre accompagnement en 6 étapes clés, de la conception à la transmission du savoir.',
-        'serv1-title': 'Développement web & mobile',
-        'serv1-desc': 'Conception de sites web, applications mobiles (React, Next.js, Flutter) avec une expérience utilisateur soignée.',
-        'serv2-title': 'Web3 & DApps',
-        'serv2-desc': 'Création d\'applications décentralisées, intégration de wallets et interaction avec les réseaux Ethereum, Solana ou Polygon.',
-        'serv3-title': 'Audit blockchain',
-        'serv3-desc': 'Analyse de projets blockchain, vérification de smart contracts et recommandations pour minimiser les risques techniques.',
-        'serv4-title': 'Recherche & innovation',
-        'serv4-desc': 'Étude approfondie des tokenomics, des architectures décentralisées et des cas d\'usage émergents.',
-        'serv5-title': 'Formation',
-        'serv5-desc': 'Programmes pédagogiques modulaires (du débutant au builder) sur la blockchain, le Web3 et la sécurité.',
-        'serv6-title': 'Accompagnement',
-        'serv6-desc': 'Conseil en transformation numérique et stratégie d\'innovation pour institutions, entrepreneurs et associations.',
-        'proj-kicker': 'Portfolio',
-        'proj-title': 'Nos réalisations',
-        'proj-desc': 'Quelques projets développés par l\'équipe Xynera Club.',
-        'proj1-desc': 'Plateforme numérique de billetterie et gestion d\'événements avec paiement intégré.',
-        'proj2-desc': 'Solution numérique orientée location et services, avec système de réservation intelligent.',
-        'proj3-desc': 'Plateforme connectant freelances et entreprises, avec gestion de contrats et paiements sécurisés.',
-        'cli-kicker': 'Partenaires',
-        'cli-title': 'Ils nous font confiance',
-        'cli-desc': 'Des applications, plateformes et sites web développés par Xynera Club.',
-        'team-kicker': 'Notre équipe',
-        'team-title': '12+ talents répartis à travers le monde',
-        'team-desc': 'Des développeurs, chercheurs et designers unis par la même passion pour l\'innovation.',
-        'media-kicker': 'Xynera Media',
-        'media-title': 'Présentez votre équipe en vidéo',
-        'media-desc': 'Sélectionnez une vidéo depuis votre appareil pour la prévisualiser directement.',
-        'media-btn': 'Ajouter une vidéo',
-        'cta-title': 'Une idée ? Construisons-la ensemble.',
-        'cta-desc': 'Institutions, entrepreneurs, organisations et porteurs de projets peuvent présenter leur besoin à l\'équipe Xynera Club.',
-        'cta-btn': 'Nous contacter',
-        'contact-kicker': 'Demande de service',
-        'contact-title': 'Choisissez votre prestation',
-        'contact-desc': 'Sélectionnez un service, consultez le prix, effectuez le paiement et validez avec votre reçu.',
-        'notice-text': 'Ce formulaire vous guide en 3 étapes. Tous les champs sont obligatoires.',
-        'why-title': 'Pourquoi Xynera Club ?',
-        'why1': 'Expertise reconnue en Web3 et développement',
-        'why2': 'Équipe de 15+ développeurs passionnés',
-        'why3': 'Paiements sécurisés via multiples canaux',
-        'why4': 'Support et accompagnement dédié',
-        'step1': '1. Service',
-        'step2': '2. Paiement',
-        'step3': '3. Validation',
-        'field-service': 'Quel service souhaitez-vous ?',
-        'opt-placeholder': '-- Choisissez une prestation --',
-        'opt-web-basic': 'Développement Web (Basique) - Site vitrine',
-        'opt-web-adv': 'Développement Web (Avancé) - E-commerce / SaaS',
-        'opt-mobile': 'Application Mobile (iOS / Android)',
-        'opt-web3': 'DApp / Web3 (Intégration blockchain)',
-        'opt-audit': 'Audit de Smart Contracts',
-        'opt-research': 'Analyse & Research (Tokenomics)',
-        'opt-training': 'Formation (Academy - Session)',
-        'opt-consulting': 'Consulting Stratégique',
-        'btn-continue': 'Continuer',
-        'service-label': 'Service :',
-        'payment-instruction': 'Effectuez le paiement à l\'un des comptes ci-dessous :',
-        'payment-note': 'Envoyez le montant exact et conservez la capture d\'écran.',
-        'btn-prev': 'Précédent',
-        'btn-paid': 'J\'ai effectué le paiement',
-        'final-instruction': 'Remplissez vos coordonnées et joignez la capture du paiement :',
-        'label-name': 'Nom complet',
-        'label-email': 'Email',
-        'label-phone': 'Téléphone (WhatsApp / Mobile)',
-        'label-tx': 'Référence de la transaction',
-        'label-upload': 'Capture d\'écran du paiement (Reçu)',
-        'upload-text': 'Cliquez pour télécharger ou glissez-déposez',
-        'btn-submit': 'Soumettre ma demande',
-        'success-msg': 'Votre demande a été reçue ! Notre équipe vous contactera sous 24h.',
-        'prop-kicker': 'Échange & proposition',
-        'prop-title': 'Discuter avec notre équipe',
-        'prop-desc': 'Vous avez un projet, une idée, ou souhaitez simplement en savoir plus ? Envoyez-nous un message, nous vous répondrons dans les plus brefs délais.',
-        'label-phone-opt': 'Téléphone (optionnel)',
-        'label-subject': 'Sujet',
-        'subj-general': 'Demande d\'information générale',
-        'subj-project': 'Proposition de projet',
-        'subj-partnership': 'Partenariat',
-        'subj-collab': 'Collaboration / Rejoindre le club',
-        'subj-support': 'Support / Assistance',
-        'label-message': 'Votre message',
-        'btn-send-prop': 'Envoyer la proposition',
-        'prop-success': 'Votre message a été envoyé ! Nous vous répondrons dans les 24h.',
-        'disclaimer-title': 'Clause de non-responsabilité – Informations importantes',
-        'disclaimer-p1': 'Les informations fournies sur ce site web (Xynera Club) sont diffusées à titre purement éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques, fiscaux ou en investissement. Xynera Club n\'est pas un conseiller en investissement, ni un intermédiaire financier.',
-        'disclaimer-risk-title': 'Risques liés aux cryptomonnaies et aux actifs numériques :',
-        'disclaimer-risk-desc': 'Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés, notamment la volatilité des prix, les risques de sécurité, les risques réglementaires et les risques de perte totale de capital. Aucun rendement n\'est garanti. Les performances passées ne préjugent pas des résultats futurs. Chaque investisseur ou utilisateur doit effectuer ses propres recherches (DYOR) et consulter un professionnel avant toute décision.',
-        'disclaimer-data-title': 'Protection des données :',
-        'disclaimer-data-desc': 'Les informations personnelles collectées via les formulaires de ce site sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers sans votre consentement explicite, conformément à la législation en vigueur (RGPD). Vous disposez d\'un droit d\'accès, de rectification et de suppression de vos données en nous contactant à : xenaryclub@gmail.com.',
-        'disclaimer-responsibility-title': 'Responsabilité :',
-        'disclaimer-responsibility-desc': 'Xynera Club décline toute responsabilité quant aux pertes, dommages directs ou indirects, préjudices financiers ou autres, résultant de l\'utilisation des informations diffusées sur ce site, des liens externes, ou des décisions prises en conséquence. Les utilisateurs sont seuls responsables de leurs actions et investissements. Nous vous encourageons vivement à consulter un professionnel qualifié avant toute démarche.',
-        'disclaimer-ip-title': 'Propriété intellectuelle :',
-        'disclaimer-ip-desc': 'L\'ensemble du contenu de ce site (textes, images, logos, vidéos) est la propriété exclusive de Xynera Club ou de ses partenaires. Toute reproduction, distribution ou utilisation sans autorisation préalable est interdite.',
-        'disclaimer-update': 'Dernière mise à jour : 2026 – Xynera Club.',
-        'footer-explore': 'Explorer',
-        'footer-learn': 'Apprendre',
-        'footer-contact': 'Contact',
-        'footer-proposal': 'Proposition',
-        'help-btn': 'Aide',
-        'help-modal-title': 'Comment pouvons-nous vous aider ?',
-        'help-modal-desc': 'Utilisez ce formulaire pour poser une question, demander un devis, ou nous contacter avant toute démarche. Nous vous répondons sous 24h.',
-        'btn-send': 'Envoyer',
-        'help-success': 'Votre message a été envoyé ! Nous vous répondrons rapidement.'
-      },
-      en: {
-        'site-name': 'Xynera Club',
-        'nav-about': 'About',
-        'nav-services': 'Services',
-        'nav-projects': 'Projects',
-        'nav-team': 'Team',
-        'nav-contact': 'Contact',
-        'hero-badge': 'DEVELOPER • WEB3 • DIGITAL INNOVATION',
-        'hero-title1': 'We build the',
-        'hero-title2': 'digital future.',
-        'hero-desc': 'Xynera Club brings together passionate developers and students who pool their skills to create applications, websites, Web3 solutions, and share technological knowledge.',
-        'hero-btn1': 'Discover our services',
-        'hero-btn2': 'Work with us',
-        'stat-dev': 'Developers',
-        'stat-innov': 'Innovation',
-        'stat-ideas': 'Ideas to build',
-        'teaser-title1': 'Ready to build the ',
-        'teaser-title2': 'digital future',
-        'teaser-desc': 'Whether you have a project idea to realize or want to join a dynamic team of enthusiasts, Xynera Club is your gateway to innovation. Join an ecosystem where technology, collaboration, and creativity meet to shape tomorrow\'s world.',
-        'teaser-btn1': 'Request a service',
-        'teaser-btn2': 'Join the club',
-        'mkt-title1': 'Do you have a ',
-        'mkt-title2': 'digital project',
-        'mkt-desc': 'Do you want an app or website for your business, restaurant, school, private activity, or others? <strong>Feel free to contact Xynera Club.</strong> We turn your ideas into reality with a team of passionate experts.',
-        'mkt-biz': 'Business',
-        'mkt-biz-desc': 'Landing page, e-commerce platform, management tools, and B2B solutions.',
-        'mkt-rest': 'Restaurant',
-        'mkt-rest-desc': 'Online menu, table reservations, online ordering, and loyalty app.',
-        'mkt-school': 'School',
-        'mkt-school-desc': 'Course portal, training platform, grade management, and communication.',
-        'mkt-private': 'Private activity',
-        'mkt-private-desc': 'Blog, portfolio, social network, events, and custom applications.',
-        'mkt-other': 'Others',
-        'mkt-other-desc': 'Startups, associations, communities, sports clubs, and any other need.',
-        'mkt-cta': 'Contact us now',
-        'guide-kicker': 'Guide',
-        'guide-title': 'How to request a service?',
-        'guide-desc': 'Follow these simple steps to benefit from our expertise.',
-        'g-step1-title': 'Choose your service',
-        'g-step1-desc': 'Browse our offerings and select the service that fits your needs (development, Web3, audit, training, etc.).',
-        'g-step2-title': 'Make the payment',
-        'g-step2-desc': 'Use one of the accepted payment methods (Airtel Money, M-Pesa, cryptos). The exact amount is shown before validation.',
-        'g-step3-title': 'Send your receipt',
-        'g-step3-desc': 'Fill in the form with your details and upload a screenshot of your transaction.',
-        'g-step4-title': 'Confirmation',
-        'g-step4-desc': 'Our team validates your request within 24 hours and contacts you to start the project or training.',
-        'guide-cta': 'Start now',
-        'about-kicker': 'Who are we?',
-        'about-title': 'Our vision, our mission.',
-        'about-desc': 'Xynera Club is a community of developers and students working together to turn ideas into useful digital solutions.',
-        'about-mission-title': 'Mission',
-        'about-mission-desc': 'Our mission is to democratize access to cutting-edge technologies, including Web3, blockchain, and artificial intelligence, making them understandable and applicable to everyone. We train, support, and develop concrete solutions to address today\'s digital challenges.',
-        'about-vision-title': 'Vision',
-        'about-vision-desc': 'To become a reference ecosystem in Africa and worldwide, where technological innovation, collaboration, and education meet to solve real-world problems. We aim to create a network of talents capable of shaping the digital future.',
-        'about-values-title': 'Values',
-        'val1-title': 'Collaboration',
-        'val1-desc': 'The collective takes precedence over individuality. The best solutions come from collective intelligence.',
-        'val2-title': 'Creativity',
-        'val2-desc': 'We encourage experimentation and calculated risk-taking.',
-        'val3-title': 'Continuous learning',
-        'val3-desc': 'Technological monitoring and knowledge sharing are at the heart of our approach.',
-        'val4-title': 'Integrity',
-        'val4-desc': 'We act with transparency and ethics in all our relationships and projects.',
-        'about-box-text': 'developers and students united around a common ambition.',
-        'serv-kicker': 'Our expertise',
-        'serv-title': 'Digital solutions from idea to product.',
-        'serv-desc': 'We structure our support in 6 key stages, from design to knowledge transfer.',
-        'serv1-title': 'Web & mobile development',
-        'serv1-desc': 'Design of websites, mobile apps (React, Next.js, Flutter) with a polished user experience.',
-        'serv2-title': 'Web3 & DApps',
-        'serv2-desc': 'Creation of decentralized applications, wallet integration, and interaction with Ethereum, Solana, or Polygon networks.',
-        'serv3-title': 'Blockchain audit',
-        'serv3-desc': 'Analysis of blockchain projects, smart contract verification, and recommendations to minimize technical risks.',
-        'serv4-title': 'Research & innovation',
-        'serv4-desc': 'In-depth study of tokenomics, decentralized architectures, and emerging use cases.',
-        'serv5-title': 'Training',
-        'serv5-desc': 'Modular educational programs (from beginner to builder) on blockchain, Web3, and security.',
-        'serv6-title': 'Support',
-        'serv6-desc': 'Digital transformation consulting and innovation strategy for institutions, entrepreneurs, and associations.',
-        'proj-kicker': 'Portfolio',
-        'proj-title': 'Our achievements',
-        'proj-desc': 'Some projects developed by the Xynera Club team.',
-        'proj1-desc': 'Digital ticketing and event management platform with integrated payment.',
-        'proj2-desc': 'Digital solution for rental and services, with smart booking system.',
-        'proj3-desc': 'Platform connecting freelancers and businesses, with contract management and secure payments.',
-        'cli-kicker': 'Partners',
-        'cli-title': 'They trust us',
-        'cli-desc': 'Applications, platforms, and websites developed by Xynera Club.',
-        'team-kicker': 'Our team',
-        'team-title': '12+ talents spread around the world',
-        'team-desc': 'Developers, researchers, and designers united by the same passion for innovation.',
-        'media-kicker': 'Xynera Media',
-        'media-title': 'Present your team in video',
-        'media-desc': 'Select a video from your device to preview it directly.',
-        'media-btn': 'Add a video',
-        'cta-title': 'An idea? Let\'s build it together.',
-        'cta-desc': 'Institutions, entrepreneurs, organizations, and project holders can present their needs to the Xynera Club team.',
-        'cta-btn': 'Contact us',
-        'contact-kicker': 'Service request',
-        'contact-title': 'Choose your service',
-        'contact-desc': 'Select a service, check the price, make the payment, and validate with your receipt.',
-        'notice-text': 'This form guides you in 3 steps. All fields are required.',
-        'why-title': 'Why Xynera Club?',
-        'why1': 'Recognized expertise in Web3 and development',
-        'why2': 'Team of 15+ passionate developers',
-        'why3': 'Secure payments via multiple channels',
-        'why4': 'Dedicated support and guidance',
-        'step1': '1. Service',
-        'step2': '2. Payment',
-        'step3': '3. Validation',
-        'field-service': 'Which service do you want?',
-        'opt-placeholder': '-- Choose a service --',
-        'opt-web-basic': 'Web Development (Basic) - Landing page',
-        'opt-web-adv': 'Web Development (Advanced) - E-commerce / SaaS',
-        'opt-mobile': 'Mobile App (iOS / Android)',
-        'opt-web3': 'DApp / Web3 (Blockchain integration)',
-        'opt-audit': 'Smart Contract Audit',
-        'opt-research': 'Analysis & Research (Tokenomics)',
-        'opt-training': 'Training (Academy - Session)',
-        'opt-consulting': 'Strategic Consulting',
-        'btn-continue': 'Continue',
-        'service-label': 'Service:',
-        'payment-instruction': 'Make the payment to one of the accounts below:',
-        'payment-note': 'Send the exact amount and keep the screenshot.',
-        'btn-prev': 'Previous',
-        'btn-paid': 'I made the payment',
-        'final-instruction': 'Fill in your details and attach the payment screenshot:',
-        'label-name': 'Full name',
-        'label-email': 'Email',
-        'label-phone': 'Phone (WhatsApp / Mobile)',
-        'label-tx': 'Transaction reference',
-        'label-upload': 'Payment screenshot (Receipt)',
-        'upload-text': 'Click to upload or drag and drop',
-        'btn-submit': 'Submit my request',
-        'success-msg': 'Your request has been received! Our team will contact you within 24 hours.',
-        'prop-kicker': 'Exchange & proposal',
-        'prop-title': 'Chat with our team',
-        'prop-desc': 'Do you have a project, idea, or just want to know more? Send us a message, we will reply as soon as possible.',
-        'label-phone-opt': 'Phone (optional)',
-        'label-subject': 'Subject',
-        'subj-general': 'General inquiry',
-        'subj-project': 'Project proposal',
-        'subj-partnership': 'Partnership',
-        'subj-collab': 'Collaboration / Join the club',
-        'subj-support': 'Support / Assistance',
-        'label-message': 'Your message',
-        'btn-send-prop': 'Send proposal',
-        'prop-success': 'Your message has been sent! We will reply within 24 hours.',
-        'disclaimer-title': 'Disclaimer – Important information',
-        'disclaimer-p1': 'The information provided on this website (Xynera Club) is for educational and informational purposes only. It does not constitute financial, legal, tax, or investment advice. Xynera Club is not an investment advisor or financial intermediary.',
-        'disclaimer-risk-title': 'Risks related to cryptocurrencies and digital assets:',
-        'disclaimer-risk-desc': 'Cryptocurrencies, tokens, and Web3 projects carry high risks, including price volatility, security risks, regulatory risks, and total loss of capital. No return is guaranteed. Past performance does not predict future results. Each investor or user must do their own research (DYOR) and consult a professional before making any decision.',
-        'disclaimer-data-title': 'Data protection:',
-        'disclaimer-data-desc': 'Personal information collected via forms on this site is used solely for request processing and is never shared with third parties without your explicit consent, in accordance with applicable law (GDPR). You have the right to access, rectify, and delete your data by contacting us at: xenaryclub@gmail.com.',
-        'disclaimer-responsibility-title': 'Liability:',
-        'disclaimer-responsibility-desc': 'Xynera Club disclaims any liability for losses, direct or indirect damages, financial or other harm resulting from the use of information on this site, external links, or decisions made based on it. Users are solely responsible for their actions and investments. We strongly encourage you to consult a qualified professional before taking any action.',
-        'disclaimer-ip-title': 'Intellectual property:',
-        'disclaimer-ip-desc': 'All content on this site (texts, images, logos, videos) is the exclusive property of Xynera Club or its partners. Any reproduction, distribution, or use without prior authorization is prohibited.',
-        'disclaimer-update': 'Last updated: 2026 – Xynera Club.',
-        'footer-explore': 'Explore',
-        'footer-learn': 'Learn',
-        'footer-contact': 'Contact',
-        'footer-proposal': 'Proposal',
-        'help-btn': 'Help',
-        'help-modal-title': 'How can we help you?',
-        'help-modal-desc': 'Use this form to ask a question, request a quote, or contact us before any process. We reply within 24 hours.',
-        'btn-send': 'Send',
-        'help-success': 'Your message has been sent! We will reply shortly.'
-      }
-    };
-
-    // --- APPLIQUER LES TRADUCTIONS ---
-    let currentLang = localStorage.getItem('lang') || 'fr';
-
-    function applyTranslations(lang) {
-      document.querySelectorAll('[data-lang]').forEach(el => {
-        const key = el.getAttribute('data-lang');
-        if (translations[lang] && translations[lang][key]) {
-          if (el.tagName === 'SELECT') {
-          } else {
-            el.innerHTML = translations[lang][key];
-          }
-        }
-      });
-      document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-lang-placeholder');
-        if (translations[lang] && translations[lang][key]) {
-          el.placeholder = translations[lang][key];
-        }
-      });
-      document.querySelectorAll('select option[data-lang]').forEach(opt => {
-        const key = opt.getAttribute('data-lang');
-        if (translations[lang] && translations[lang][key]) {
-          opt.textContent = translations[lang][key];
-        }
-      });
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.langCode === lang);
-      });
-      document.documentElement.lang = lang;
-      localStorage.setItem('lang', lang);
-    }
-
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const lang = this.dataset.langCode;
-        currentLang = lang;
-        applyTranslations(lang);
-      });
-    });
-    applyTranslations(currentLang);
-
-    // --- FONCTIONS ---
+    // --- FONCTIONS UTILITAIRES ---
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
         alert(text + ' copié dans le presse-papiers !');
@@ -1635,7 +1213,7 @@
       setTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    // --- LOADER PAGE (4 secondes) ---
+    // --- LOADER (4 secondes) ---
     const loader = document.getElementById('loader');
     const startTime = Date.now();
     window.addEventListener('load', function() {
@@ -1662,7 +1240,7 @@
       player.play().catch(() => {});
     });
 
-    // --- WIZARD ---
+    // --- WIZARD (3 étapes) ---
     const serviceSelect = document.getElementById('serviceSelect');
     const step1Next = document.getElementById('step1Next');
     const step2Next = document.getElementById('step2Next');
@@ -1776,20 +1354,20 @@
       }
     });
 
-    // --- ENVOI VERS PHP AVEC SPINNER ET GESTION D'ERREUR ---
+    // --- ENVOI DU FORMULAIRE VERS PHP ---
     const finalForm = document.getElementById('finalRequestForm');
     const submitBtn = document.getElementById('submitBtn');
     const errorBox = document.getElementById('errorBox');
+    const finalMsg = document.getElementById('finalMessage');
 
     finalForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const formData = new FormData(this);
       const originalText = submitBtn.innerHTML;
-      const finalMsg = document.getElementById('finalMessage');
 
       // Désactiver le bouton et afficher le spinner
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner"></span> Envoi en cours...';
+      submitBtn.innerHTML = '<span class="spinner" style="display:inline-block; width:20px; height:20px; border:3px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation:spin 0.8s linear infinite; margin-right:8px;"></span> Envoi en cours...';
       errorBox.style.display = 'none';
       finalMsg.style.display = 'none';
 
@@ -1799,7 +1377,6 @@
       })
       .then(response => response.text())
       .then(data => {
-        // Si le retour contient "✅" (succès)
         if (data.includes('✅')) {
           finalMsg.style.display = 'block';
           finalMsg.innerHTML = '<i class="fas fa-check-circle"></i> ' + data;
@@ -1809,19 +1386,14 @@
           document.getElementById('previewImage').src = '#';
           finalMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
-          // Affichage de l'erreur renvoyée par le PHP
           errorBox.style.display = 'block';
           errorBox.innerHTML = '<strong>Erreur :</strong> ' + data;
-          // Si l'erreur indique que la fonction mail est désactivée, on donne une astuce
-          if (data.toLowerCase().includes('mail') || data.toLowerCase().includes('function')) {
-            errorBox.innerHTML += '<br><br><strong>💡 Solution :</strong> Contactez votre hébergeur pour activer la fonction PHP <code>mail()</code>, ou utilisez un plugin SMTP (PHPMailer).';
-          }
           errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       })
-      .catch(err => {
+      .catch(() => {
         errorBox.style.display = 'block';
-        errorBox.innerHTML = '<strong>Erreur réseau :</strong> Impossible de contacter le serveur. Vérifiez votre connexion internet ou réessayez plus tard.';
+        errorBox.innerHTML = '<strong>Erreur réseau :</strong> Impossible de contacter le serveur. Vérifiez votre connexion.';
         errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
       .finally(() => {
@@ -1840,7 +1412,7 @@
         const originalText = submitBtn.innerHTML;
         const msg = document.getElementById(messageId);
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
+        submitBtn.innerHTML = '<span class="spinner" style="display:inline-block; width:18px; height:18px; border:3px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation:spin 0.8s linear infinite; margin-right:6px;"></span> Envoi...';
 
         const data = new FormData(this);
         fetch('send_request.php', {
@@ -1891,18 +1463,6 @@
 
     // --- ANNÉE ---
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // --- VÉRIFICATION PHP : si le script renvoie "mail() disabled", on affiche un message d'info ---
-    // On fait un test silencieux
-    fetch('send_request.php?test=1')
-      .then(res => res.text())
-      .then(text => {
-        if (text.includes('mail()')) {
-          console.warn('La fonction mail() est peut-être désactivée sur ce serveur.');
-        }
-      })
-      .catch(() => {});
   </script>
-
 </body>
 </html>
