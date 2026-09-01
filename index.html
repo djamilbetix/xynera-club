@@ -20,7 +20,7 @@
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
-    /* --- LOADER (4 secondes) --- */
+    /* --- LOADER --- */
     .loader-container {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #fff; display: flex; justify-content: center; align-items: center;
@@ -127,7 +127,6 @@
       color: inherit; transition: transform 0.3s; display: flex; align-items: center;
     }
     .theme-toggle:hover { transform: rotate(25deg); }
-    /* Language switcher */
     .lang-switcher {
       display: flex; gap: 4px; align-items: center;
       border-left: 1px solid #ddd; padding-left: 12px;
@@ -475,34 +474,14 @@
 
     .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
 
-    /* --- UPLOAD AVEC APERÇU --- */
-    .upload-receipt {
-      border: 2px dashed #ccc;
-      border-radius: 16px;
-      padding: 25px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.3s;
-      background: #fafafa;
+    /* --- CHAMP LIEN (remplace l'upload) --- */
+    .link-help {
+      font-size: 12px;
+      color: #888;
+      margin-top: 6px;
+      line-height: 1.5;
     }
-    .upload-receipt:hover { border-color: #e50914; }
-    .upload-receipt input { display: none; }
-    .file-name { font-size: 13px; color: #888; margin-top: 8px; }
-    .file-preview {
-      margin-top: 15px;
-      display: none;
-      max-width: 100%;
-      border-radius: 12px;
-      border: 1px solid #eee;
-      overflow: hidden;
-    }
-    .file-preview img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      background: #fff;
-    }
-    .file-preview.active { display: block; }
+    .link-help a { color: #e50914; text-decoration: underline; }
 
     .wizard-nav { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
 
@@ -702,7 +681,7 @@
         <p data-lang="teaser-desc">Que vous ayez une idée de projet à concrétiser ou que vous souhaitiez intégrer une équipe dynamique de passionnés, Xynera Club est votre porte d'entrée vers l'innovation. Rejoignez un écosystème où la technologie, la collaboration et la créativité se rencontrent pour façonner le monde de demain.</p>
         <div class="teaser-buttons">
           <a href="#contact" class="btn btn-red-lg" data-lang="teaser-btn1"><i class="fas fa-rocket"></i> Demander un service</a>
-          <a href="mailto:contact@xyneraclub.com?subject=Demande d'adhésion - Xynera Club" class="btn btn-outline-light" data-lang="teaser-btn2"><i class="fas fa-users"></i> Rejoindre le club</a>
+          <a href="mailto:xenaryclub@gmail.com?subject=Demande d'adhésion - Xynera Club" class="btn btn-outline-light" data-lang="teaser-btn2"><i class="fas fa-users"></i> Rejoindre le club</a>
         </div>
       </div>
     </section>
@@ -887,7 +866,7 @@
       </div>
     </section>
 
-    <!-- CONTACT WIZARD -->
+    <!-- CONTACT WIZARD (AVEC LIEN AU LIEU DU FICHIER) -->
     <section id="contact">
       <div class="container">
         <div class="section-head">
@@ -987,9 +966,9 @@
               </div>
             </div>
 
-            <!-- Étape 3 (Téléchargement + aperçu) -->
+            <!-- Étape 3 (champ LIEN à la place du fichier) -->
             <div class="step-panel" id="panel3">
-              <p style="font-weight:700; margin-bottom:18px;" data-lang="final-instruction">Remplissez vos coordonnées et joignez la capture du paiement :</p>
+              <p style="font-weight:700; margin-bottom:18px;" data-lang="final-instruction">Remplissez vos coordonnées et joignez le lien de votre reçu :</p>
               
               <form id="finalRequestForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
                 <input type="hidden" name="service_name" id="hiddenServiceName">
@@ -1011,18 +990,16 @@
                   <label><i class="fas fa-hashtag"></i> <span data-lang="label-tx">Référence de la transaction</span></label>
                   <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
                 </div>
+                
+                <!-- 🔗 CHAMP LIEN (remplace l'upload) -->
                 <div class="field">
-                  <label><i class="fas fa-file-image"></i> <span data-lang="label-upload">Capture d'écran du paiement (Reçu)</span></label>
-                  <div class="upload-receipt" id="uploadArea">
-                    <i class="fas fa-cloud-upload-alt" style="font-size:32px; color:#888;"></i>
-                    <p style="margin:8px 0;" data-lang="upload-text">Cliquez pour télécharger ou glissez-déposez</p>
-                    <input type="file" accept="image/*" id="receiptFile" required>
-                    <div class="file-name" id="fileNameDisplay" data-lang="no-file">Aucun fichier sélectionné</div>
-                    <div class="file-preview" id="filePreview">
-                      <img id="previewImage" src="#" alt="Aperçu du reçu">
-                    </div>
+                  <label><i class="fas fa-link"></i> <span data-lang="label-link">Lien du reçu (capture d'écran)</span></label>
+                  <input type="url" name="receipt_link" placeholder="https://exemple.com/mon-reçu.png" required>
+                  <div class="link-help" data-lang="link-help">
+                    Hébergez votre image sur <a href="https://imgur.com/upload" target="_blank">Imgur</a> (gratuit) et collez le lien direct.
                   </div>
                 </div>
+
                 <div class="wizard-nav">
                   <button class="btn btn-secondary" id="step3Back" data-lang="btn-prev"><i class="fas fa-arrow-left"></i> Précédent</button>
                   <button type="submit" class="btn btn-red" data-lang="btn-submit"><i class="fas fa-check-circle"></i> Soumettre ma demande</button>
@@ -1089,7 +1066,7 @@
       <strong data-lang="disclaimer-title">Clause de non-responsabilité – Informations importantes</strong>
       <p data-lang="disclaimer-p1">Les informations fournies sur ce site web (Xynera Club) sont diffusées à titre purement éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques, fiscaux ou en investissement. Xynera Club n'est pas un conseiller en investissement, ni un intermédiaire financier.</p>
       <p><strong data-lang="disclaimer-risk-title">Risques liés aux cryptomonnaies et aux actifs numériques :</strong> <span data-lang="disclaimer-risk-desc">Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés, notamment la volatilité des prix, les risques de sécurité, les risques réglementaires et les risques de perte totale de capital. Aucun rendement n'est garanti. Les performances passées ne préjugent pas des résultats futurs. Chaque investisseur ou utilisateur doit effectuer ses propres recherches (DYOR) et consulter un professionnel avant toute décision.</span></p>
-      <p><strong data-lang="disclaimer-data-title">Protection des données :</strong> <span data-lang="disclaimer-data-desc">Les informations personnelles collectées via les formulaires de ce site sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers sans votre consentement explicite, conformément à la législation en vigueur (RGPD). Vous disposez d'un droit d'accès, de rectification et de suppression de vos données en nous contactant à : <a href="mailto:contact@xyneraclub.com" style="color:#e50914;">contact@xyneraclub.com</a>.</span></p>
+      <p><strong data-lang="disclaimer-data-title">Protection des données :</strong> <span data-lang="disclaimer-data-desc">Les informations personnelles collectées via les formulaires de ce site sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers sans votre consentement explicite, conformément à la législation en vigueur (RGPD). Vous disposez d'un droit d'accès, de rectification et de suppression de vos données en nous contactant à : <a href="mailto:xenaryclub@gmail.com" style="color:#e50914;">xenaryclub@gmail.com</a>.</span></p>
       <p><strong data-lang="disclaimer-responsibility-title">Responsabilité :</strong> <span data-lang="disclaimer-responsibility-desc">Xynera Club décline toute responsabilité quant aux pertes, dommages directs ou indirects, préjudices financiers ou autres, résultant de l'utilisation des informations diffusées sur ce site, des liens externes, ou des décisions prises en conséquence. Les utilisateurs sont seuls responsables de leurs actions et investissements. Nous vous encourageons vivement à consulter un professionnel qualifié avant toute démarche.</span></p>
       <p><strong data-lang="disclaimer-ip-title">Propriété intellectuelle :</strong> <span data-lang="disclaimer-ip-desc">L'ensemble du contenu de ce site (textes, images, logos, vidéos) est la propriété exclusive de Xynera Club ou de ses partenaires. Toute reproduction, distribution ou utilisation sans autorisation préalable est interdite.</span></p>
       <p><em data-lang="disclaimer-update">Dernière mise à jour : 2026 – Xynera Club.</em></p>
@@ -1107,7 +1084,7 @@
           </div>
           <p style="margin-top:15px;">Build. Learn. Analyze. Innovate.</p>
           <p style="margin-top:10px;font-size:13px;color:#999;">
-            <i class="fas fa-envelope"></i> contact@xyneraclub.com
+            <i class="fas fa-envelope"></i> <a href="mailto:xenaryclub@gmail.com">xenaryclub@gmail.com</a>
           </p>
         </div>
         <div><h4 data-lang="footer-explore">Explorer</h4><a href="#about" data-lang="nav-about">À propos</a><br><a href="#services" data-lang="nav-services">Services</a><br><a href="#projects" data-lang="nav-projects">Projets</a></div>
@@ -1289,14 +1266,13 @@
         'payment-note': 'Envoyez le montant exact et conservez la capture d\'écran.',
         'btn-prev': 'Précédent',
         'btn-paid': 'J\'ai effectué le paiement',
-        'final-instruction': 'Remplissez vos coordonnées et joignez la capture du paiement :',
+        'final-instruction': 'Remplissez vos coordonnées et joignez le lien de votre reçu :',
         'label-name': 'Nom complet',
         'label-email': 'Email',
         'label-phone': 'Téléphone (WhatsApp / Mobile)',
         'label-tx': 'Référence de la transaction',
-        'label-upload': 'Capture d\'écran du paiement (Reçu)',
-        'upload-text': 'Cliquez pour télécharger ou glissez-déposez',
-        'no-file': 'Aucun fichier sélectionné',
+        'label-link': 'Lien du reçu (capture d\'écran)',
+        'link-help': 'Hébergez votre image sur Imgur (gratuit) et collez le lien direct.',
         'btn-submit': 'Soumettre ma demande',
         'success-msg': 'Votre demande a été reçue ! Notre équipe vous contactera sous 24h.',
         'prop-kicker': 'Échange & proposition',
@@ -1317,7 +1293,7 @@
         'disclaimer-risk-title': 'Risques liés aux cryptomonnaies et aux actifs numériques :',
         'disclaimer-risk-desc': 'Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés, notamment la volatilité des prix, les risques de sécurité, les risques réglementaires et les risques de perte totale de capital. Aucun rendement n\'est garanti. Les performances passées ne préjugent pas des résultats futurs. Chaque investisseur ou utilisateur doit effectuer ses propres recherches (DYOR) et consulter un professionnel avant toute décision.',
         'disclaimer-data-title': 'Protection des données :',
-        'disclaimer-data-desc': 'Les informations personnelles collectées via les formulaires de ce site sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers sans votre consentement explicite, conformément à la législation en vigueur (RGPD). Vous disposez d\'un droit d\'accès, de rectification et de suppression de vos données en nous contactant à : contact@xyneraclub.com.',
+        'disclaimer-data-desc': 'Les informations personnelles collectées via les formulaires de ce site sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers sans votre consentement explicite, conformément à la législation en vigueur (RGPD). Vous disposez d\'un droit d\'accès, de rectification et de suppression de vos données en nous contactant à : xenaryclub@gmail.com.',
         'disclaimer-responsibility-title': 'Responsabilité :',
         'disclaimer-responsibility-desc': 'Xynera Club décline toute responsabilité quant aux pertes, dommages directs ou indirects, préjudices financiers ou autres, résultant de l\'utilisation des informations diffusées sur ce site, des liens externes, ou des décisions prises en conséquence. Les utilisateurs sont seuls responsables de leurs actions et investissements. Nous vous encourageons vivement à consulter un professionnel qualifié avant toute démarche.',
         'disclaimer-ip-title': 'Propriété intellectuelle :',
@@ -1459,14 +1435,13 @@
         'payment-note': 'Send the exact amount and keep the screenshot.',
         'btn-prev': 'Previous',
         'btn-paid': 'I made the payment',
-        'final-instruction': 'Fill in your details and attach the payment screenshot:',
+        'final-instruction': 'Fill in your details and provide the link to your receipt:',
         'label-name': 'Full name',
         'label-email': 'Email',
         'label-phone': 'Phone (WhatsApp / Mobile)',
         'label-tx': 'Transaction reference',
-        'label-upload': 'Payment screenshot (Receipt)',
-        'upload-text': 'Click to upload or drag and drop',
-        'no-file': 'No file selected',
+        'label-link': 'Receipt link (screenshot)',
+        'link-help': 'Host your image on Imgur (free) and paste the direct link.',
         'btn-submit': 'Submit my request',
         'success-msg': 'Your request has been received! Our team will contact you within 24 hours.',
         'prop-kicker': 'Exchange & proposal',
@@ -1487,7 +1462,7 @@
         'disclaimer-risk-title': 'Risks related to cryptocurrencies and digital assets:',
         'disclaimer-risk-desc': 'Cryptocurrencies, tokens, and Web3 projects carry high risks, including price volatility, security risks, regulatory risks, and total loss of capital. No return is guaranteed. Past performance does not predict future results. Each investor or user must do their own research (DYOR) and consult a professional before making any decision.',
         'disclaimer-data-title': 'Data protection:',
-        'disclaimer-data-desc': 'Personal information collected via forms on this site is used solely for request processing and is never shared with third parties without your explicit consent, in accordance with applicable law (GDPR). You have the right to access, rectify, and delete your data by contacting us at: contact@xyneraclub.com.',
+        'disclaimer-data-desc': 'Personal information collected via forms on this site is used solely for request processing and is never shared with third parties without your explicit consent, in accordance with applicable law (GDPR). You have the right to access, rectify, and delete your data by contacting us at: xenaryclub@gmail.com.',
         'disclaimer-responsibility-title': 'Liability:',
         'disclaimer-responsibility-desc': 'Xynera Club disclaims any liability for losses, direct or indirect damages, financial or other harm resulting from the use of information on this site, external links, or decisions made based on it. Users are solely responsible for their actions and investments. We strongly encourage you to consult a qualified professional before taking any action.',
         'disclaimer-ip-title': 'Intellectual property:',
@@ -1505,38 +1480,32 @@
       }
     };
 
-    // --- APPLIQUER LA TRADUCTION ---
+    // --- APPLIQUER LES TRADUCTIONS ---
     let currentLang = localStorage.getItem('lang') || 'fr';
 
     function applyTranslations(lang) {
-      const elements = document.querySelectorAll('[data-lang]');
-      elements.forEach(el => {
+      document.querySelectorAll('[data-lang]').forEach(el => {
         const key = el.getAttribute('data-lang');
         if (translations[lang] && translations[lang][key]) {
-          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            // Pour les placeholder, on utilise data-lang-placeholder si présent
-          } else if (el.tagName === 'SELECT') {
-            // Géré séparément pour les options
+          if (el.tagName === 'SELECT') {
+            // Géré via les options
           } else {
             el.innerHTML = translations[lang][key];
           }
         }
       });
-      // Traduire les placeholder
       document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
         const key = el.getAttribute('data-lang-placeholder');
         if (translations[lang] && translations[lang][key]) {
           el.placeholder = translations[lang][key];
         }
       });
-      // Traduire les options de select
       document.querySelectorAll('select option[data-lang]').forEach(opt => {
         const key = opt.getAttribute('data-lang');
         if (translations[lang] && translations[lang][key]) {
           opt.textContent = translations[lang][key];
         }
       });
-      // Mettre à jour le sélecteur de langue
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.langCode === lang);
       });
@@ -1544,7 +1513,6 @@
       localStorage.setItem('lang', lang);
     }
 
-    // --- GESTIONNAIRE DE LANGUE ---
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const lang = this.dataset.langCode;
@@ -1552,8 +1520,6 @@
         applyTranslations(lang);
       });
     });
-
-    // Appliquer la langue au chargement
     applyTranslations(currentLang);
 
     // --- FONCTIONS ---
@@ -1709,152 +1675,8 @@
       step2Label.classList.add('active');
     });
 
-    // --- UPLOAD AVEC APERÇU ---
-    const fileInput = document.getElementById('receiptFile');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const uploadArea = document.getElementById('uploadArea');
-    const filePreview = document.getElementById('filePreview');
-    const previewImage = document.getElementById('previewImage');
-
-    fileInput.addEventListener('change', function(e) {
-      const file = this.files[0];
-      if (file) {
-        fileNameDisplay.textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          previewImage.src = event.target.result;
-          filePreview.classList.add('active');
-        };
-        reader.readAsDataURL(file);
-      } else {
-        fileNameDisplay.textContent = 'Aucun fichier sélectionné';
-        filePreview.classList.remove('active');
-        previewImage.src = '#';
-      }
-    });
-
-    uploadArea.addEventListener('click', function(e) {
-      if (e.target.tagName !== 'INPUT') fileInput.click();
-    });
-    uploadArea.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#e50914';
-    });
-    uploadArea.addEventListener('dragleave', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#ccc';
-    });
-    uploadArea.addEventListener('drop', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#ccc';
-      if (e.dataTransfer.files.length > 0) {
-        fileInput.files = e.dataTransfer.files;
-        const event = new Event('change', { bubbles: true });
-        fileInput.dispatchEvent(event);
-      }
-    });
-
-    // --- SOUMISSION AVEC BASE64 (pour contourner l'erreur File Uploads Not Permitted) ---
-    function handleFormSubmitWithFile(formId, messageId) {
-      const form = document.getElementById(formId);
-      if (!form) return;
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-
-        const formData = new FormData(this);
-        const file = document.getElementById('receiptFile').files[0];
-        const data = {};
-
-        // Récupérer les champs texte
-        for (let [key, value] of formData.entries()) {
-          if (key !== 'receiptFile') {
-            data[key] = value;
-          }
-        }
-
-        // Si un fichier est présent, le convertir en base64
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            data.receipt_base64 = e.target.result; // Contient le dataURL complet
-
-            fetch(form.action, {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-            })
-            .then(response => {
-              if (response.ok) {
-                document.getElementById(messageId).style.display = 'block';
-                form.reset();
-                document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
-                document.getElementById('filePreview').classList.remove('active');
-                document.getElementById('previewImage').src = '#';
-                document.getElementById(messageId).scrollIntoView({ behavior: 'smooth', block: 'center' });
-              } else {
-                response.json().then(err => {
-                  alert('Erreur: ' + (err.error || 'Veuillez réessayer.'));
-                }).catch(() => {
-                  alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-                });
-              }
-            })
-            .catch(() => {
-              alert('Erreur de connexion. Vérifiez votre internet.');
-            })
-            .finally(() => {
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = originalText;
-            });
-          };
-          reader.readAsDataURL(file);
-        } else {
-          // Pas de fichier, envoyer normalement
-          fetch(form.action, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          })
-          .then(response => {
-            if (response.ok) {
-              document.getElementById(messageId).style.display = 'block';
-              form.reset();
-              document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
-              document.getElementById('filePreview').classList.remove('active');
-              document.getElementById('previewImage').src = '#';
-              document.getElementById(messageId).scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
-              response.json().then(err => {
-                alert('Erreur: ' + (err.error || 'Veuillez réessayer.'));
-              }).catch(() => {
-                alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-              });
-            }
-          })
-          .catch(() => {
-            alert('Erreur de connexion. Vérifiez votre internet.');
-          })
-          .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-          });
-        }
-      });
-    }
-
-    // Appliquer la gestion personnalisée uniquement sur le formulaire final (car il contient le fichier)
-    // Pour les autres formulaires (proposal, help), on garde la gestion standard mais avec JSON
-    function handleSimpleFormSubmit(formId, messageId) {
+    // --- SOUMISSION FORMSPREE (JSON classique, sans fichier) ---
+    function handleFormSubmit(formId, messageId) {
       const form = document.getElementById(formId);
       if (!form) return;
       form.addEventListener('submit', function(e) {
@@ -1901,9 +1723,9 @@
       });
     }
 
-    handleFormSubmitWithFile('finalRequestForm', 'finalMessage');
-    handleSimpleFormSubmit('proposalForm', 'proposalMessage');
-    handleSimpleFormSubmit('helpForm', 'helpMessage');
+    handleFormSubmit('finalRequestForm', 'finalMessage');
+    handleFormSubmit('proposalForm', 'proposalMessage');
+    handleFormSubmit('helpForm', 'helpMessage');
 
     // --- MODALE D'AIDE ---
     const helpBtn = document.getElementById('helpBtn');
