@@ -7,7 +7,7 @@
   <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* --- STYLES COMPLETS (version stable) --- */
+    /* --- RESET & BASE --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -20,6 +20,7 @@
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
+    /* --- LOADER --- */
     .loader-container {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: #fff; display: flex; justify-content: center; align-items: center;
@@ -38,6 +39,7 @@
       100% { transform: translateY(-30px) scale(1); opacity: 1; }
     }
 
+    /* --- THEME SOMBRE --- */
     body.dark { background: #0a0a0a; color: #eaeaea; }
     body.dark header { background: rgba(10,10,10,0.95); border-color: #2a2a2a; }
     body.dark .card, body.dark .team-member { background: #161616; border-color: #2a2a2a; }
@@ -77,18 +79,25 @@
     body.dark .marketing-target .target-item { background: #1a1a1a; border-color: #333; }
     body.dark .marketing-target .target-item p { color: #aaa; }
     body.dark .error-box { background: #2a1515; border-color: #5a2a2a; color: #f0b0b0; }
+    body.dark .link-guide { background: #1a1a1a; border-color: #333; }
+    body.dark .link-guide .step { color: #ccc; }
 
-    .error-box {
-      background: #fff7f7;
-      border: 1px solid #ffd2d2;
-      color: #7d1111;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 15px;
-      display: none;
-      font-weight: 600;
+    /* --- SPINNER POUR LES BOUTONS --- */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
+    /* --- CONTENEUR & BOUTONS --- */
     .container { width: min(92%, 1160px); margin: 0 auto; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -104,12 +113,14 @@
     .btn-success:hover { background: #08732f; transform: translateY(-3px); }
     .btn-secondary { background: #666; color: #fff; }
     .btn-secondary:hover { background: #444; transform: translateY(-3px); }
+    .btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 8px; }
     .btn-lg { padding: 22px 55px; font-size: 22px; border-radius: 60px; font-weight: 800; letter-spacing: 0.5px; }
     .btn-red-lg { background: #e50914; color: #fff; border: 2px solid #e50914; }
     .btn-red-lg:hover { background: #bd0710; transform: scale(1.04); box-shadow: 0 15px 40px rgba(229,9,20,0.3); }
     .btn-outline-light { border: 2px solid #fff; color: #fff; background: transparent; }
     .btn-outline-light:hover { background: #fff; color: #111; transform: scale(1.04); }
 
+    /* --- EN-TÊTE --- */
     header {
       position: sticky; top: 0; z-index: 100;
       background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
@@ -135,20 +146,8 @@
       color: inherit; transition: transform 0.3s; display: flex; align-items: center;
     }
     .theme-toggle:hover { transform: rotate(25deg); }
-    .lang-switcher {
-      display: flex; gap: 4px; align-items: center;
-      border-left: 1px solid #ddd; padding-left: 12px;
-    }
-    .lang-btn {
-      background: none; border: none; font-size: 13px; font-weight: 700;
-      color: #888; cursor: pointer; padding: 4px 8px; border-radius: 6px;
-      transition: 0.2s;
-    }
-    .lang-btn.active { color: #111; background: #eee; }
-    body.dark .lang-btn.active { color: #eee; background: #2a2a2a; }
-    .lang-btn:hover { background: #f0f0f0; }
-    body.dark .lang-btn:hover { background: #2a2a2a; }
 
+    /* --- HÉROS --- */
     .hero {
       background: linear-gradient(120deg, #f8f8f8, #efefef);
       min-height: 560px; display: flex; align-items: center;
@@ -195,6 +194,7 @@
     .stat strong { display: block; font-size: 24px; font-weight: 800; }
     .stat small { color: #777; font-size: 13px; }
 
+    /* --- TEASER --- */
     .teaser-cta {
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: #fff;
@@ -225,6 +225,7 @@
       flex-wrap: wrap;
     }
 
+    /* --- SECTIONS --- */
     section { padding: 70px 0; }
     .section-head { max-width: 760px; margin-bottom: 35px; }
     .kicker {
@@ -254,6 +255,7 @@
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .card p { color: #666; font-size: 15px; line-height: 1.7; }
 
+    /* --- GUIDE --- */
     .guide-steps {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;
       margin-top: 20px;
@@ -271,6 +273,7 @@
     .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
     .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
 
+    /* --- MARKETING --- */
     .marketing-target {
       background: #f8f8f8;
       border-top: 3px solid #e50914;
@@ -319,6 +322,7 @@
     .target-item p { color: #666; font-size: 14px; line-height: 1.6; margin: 0; }
     body.dark .target-item p { color: #aaa; }
 
+    /* --- ABOUT --- */
     .about-wrapper {
       display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
     }
@@ -348,6 +352,7 @@
       content: "•"; color: #e50914; font-weight: 900; font-size: 22px; line-height: 1;
     }
 
+    /* --- ÉQUIPE --- */
     .team-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
     }
@@ -367,6 +372,7 @@
       margin-left: 6px;
     }
 
+    /* --- CLIENTS --- */
     .client-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
     }
@@ -380,6 +386,7 @@
     .client-logo strong { font-size: 17px; display: block; }
     .client-logo span { font-size: 13px; color: #888; }
 
+    /* --- PROJETS --- */
     .project { overflow: hidden; padding: 0; }
     .project-cover {
       height: 170px; background: linear-gradient(135deg, #111, #2a2a2a);
@@ -410,6 +417,7 @@
     .cta h2 { font-size: 30px; font-weight: 800; }
     .cta p { color: #aaa; max-width: 600px; font-size: 17px; }
 
+    /* --- CONTACT WIZARD --- */
     .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
     .service-request-box {
       background: #f9f9f9; border-radius: 28px; padding: 35px;
@@ -472,34 +480,6 @@
     .copy-btn:hover { background: #e50914; color: #fff; }
     .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
 
-    .upload-receipt {
-      border: 2px dashed #ccc;
-      border-radius: 16px;
-      padding: 25px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.3s;
-      background: #fafafa;
-    }
-    .upload-receipt:hover { border-color: #e50914; }
-    .upload-receipt input { display: none; }
-    .file-name { font-size: 13px; color: #888; margin-top: 8px; }
-    .file-preview {
-      margin-top: 15px;
-      display: none;
-      max-width: 100%;
-      border-radius: 12px;
-      border: 1px solid #eee;
-      overflow: hidden;
-    }
-    .file-preview img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      background: #fff;
-    }
-    .file-preview.active { display: block; }
-
     .wizard-nav { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
 
     .notice {
@@ -510,6 +490,7 @@
     .list li { display: flex; gap: 12px; align-items: flex-start; padding: 5px 0; }
     .list li::before { content: "✓"; color: #e50914; font-weight: 900; }
 
+    /* --- DISCLAIMER --- */
     .disclaimer {
       background: #f8f8f8; border-top: 3px solid #e50914;
       padding: 40px 0; font-size: 14px; color: #555; line-height: 1.9;
@@ -519,6 +500,7 @@
     .disclaimer ul { margin: 10px 0 10px 25px; }
     .disclaimer ul li { margin-bottom: 6px; }
 
+    /* --- BOUTON AIDE FLOTTANT --- */
     .help-btn {
       position: fixed; bottom: 30px; right: 30px;
       background: #e50914; color: #fff; border: none;
@@ -528,6 +510,7 @@
     }
     .help-btn:hover { transform: scale(1.05); background: #bd0710; }
 
+    /* --- MODALE AIDE --- */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
@@ -549,6 +532,7 @@
     .modal-content p { color: #555; margin-bottom: 20px; }
     .modal-content .field { margin-bottom: 14px; }
 
+    /* --- FOOTER --- */
     footer {
       background: #080808; color: #fff; padding: 50px 0 25px;
     }
@@ -576,6 +560,78 @@
     .footer-bottom a { color: #999; }
     .footer-bottom a:hover { color: #e50914; }
 
+    /* --- NOUVEAUX STYLES POUR LE GUIDE & LE BOUTON SUPPORT --- */
+    .link-guide {
+      background: #f8f8f8;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin: 10px 0 16px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .link-guide .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .link-guide .step .num {
+      display: inline-block;
+      background: #e50914;
+      color: #fff;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      text-align: center;
+      line-height: 22px;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .link-guide .step strong { color: #e50914; }
+    .link-guide a { color: #e50914; text-decoration: underline; }
+
+    .support-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .support-row .btn-support {
+      background: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .support-row .btn-support:hover {
+      background: #e50914;
+      color: #fff;
+      border-color: #e50914;
+      transform: translateY(-2px);
+    }
+    body.dark .support-row .btn-support {
+      background: #2a2a2a;
+      color: #ccc;
+      border-color: #444;
+    }
+    body.dark .support-row .btn-support:hover {
+      background: #e50914;
+      color: #fff;
+      border-color: #e50914;
+    }
+
+    /* --- RESPONSIVE --- */
     @media (max-width: 992px) {
       nav { display: none; flex-direction: column; position: absolute; top: 80px; left: 0; right: 0;
             background: #fff; padding: 25px; border-bottom: 1px solid #ddd; gap: 15px;
@@ -598,7 +654,7 @@
       .step-indicator::before { display: none; }
       .teaser-buttons { flex-direction: column; align-items: center; }
       .btn-lg { width: 100%; max-width: 380px; justify-content: center; }
-      .lang-switcher { border-left: none; padding-left: 0; }
+      .support-row { flex-direction: column; align-items: stretch; }
     }
     @media (max-width: 600px) {
       section { padding: 50px 0; }
@@ -654,7 +710,7 @@
   </header>
 
   <main>
-    <!-- HERO -->
+    <!-- HERO (contenu simplifié pour lisibilité, mais gardez vos textes) -->
     <section class="hero" id="accueil">
       <div class="container hero-grid">
         <div>
@@ -710,7 +766,7 @@
       </div>
     </section>
 
-    <!-- GUIDE -->
+    <!-- GUIDE PRINCIPAL -->
     <section id="guide">
       <div class="container">
         <div class="section-head">
@@ -721,7 +777,7 @@
         <div class="guide-steps">
           <div class="guide-step"><div class="num">1</div><h4>Choisissez votre prestation</h4><p>Parcourez notre offre et sélectionnez le service qui correspond à votre besoin (développement, Web3, audit, formation, etc.).</p></div>
           <div class="guide-step"><div class="num">2</div><h4>Effectuez le paiement</h4><p>Utilisez l'un des moyens de paiement proposés (Airtel Money, M-Pesa, cryptos). Le montant exact est affiché avant validation.</p></div>
-          <div class="guide-step"><div class="num">3</div><h4>Envoyez votre reçu</h4><p>Remplissez le formulaire avec vos coordonnées et téléchargez la capture d'écran de votre transaction.</p></div>
+          <div class="guide-step"><div class="num">3</div><h4>Envoyez votre reçu</h4><p>Remplissez le formulaire avec vos coordonnées et collez le lien de votre capture d'écran (hébergée sur Imgur).</p></div>
           <div class="guide-step"><div class="num">4</div><h4>Confirmation</h4><p>Notre équipe valide votre demande sous 24h et vous contacte pour démarrer le projet ou la formation.</p></div>
         </div>
         <div style="text-align:center; margin-top:30px;">
@@ -874,7 +930,7 @@
       </div>
     </section>
 
-    <!-- CONTACT WIZARD -->
+    <!-- CONTACT WIZARD AVEC GUIDE ET BOUTON SUPPORT -->
     <section id="contact">
       <div class="container">
         <div class="section-head">
@@ -974,11 +1030,11 @@
               </div>
             </div>
 
-            <!-- Étape 3 (avec upload et PHP) -->
+            <!-- Étape 3 : Champ Lien + Guide + Bouton Support -->
             <div class="step-panel" id="panel3">
-              <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et joignez la capture du paiement :</p>
+              <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et fournissez le lien de votre reçu :</p>
               
-              <form id="finalRequestForm" action="send_request.php" method="POST" enctype="multipart/form-data">
+              <form id="finalRequestForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
                 <input type="hidden" name="service_name" id="hiddenServiceName">
                 <input type="hidden" name="service_price" id="hiddenServicePrice">
 
@@ -999,22 +1055,35 @@
                   <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
                 </div>
 
-                <!-- Upload fichier -->
+                <!-- 📸 Lien du reçu + GUIDE + BOUTON SUPPORT -->
                 <div class="field">
-                  <label><i class="fas fa-file-image"></i> Capture d'écran du paiement (Reçu)</label>
-                  <div class="upload-receipt" id="uploadArea">
-                    <i class="fas fa-cloud-upload-alt" style="font-size:32px; color:#888;"></i>
-                    <p style="margin:8px 0;">Cliquez pour télécharger ou glissez-déposez</p>
-                    <input type="file" name="receiptFile" accept="image/*" id="receiptFile" required>
-                    <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
-                    <div class="file-preview" id="filePreview">
-                      <img id="previewImage" src="#" alt="Aperçu du reçu">
-                    </div>
+                  <label><i class="fas fa-link"></i> Lien du reçu (capture d'écran)</label>
+                  <input type="url" name="receipt_link" id="receiptLink" placeholder="https://exemple.com/mon-reçu.png" required>
+                  
+                  <!-- Guide intégré -->
+                  <div class="link-guide">
+                    <div class="step"><span class="num">1</span> <span>Allez sur <strong><a href="https://imgur.com/upload" target="_blank">Imgur.com</a></strong> (gratuit, pas d'inscription).</span></div>
+                    <div class="step"><span class="num">2</span> <span>Téléchargez votre capture d'écran (cliquez sur "Choose Photo/Video").</span></div>
+                    <div class="step"><span class="num">3</span> <span>Une fois l'image en ligne, <strong>copiez le lien direct</strong> de l'image (cliquez sur "Copy Link" ou faites un clic droit sur l'image → "Copier l'adresse de l'image").</span></div>
+                    <div class="step"><span class="num">4</span> <span>Collez le lien dans le champ ci-dessus. Un <strong>aperçu</strong> de votre image apparaîtra automatiquement.</span></div>
+                  </div>
+
+                  <!-- Aperçu de l'image -->
+                  <div class="link-preview" id="linkPreview">
+                    <img id="previewImage" src="#" alt="Aperçu du reçu">
+                  </div>
+
+                  <!-- Ligne avec bouton support -->
+                  <div class="support-row">
+                    <span style="font-size:14px; color:#888;">Vous rencontrez un problème ?</span>
+                    <button type="button" class="btn-support" id="openSupportBtn">
+                      <i class="fas fa-headset"></i> Contacter le support
+                    </button>
                   </div>
                 </div>
 
-                <!-- Zone d'erreur -->
-                <div class="error-box" id="errorBox"></div>
+                <!-- Zone d'erreur (si besoin) -->
+                <div class="error-box" id="errorBox" style="display:none;"></div>
 
                 <div class="wizard-nav">
                   <button class="btn btn-secondary" id="step3Back"><i class="fas fa-arrow-left"></i> Précédent</button>
@@ -1032,7 +1101,7 @@
       </div>
     </section>
 
-    <!-- PROPOSITION -->
+    <!-- SECTION PROPOSITION -->
     <section id="discuss" style="background:#f5f5f5;">
       <div class="container">
         <div class="section-head">
@@ -1041,7 +1110,7 @@
           <p>Vous avez un projet, une idée, ou souhaitez simplement en savoir plus ? Envoyez-nous un message, nous vous répondrons dans les plus brefs délais.</p>
         </div>
         <div style="max-width:700px; margin:0 auto;">
-          <form id="proposalForm" action="send_request.php" method="POST">
+          <form id="proposalForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
             <div class="field">
               <label><i class="fas fa-user"></i> Votre nom</label>
               <input type="text" name="proposal_name" placeholder="Votre nom" required>
@@ -1085,8 +1154,6 @@
       <p>Les informations fournies sur ce site web (Xynera Club) sont diffusées à titre purement éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques, fiscaux ou en investissement. Xynera Club n'est pas un conseiller en investissement, ni un intermédiaire financier.</p>
       <p><strong>Risques liés aux cryptomonnaies :</strong> Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés. Aucun rendement n'est garanti. Chaque investisseur doit effectuer ses propres recherches (DYOR).</p>
       <p><strong>Protection des données :</strong> Vos informations personnelles sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers. Vous disposez d'un droit d'accès, de rectification et de suppression en nous contactant à : <a href="mailto:xenaryclub@gmail.com" style="color:#e50914;">xenaryclub@gmail.com</a>.</p>
-      <p><strong>Responsabilité :</strong> Xynera Club décline toute responsabilité quant aux pertes ou dommages résultant de l'utilisation des informations diffusées sur ce site.</p>
-      <p><strong>Propriété intellectuelle :</strong> L'ensemble du contenu de ce site est la propriété exclusive de Xynera Club. Toute reproduction sans autorisation est interdite.</p>
       <p><em>Dernière mise à jour : 2026 – Xynera Club.</em></p>
     </div>
   </section>
@@ -1123,32 +1190,48 @@
     </div>
   </footer>
 
-  <!-- HELP BUTTON -->
+  <!-- BOUTON AIDE FLOTTANT -->
   <button class="help-btn" id="helpBtn" aria-label="Aide et contact">
     <i class="fas fa-life-ring"></i> Aide
   </button>
 
-  <!-- HELP MODAL -->
-  <div class="modal-overlay" id="helpModal">
+  <!-- MODALE SUPPORT (pour "Contacter le support" et le bouton flottant) -->
+  <div class="modal-overlay" id="supportModal">
     <div class="modal-content">
-      <button class="modal-close" id="closeModalBtn">✕</button>
-      <h3>Comment pouvons-nous vous aider ?</h3>
-      <p>Utilisez ce formulaire pour poser une question, demander un devis, ou nous contacter avant toute démarche. Nous vous répondons sous 24h.</p>
-      <form id="helpForm" action="send_request.php" method="POST">
+      <button class="modal-close" id="closeSupportModalBtn">✕</button>
+      <h3><i class="fas fa-headset" style="color:#e50914;"></i> Contacter le support</h3>
+      <p>Notre équipe est là pour vous aider. Posez votre question, demandez un devis ou un accompagnement personnalisé. Nous vous répondons sous 24h.</p>
+      <form id="supportForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
         <div class="field">
           <label><i class="fas fa-user"></i> Votre nom</label>
-          <input type="text" name="help_name" placeholder="Votre nom" required>
+          <input type="text" name="support_name" placeholder="Votre nom" required>
         </div>
         <div class="field">
           <label><i class="fas fa-envelope"></i> Votre email</label>
-          <input type="email" name="help_email" placeholder="votre@email.com" required>
+          <input type="email" name="support_email" placeholder="votre@email.com" required>
         </div>
         <div class="field">
-          <label><i class="fas fa-comment"></i> Message</label>
-          <textarea name="help_message" rows="4" placeholder="Votre question..." required></textarea>
+          <label><i class="fas fa-phone"></i> Téléphone (optionnel)</label>
+          <input type="tel" name="support_phone" placeholder="+243 ...">
         </div>
-        <button type="submit" class="btn btn-red" style="width:100%;">Envoyer</button>
-        <div id="helpMessage" style="display:none; margin-top:12px; padding:10px; background:#d4edda; color:#155724; border-radius:10px;">
+        <div class="field">
+          <label><i class="fas fa-tag"></i> Sujet</label>
+          <select name="support_subject">
+            <option value="general">Demande d'information</option>
+            <option value="help_upload">Problème avec le téléchargement du reçu</option>
+            <option value="project">Proposition de projet</option>
+            <option value="support">Assistance technique</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label><i class="fas fa-comment"></i> Votre message</label>
+          <textarea name="support_message" rows="4" placeholder="Décrivez votre besoin..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-red" style="width:100%;" id="supportSubmitBtn">
+          <i class="fas fa-paper-plane"></i> Envoyer au support
+        </button>
+        <div id="supportMessage" style="display:none; margin-top:12px; padding:12px; background:#d4edda; color:#155724; border-radius:10px; font-weight:700;">
           <i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons rapidement.
         </div>
       </form>
@@ -1213,32 +1296,31 @@
       setTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    // --- LOADER (4 secondes) ---
+    // --- LOADER ---
     const loader = document.getElementById('loader');
-    const startTime = Date.now();
     window.addEventListener('load', function() {
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(0, 4000 - elapsed);
-      setTimeout(() => { loader.classList.add('hidden'); }, remaining);
+      setTimeout(() => { loader.classList.add('hidden'); }, 1000);
     });
     setTimeout(() => {
       if (!loader.classList.contains('hidden')) { loader.classList.add('hidden'); }
-    }, 6000);
+    }, 3000);
 
     // --- VIDÉO ---
     const videoInput = document.getElementById('videoInput');
     const preview = document.getElementById('videoPreview');
     const player = document.getElementById('player');
     let videoUrl = null;
-    videoInput.addEventListener('change', function () {
-      const file = this.files[0];
-      if (!file) return;
-      if (videoUrl) URL.revokeObjectURL(videoUrl);
-      videoUrl = URL.createObjectURL(file);
-      player.src = videoUrl;
-      preview.style.display = 'block';
-      player.play().catch(() => {});
-    });
+    if (videoInput) {
+      videoInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        if (videoUrl) URL.revokeObjectURL(videoUrl);
+        videoUrl = URL.createObjectURL(file);
+        player.src = videoUrl;
+        preview.style.display = 'block';
+        player.play().catch(() => {});
+      });
+    }
 
     // --- WIZARD (3 étapes) ---
     const serviceSelect = document.getElementById('serviceSelect');
@@ -1309,92 +1391,71 @@
       step2Label.classList.add('active');
     });
 
-    // --- UPLOAD APERÇU ---
-    const fileInput = document.getElementById('receiptFile');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const uploadArea = document.getElementById('uploadArea');
-    const filePreview = document.getElementById('filePreview');
+    // --- APERÇU DE L'IMAGE DEPUIS LE LIEN ---
+    const receiptLink = document.getElementById('receiptLink');
+    const linkPreview = document.getElementById('linkPreview');
     const previewImage = document.getElementById('previewImage');
 
-    fileInput.addEventListener('change', function(e) {
-      const file = this.files[0];
-      if (file) {
-        fileNameDisplay.textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          previewImage.src = event.target.result;
-          filePreview.classList.add('active');
+    receiptLink.addEventListener('input', function() {
+      const url = this.value.trim();
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        previewImage.src = url;
+        previewImage.onload = function() {
+          linkPreview.classList.add('active');
         };
-        reader.readAsDataURL(file);
+        previewImage.onerror = function() {
+          linkPreview.classList.remove('active');
+        };
       } else {
-        fileNameDisplay.textContent = 'Aucun fichier sélectionné';
-        filePreview.classList.remove('active');
+        linkPreview.classList.remove('active');
         previewImage.src = '#';
       }
     });
 
-    uploadArea.addEventListener('click', function(e) {
-      if (e.target.tagName !== 'INPUT') fileInput.click();
-    });
-    uploadArea.addEventListener('dragover', function(e) {
+    // --- SOUMISSION FORMULAIRE PRINCIPAL (VERS FORMSPREE) ---
+    document.getElementById('finalRequestForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      this.style.borderColor = '#e50914';
-    });
-    uploadArea.addEventListener('dragleave', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#ccc';
-    });
-    uploadArea.addEventListener('drop', function(e) {
-      e.preventDefault();
-      this.style.borderColor = '#ccc';
-      if (e.dataTransfer.files.length > 0) {
-        fileInput.files = e.dataTransfer.files;
-        const event = new Event('change', { bubbles: true });
-        fileInput.dispatchEvent(event);
-      }
-    });
-
-    // --- ENVOI DU FORMULAIRE VERS PHP ---
-    const finalForm = document.getElementById('finalRequestForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const errorBox = document.getElementById('errorBox');
-    const finalMsg = document.getElementById('finalMessage');
-
-    finalForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
+      const form = this;
+      const formData = new FormData(form);
+      const submitBtn = document.getElementById('submitBtn');
       const originalText = submitBtn.innerHTML;
+      const finalMsg = document.getElementById('finalMessage');
+      const errorBox = document.getElementById('errorBox');
 
-      // Désactiver le bouton et afficher le spinner
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner" style="display:inline-block; width:20px; height:20px; border:3px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation:spin 0.8s linear infinite; margin-right:8px;"></span> Envoi en cours...';
-      errorBox.style.display = 'none';
+      submitBtn.innerHTML = '<span class="spinner"></span> Envoi en cours...';
       finalMsg.style.display = 'none';
+      errorBox.style.display = 'none';
 
-      fetch('send_request.php', {
+      fetch('https://formspree.io/f/xjyvbkyp', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
       })
-      .then(response => response.text())
-      .then(data => {
-        if (data.includes('✅')) {
+      .then(response => {
+        if (response.ok) {
           finalMsg.style.display = 'block';
-          finalMsg.innerHTML = '<i class="fas fa-check-circle"></i> ' + data;
-          this.reset();
-          document.getElementById('fileNameDisplay').textContent = 'Aucun fichier sélectionné';
-          document.getElementById('filePreview').classList.remove('active');
-          document.getElementById('previewImage').src = '#';
+          finalMsg.innerHTML = '<i class="fas fa-check-circle"></i> Votre demande a été reçue ! Notre équipe vous contactera sous 24h.';
+          form.reset();
+          linkPreview.classList.remove('active');
+          previewImage.src = '#';
           finalMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
-          errorBox.style.display = 'block';
-          errorBox.innerHTML = '<strong>Erreur :</strong> ' + data;
-          errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          response.json().then(data => {
+            errorBox.style.display = 'block';
+            errorBox.innerHTML = '<strong>Erreur :</strong> ' + (data.error || 'Veuillez vérifier vos informations.');
+            errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }).catch(() => {
+            errorBox.style.display = 'block';
+            errorBox.innerHTML = '<strong>Erreur :</strong> Une erreur est survenue. Veuillez réessayer.';
+          });
         }
       })
       .catch(() => {
         errorBox.style.display = 'block';
-        errorBox.innerHTML = '<strong>Erreur réseau :</strong> Impossible de contacter le serveur. Vérifiez votre connexion.';
-        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        errorBox.innerHTML = '<strong>Erreur réseau :</strong> Vérifiez votre connexion internet.';
       })
       .finally(() => {
         submitBtn.disabled = false;
@@ -1402,67 +1463,107 @@
       });
     });
 
-    // Soumissions pour les autres formulaires (proposition, aide)
-    function handleSimpleSubmit(formId, messageId) {
-      const form = document.getElementById(formId);
-      if (!form) return;
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        const msg = document.getElementById(messageId);
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner" style="display:inline-block; width:18px; height:18px; border:3px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation:spin 0.8s linear infinite; margin-right:6px;"></span> Envoi...';
+    // --- SOUMISSION FORMULAIRE SUPPORT (VERS FORMSPREE) ---
+    document.getElementById('supportForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const formData = new FormData(form);
+      const submitBtn = document.getElementById('supportSubmitBtn');
+      const originalText = submitBtn.innerHTML;
+      const msg = document.getElementById('supportMessage');
 
-        const data = new FormData(this);
-        fetch('send_request.php', {
-          method: 'POST',
-          body: data
-        })
-        .then(response => response.text())
-        .then(text => {
-          if (text.includes('✅')) {
-            msg.style.display = 'block';
-            msg.innerHTML = '<i class="fas fa-check-circle"></i> ' + text;
-            this.reset();
-            msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          } else {
-            alert('Erreur : ' + text);
-          }
-        })
-        .catch(() => alert('Erreur de connexion.'))
-        .finally(() => {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalText;
-        });
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
+      msg.style.display = 'none';
+
+      fetch('https://formspree.io/f/xjyvbkyp', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          msg.style.display = 'block';
+          msg.innerHTML = '<i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons rapidement.';
+          form.reset();
+          msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+        }
+      })
+      .catch(() => alert('Erreur de connexion.'))
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
       });
+    });
+
+    // --- SOUMISSION FORMULAIRE PROPOSITION ---
+    document.getElementById('proposalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const formData = new FormData(form);
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      const msg = document.getElementById('proposalMessage');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
+      msg.style.display = 'none';
+
+      fetch('https://formspree.io/f/xjyvbkyp', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          msg.style.display = 'block';
+          msg.innerHTML = '<i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons dans les 24h.';
+          form.reset();
+          msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          alert('Erreur lors de l\'envoi.');
+        }
+      })
+      .catch(() => alert('Erreur de connexion.'))
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      });
+    });
+
+    // --- MODALE SUPPORT (ouverture depuis le bouton "Contacter le support") ---
+    const supportModal = document.getElementById('supportModal');
+    const openSupportBtn = document.getElementById('openSupportBtn');
+    const closeSupportModalBtn = document.getElementById('closeSupportModalBtn');
+    const helpBtn = document.getElementById('helpBtn');
+
+    function openSupportModal() {
+      supportModal.classList.add('active');
     }
 
-    handleSimpleSubmit('proposalForm', 'proposalMessage');
-    handleSimpleSubmit('helpForm', 'helpMessage');
+    function closeSupportModal() {
+      supportModal.classList.remove('active');
+    }
 
-    // --- MODALE AIDE ---
-    const helpBtn = document.getElementById('helpBtn');
-    const helpModal = document.getElementById('helpModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-
-    helpBtn.addEventListener('click', () => {
-      helpModal.classList.add('active');
-    });
-    closeModalBtn.addEventListener('click', () => {
-      helpModal.classList.remove('active');
-    });
-    helpModal.addEventListener('click', (e) => {
-      if (e.target === helpModal) {
-        helpModal.classList.remove('active');
-      }
+    openSupportBtn.addEventListener('click', openSupportModal);
+    helpBtn.addEventListener('click', openSupportModal);
+    closeSupportModalBtn.addEventListener('click', closeSupportModal);
+    supportModal.addEventListener('click', (e) => {
+      if (e.target === supportModal) closeSupportModal();
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') helpModal.classList.remove('active');
+      if (e.key === 'Escape') closeSupportModal();
     });
 
     // --- ANNÉE ---
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+
 </body>
 </html>
