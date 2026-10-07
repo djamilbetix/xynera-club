@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Xynera Club — Communauté de développeurs, innovation numérique, Web3 et blockchain.">
   <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
+
+  <!-- ⭐ FAVICON -->
+  <link rel="icon" type="image/png" href="logo-xynera.png">
+  <link rel="shortcut icon" type="image/png" href="logo-xynera.png">
+  <link rel="apple-touch-icon" href="logo-xynera.png">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     /* --- TOUT LE STYLE (identique à la version précédente, mais avec les ajouts pour le guide) --- */
@@ -780,7 +786,7 @@
         </div>
         <div class="guide-steps">
           <div class="guide-step"><div class="num">1</div><h4>Choisissez votre prestation</h4><p>Parcourez notre offre et sélectionnez le service qui correspond à votre besoin (développement, Web3, audit, formation, etc.).</p></div>
-          <div class="guide-step"><div class="num">2</div><h4>Effectuez le paiement</h4><p>Utilisez l'un des moyens de paiement proposés (Airtel Money, M-Pesa, cryptos). Le montant exact est affiché avant validation.</p></div>
+          <div class="guide-step"><div class="num">2</div><h4>Effectuez le paiement</h4><p>Utilisez l'un des moyens de paiement crypto proposés (BTC, USDT, BNB, TRON). Le montant exact est affiché avant validation.</p></div>
           <div class="guide-step"><div class="num">3</div><h4>Envoyez votre reçu</h4><p>Remplissez le formulaire avec vos coordonnées et collez le lien de votre capture d'écran (hébergée sur Imgur).</p></div>
           <div class="guide-step"><div class="num">4</div><h4>Confirmation</h4><p>Notre équipe valide votre demande sous 24h et vous contacte pour démarrer le projet ou la formation.</p></div>
         </div>
@@ -951,7 +957,7 @@
               <ul class="list" style="margin-top:8px;">
                 <li>Expertise reconnue en Web3 et développement</li>
                 <li>Équipe de 15+ développeurs passionnés</li>
-                <li>Paiements sécurisés via multiples canaux</li>
+                <li>Paiements sécurisés via crypto (BTC, USDT, BNB, TRON)</li>
                 <li>Support et accompagnement dédié</li>
               </ul>
             </div>
@@ -986,25 +992,15 @@
               </div>
             </div>
 
-            <!-- Étape 2 -->
+            <!-- Étape 2 : UNIQUEMENT CRYPTO -->
             <div class="step-panel" id="panel2">
               <div class="price-display">
                 <span><strong>Service :</strong> <span id="selectedServiceName">-</span></span>
                 <span class="amount" id="selectedServicePrice">$0</span>
               </div>
-              <p style="font-weight:700; margin:12px 0 8px;">Effectuez le paiement à l'un des comptes ci-dessous :</p>
+              <p style="font-weight:700; margin:12px 0 8px;">Effectuez le paiement en crypto à l'une des adresses ci-dessous :</p>
               
               <div class="payment-details-grid">
-                <div class="payment-item">
-                  <div class="payment-icon" style="background:#ffedd5;"><i class="fas fa-phone-alt" style="color:#ff6600;"></i></div>
-                  <div class="payment-info"><strong>Airtel Money</strong><span class="network">+243976033773</span></div>
-                  <button class="copy-btn" onclick="copyText('+243976033773')"><i class="fas fa-copy"></i></button>
-                </div>
-                <div class="payment-item">
-                  <div class="payment-icon" style="background:#d1fae5;"><i class="fas fa-mobile-alt" style="color:#059669;"></i></div>
-                  <div class="payment-info"><strong>M-Pesa</strong><span class="network">+243821811231</span></div>
-                  <button class="copy-btn" onclick="copyText('+243821811231')"><i class="fas fa-copy"></i></button>
-                </div>
                 <div class="payment-item">
                   <div class="payment-icon" style="background:#fef3c7;"><i class="fab fa-bitcoin" style="color:#f7931a;"></i></div>
                   <div class="payment-info"><strong>Bitcoin (BTC)</strong><span class="network">1GPdPJTgswiD9XsCE648vtuEMP7SApgzWf</span></div>
@@ -1027,14 +1023,14 @@
                 </div>
               </div>
 
-              <p class="payment-note"><i class="fas fa-shield-alt"></i> Envoyez le montant exact et conservez la capture d'écran.</p>
+              <p class="payment-note"><i class="fas fa-shield-alt"></i> Envoyez le montant exact et conservez la capture d'écran (hash de transaction).</p>
               <div class="wizard-nav">
                 <button class="btn btn-secondary" id="step2Back"><i class="fas fa-arrow-left"></i> Précédent</button>
                 <button class="btn btn-success" id="step2Next">J'ai effectué le paiement <i class="fas fa-arrow-right"></i></button>
               </div>
             </div>
 
-            <!-- Étape 3 : Champ Lien + Guide + Bouton Support (sans téléchargement de fichier) -->
+            <!-- Étape 3 : Champ Lien + Guide + Bouton Support -->
             <div class="step-panel" id="panel3">
               <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et fournissez le lien de votre reçu :</p>
               
@@ -1056,10 +1052,10 @@
                 </div>
                 <div class="field">
                   <label><i class="fas fa-hashtag"></i> Référence de la transaction</label>
-                  <input type="text" name="txRef" placeholder="Numéro de confirmation / Hash" required>
+                  <input type="text" name="txRef" placeholder="Hash de la transaction / ID" required>
                 </div>
 
-                <!-- 📸 Lien du reçu + GUIDE + BOUTON SUPPORT (AU LIEU DU TÉLÉCHARGEMENT) -->
+                <!-- 📸 Lien du reçu + GUIDE + BOUTON SUPPORT -->
                 <div class="field">
                   <label><i class="fas fa-link"></i> Lien du reçu (capture d'écran)</label>
                   <input type="url" name="receipt_link" id="receiptLink" placeholder="https://exemple.com/mon-reçu.png" required>
@@ -1199,7 +1195,7 @@
     <i class="fas fa-life-ring"></i> Aide
   </button>
 
-  <!-- MODALE SUPPORT (pour "Contacter le support" et le bouton flottant) -->
+  <!-- MODALE SUPPORT -->
   <div class="modal-overlay" id="supportModal">
     <div class="modal-content">
       <button class="modal-close" id="closeSupportModalBtn">✕</button>
@@ -1222,7 +1218,7 @@
           <label><i class="fas fa-tag"></i> Sujet</label>
           <select name="support_subject">
             <option value="general">Demande d'information</option>
-            <option value="help_upload">Problème avec le téléchargement du reçu</option>
+            <option value="help_crypto">Problème avec le paiement crypto</option>
             <option value="project">Proposition de projet</option>
             <option value="support">Assistance technique</option>
             <option value="other">Autre</option>
