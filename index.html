@@ -3,174 +3,300 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Xynera Club — Espace Investisseur</title>
-  <meta name="description" content="Portail de préproduction Xynera Club">
+  <meta name="theme-color" content="#101827">
+  <title>Xynera Club | Espace membre</title>
+  <meta name="description" content="Espace membre Xynera Club">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root{--bg:#080a0f;--panel:#111620;--panel2:#171f2b;--red:#e50914;--blue:#1f7aff;--text:#f5f7fb;--muted:#9aa6b7;--line:#273244;--green:#36c98f}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#14213a 0,transparent 32%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Arial,sans-serif}
-    .wrap{max-width:1120px;margin:auto;padding:28px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;letter-spacing:.3px}.mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--red),#8d0710);display:grid;place-items:center;font-weight:900}
-    .pill{font-size:11px;letter-spacing:1px;color:#ffd5d7;border:1px solid #6f252b;background:#2a1117;border-radius:99px;padding:6px 10px}
-    h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:8px 0 12px}h2{font-size:20px;margin:0 0 14px}p{color:var(--muted);margin:0 0 16px}
-    .hero{margin:25px 0 24px;max-width:760px}.hero p{font-size:16px}
-    .notice{border:1px solid #73551b;background:#211b0e;color:#f5d99a;padding:13px 15px;border-radius:12px;margin:18px 0 24px;font-size:13px}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:linear-gradient(180deg,var(--panel),#0e131b);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 12px 35px #0003}
-    .field{margin:12px 0}.field label{display:block;color:#c6cfdb;font-size:13px;margin-bottom:6px}
-    input,textarea,select{width:100%;background:#0a0f17;border:1px solid #303d50;border-radius:10px;padding:12px;color:var(--text);font:inherit;outline:none}
-    input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1f7aff22}
-    button{border:0;border-radius:10px;padding:12px 16px;background:var(--red);color:white;font-weight:700;font:inherit;cursor:pointer}
-    button.secondary{background:#202b3b;border:1px solid #34445c}button:disabled{opacity:.55;cursor:not-allowed}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.status{min-height:22px;margin-top:12px;font-size:13px;color:var(--muted)}.status.error{color:#ff8d94}.status.ok{color:#69e0b0}
-    .hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
-    .stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}.stat small{display:block;color:var(--muted);margin-bottom:5px}.stat strong{font-size:15px}
-    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}.tag{font-size:12px;background:#152c26;color:#8ce4bf;border:1px solid #235c47;padding:4px 8px;border-radius:99px}
-    .list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:12px;padding:13px;background:#0c121b}.item strong{display:block}.item small{color:var(--muted)}
-    footer{margin-top:28px;color:#758195;font-size:12px;text-align:center}
-    @media(max-width:760px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+    :root{
+      --navy:#101827;--navy2:#17243a;--red:#e50914;--blue:#1f7aff;
+      --ink:#172033;--muted:#697586;--line:#e6eaf0;--surface:#fff;
+      --page:#f4f6fa;--green:#13865c;--shadow:0 18px 55px rgba(16,24,39,.09)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .page{max-width:1200px;margin:0 auto;padding:0 28px 44px}
+    .topbar{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e9edf3;margin-bottom:28px}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand img{display:block;width:auto;max-width:190px;height:48px;object-fit:contain}
+    .brand-fallback{display:none;width:42px;height:42px;align-items:center;justify-content:center;border-radius:12px;background:var(--navy);color:#fff;font-size:21px;font-weight:800}
+    .brand-copy{display:flex;flex-direction:column;line-height:1.2}
+    .brand-copy strong{font-size:16px;letter-spacing:.09em;color:var(--navy)}
+    .brand-copy small{font-size:11px;color:#8792a2;letter-spacing:.04em;margin-top:4px}
+    .top-label{display:flex;align-items:center;gap:9px;color:#5d6878;font-size:13px;font-weight:600}
+    .top-dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 0 4px #e4f4ed}
+    .auth-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);gap:26px;align-items:stretch;min-height:560px}
+    .welcome-panel{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(140deg,#101827 0%,#17243a 60%,#202d45 100%);border-radius:24px;padding:54px 48px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow)}
+    .welcome-panel:before,.welcome-panel:after{content:"";position:absolute;z-index:-1;border-radius:50%;pointer-events:none}
+    .welcome-panel:before{width:380px;height:380px;right:-145px;top:-150px;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 40px rgba(255,255,255,.025),0 0 0 80px rgba(255,255,255,.02)}
+    .welcome-panel:after{width:260px;height:260px;right:35px;bottom:-165px;background:radial-gradient(circle,rgba(31,122,255,.35),transparent 68%)}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;color:#b8c8df;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    .eyebrow:before{content:"";height:2px;width:24px;background:var(--red);border-radius:2px}
+    .welcome-panel h1{font-size:clamp(34px,4.2vw,52px);line-height:1.08;letter-spacing:-.04em;max-width:520px;margin:26px 0 18px}
+    .welcome-panel h1 span{color:#75aaff}
+    .welcome-panel p{max-width:470px;color:#c0cada;font-size:16px;margin:0}
+    .feature-list{display:grid;gap:14px;margin-top:40px}
+    .feature{display:flex;align-items:center;gap:12px;color:#e5ebf4;font-size:13px}
+    .feature-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.09);color:#9fc4ff;font-size:15px}
+    .welcome-foot{color:#8f9cb0;font-size:12px;margin-top:42px}
+    .auth-card,.panel{background:var(--surface);border:1px solid #e9edf3;border-radius:22px;box-shadow:var(--shadow)}
+    .auth-card{padding:34px 34px 30px;display:flex;flex-direction:column;justify-content:center}
+    .auth-heading{margin-bottom:24px}
+    .auth-heading h2{font-size:25px;letter-spacing:-.025em;margin:0 0 6px;color:var(--navy)}
+    .auth-heading p{font-size:13px;color:var(--muted);margin:0}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;background:#f1f4f8;border-radius:12px;margin-bottom:22px}
+    .tab{border:0;border-radius:9px;padding:10px;background:transparent;color:#657184;font-size:13px;font-weight:700;transition:.2s}
+    .tab.active{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(16,24,39,.08)}
+    .form-view{display:none}.form-view.active{display:block}
+    .field{margin:0 0 16px}
+    .field label{display:block;color:#344054;font-size:12px;font-weight:700;margin:0 0 7px}
+    .field input,.field textarea,.field select{width:100%;border:1px solid #dce2ea;background:#fff;border-radius:10px;padding:12px 13px;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
+    .field input,.field select{height:46px}
+    .field textarea{resize:vertical;min-height:92px}
+    .field input::placeholder,.field textarea::placeholder{color:#a1aab7}
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,122,255,.1)}
+    .primary-btn,.secondary-btn{min-height:46px;border-radius:10px;padding:11px 17px;font-size:13px;font-weight:750;transition:transform .15s,filter .15s}
+    .primary-btn{border:0;background:var(--red);color:#fff;box-shadow:0 7px 15px rgba(229,9,20,.16)}
+    .primary-btn:hover{filter:brightness(.96);transform:translateY(-1px)}
+    .secondary-btn{border:1px solid #dce2ea;background:#fff;color:#263247}
+    .secondary-btn:hover{background:#f7f9fc}
+    .full{width:100%}
+    .status{min-height:20px;margin:12px 0 0;font-size:12px;color:#667386}
+    .status.error{color:#c42b35}.status.ok{color:var(--green)}
+    .hidden{display:none!important}
+    .dashboard-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:36px 0 22px}
+    .dashboard-head .eyebrow{color:#778397}
+    .dashboard-head h1{font-size:32px;line-height:1.2;letter-spacing:-.035em;color:var(--navy);margin:10px 0 4px}
+    .dashboard-head p{margin:0;color:var(--muted);font-size:14px}
+    .profile-strip{display:flex;align-items:center;gap:13px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;min-width:210px}
+    .avatar{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;color:#fff;font-weight:800;background:linear-gradient(140deg,var(--blue),#17428f)}
+    .profile-strip strong{display:block;font-size:13px;color:var(--navy)}.profile-strip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+    .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+    .panel{padding:25px}
+    .panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:19px}
+    .panel-title h2{font-size:17px;margin:0;color:var(--navy);letter-spacing:-.015em}
+    .panel-sub{font-size:12px;color:var(--muted);margin:-12px 0 18px}
+    .badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:99px;background:#edf4ff;color:#2458a6;font-size:11px;font-weight:700}
+    .profile-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+    .meta-box{padding:12px;background:#f7f9fc;border:1px solid #edf0f5;border-radius:11px}
+    .meta-box small{display:block;color:#8390a1;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:750;margin-bottom:4px}
+    .meta-box strong{font-size:13px;color:#263247}
+    .history-panel{margin-top:18px}
+    .request-list{display:grid;gap:10px}
+    .request-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:14px;border:1px solid #edf0f5;border-radius:12px;background:#fff}
+    .request-item strong{display:block;color:#253148;font-size:13px;text-transform:none}
+    .request-item small{display:block;color:#7c8797;font-size:11px;margin-top:4px}
+    .request-amount{white-space:nowrap;color:#263247;font-size:12px;font-weight:750}
+    .empty-state{padding:24px 12px;text-align:center;color:#8994a4;font-size:13px;background:#f8f9fb;border:1px dashed #dce2ea;border-radius:12px}
+    .dashboard-actions{display:flex;gap:10px;align-items:center}
+    .foot{display:flex;justify-content:space-between;gap:12px;color:#929baa;font-size:11px;margin:28px 2px 0}
+    @media(max-width:900px){.auth-layout{grid-template-columns:1fr}.welcome-panel{min-height:350px;padding:38px}.welcome-panel h1{font-size:40px}.auth-card{max-width:none}.dashboard-grid{grid-template-columns:1fr}}
+    @media(max-width:600px){.page{padding:0 15px 28px}.topbar{height:70px;margin-bottom:18px}.brand img{max-width:150px;height:40px}.brand-copy strong{font-size:14px}.brand-copy small{font-size:10px}.top-label{font-size:11px}.welcome-panel{padding:30px 25px;min-height:330px;border-radius:18px}.welcome-panel h1{font-size:35px}.auth-card{padding:26px 21px;border-radius:18px}.dashboard-head{align-items:flex-start;flex-direction:column;margin-top:26px}.dashboard-head h1{font-size:27px}.profile-strip{width:100%}.panel{padding:20px;border-radius:17px}.foot{flex-direction:column}.request-item{flex-direction:column;gap:5px}}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div class="brand"><div class="mark">X</div><span>XYNERA CLUB</span></div>
-    <span class="pill">PRÉPRODUCTION · DEMO</span>
+<div class="page">
+  <header class="topbar">
+    <div class="brand">
+      <img id="brandLogo" src="logo-xenary.png" alt="Xynera Club">
+      <span id="brandFallback" class="brand-fallback" aria-hidden="true">X</span>
+      <div id="brandCopy" class="brand-copy hidden"><strong>XYNERA CLUB</strong><small>Build. Learn. Analyze. Innovate.</small></div>
+    </div>
+    <div class="top-label"><span class="top-dot"></span><span id="topLabel">Espace membre</span></div>
   </header>
 
-  <section class="hero">
-    <h1>Votre espace<br><span style="color:var(--red)">Xynera Club</span></h1>
-    <p>Un portail de démonstration pour créer un compte, consulter votre profil et transmettre une demande d'information. Les opérations financières ne sont pas activées.</p>
-  </section>
-
-  <div class="notice"><strong>Environnement de test :</strong> aucun dépôt, retrait, rendement, solde réel ou ordre de trading n'est traité ici. N'envoyez pas d'argent via cette page.</div>
-
-  <section id="authArea" class="grid">
-    <div class="card">
-      <h2>Créer un compte</h2>
-      <form id="signupForm">
-        <div class="field"><label for="suName">Nom complet</label><input id="suName" required autocomplete="name" placeholder="Votre nom complet"></div>
-        <div class="field"><label for="suEmail">Adresse e-mail</label><input id="suEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com"></div>
-        <div class="field"><label for="suPassword">Mot de passe</label><input id="suPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8 caractères minimum"></div>
-        <button type="submit">Créer mon compte</button>
-      </form>
-      <div id="signupStatus" class="status" aria-live="polite"></div>
-    </div>
-    <div class="card">
-      <h2>Se connecter</h2>
-      <form id="loginForm">
-        <div class="field"><label for="liEmail">Adresse e-mail</label><input id="liEmail" type="email" required autocomplete="email"></div>
-        <div class="field"><label for="liPassword">Mot de passe</label><input id="liPassword" type="password" required autocomplete="current-password"></div>
-        <button type="submit">Connexion</button>
-      </form>
-      <div id="loginStatus" class="status" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <section id="appArea" class="hidden">
-    <div class="card">
-      <div class="row"><div><span class="tag">Compte connecté</span><h2 style="margin-top:10px">Bienvenue, <span id="welcomeName">membre</span></h2><p id="userEmail"></p></div><button id="logoutBtn" class="secondary">Déconnexion</button></div>
-      <div class="stats">
-        <div class="stat"><small>Type de compte</small><strong id="roleValue">investisseur</strong></div>
-        <div class="stat"><small>Statut du profil</small><strong id="profileStatus">à compléter</strong></div>
-        <div class="stat"><small>Portefeuille</small><strong>Non activé</strong></div>
+  <main>
+    <section id="authArea" class="auth-layout">
+      <div class="welcome-panel">
+        <div>
+          <span class="eyebrow">XYNERA CLUB</span>
+          <h1>Votre espace.<br><span>Votre vision.</span></h1>
+          <p>Retrouvez vos informations et vos échanges avec Xynera Club dans un espace personnel, clair et sécurisé.</p>
+          <div class="feature-list">
+            <div class="feature"><span class="feature-icon">✓</span><span>Un profil personnel centralisé</span></div>
+            <div class="feature"><span class="feature-icon">↗</span><span>Un suivi simple de vos demandes</span></div>
+            <div class="feature"><span class="feature-icon">⌁</span><span>Un accès depuis ordinateur et mobile</span></div>
+          </div>
+        </div>
+        <div class="welcome-foot">Build. Learn. Analyze. Innovate.</div>
       </div>
-    </div>
-    <div class="grid" style="margin-top:18px">
-      <div class="card">
-        <h2>Mes informations</h2>
-        <form id="profileForm">
-          <div class="field"><label for="profileName">Nom complet</label><input id="profileName" required></div>
-          <div class="field"><label for="profilePhone">Téléphone (facultatif)</label><input id="profilePhone" placeholder="+243..."></div>
-          <button type="submit">Enregistrer mon profil</button>
+
+      <div class="auth-card">
+        <div class="auth-heading">
+          <h2 id="authTitle">Heureux de vous revoir</h2>
+          <p id="authSubtitle">Connectez-vous à votre espace personnel.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Accès au compte">
+          <button type="button" class="tab active" id="loginTab" role="tab" aria-selected="true">Connexion</button>
+          <button type="button" class="tab" id="signupTab" role="tab" aria-selected="false">Créer un compte</button>
+        </div>
+        <form id="loginForm" class="form-view active">
+          <div class="field"><label for="liEmail">Adresse e-mail</label><input id="liEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com"></div>
+          <div class="field"><label for="liPassword">Mot de passe</label><input id="liPassword" type="password" required autocomplete="current-password" placeholder="Votre mot de passe"></div>
+          <button class="primary-btn full" type="submit">Se connecter</button>
+          <div id="loginStatus" class="status" aria-live="polite"></div>
         </form>
-        <div id="profileStatusMsg" class="status" aria-live="polite"></div>
-      </div>
-      <div class="card">
-        <h2>Demande d'information</h2>
-        <p>Cette demande ne constitue pas un investissement et ne déclenche aucun paiement.</p>
-        <form id="interestForm">
-          <div class="field"><label for="interestAmount">Montant envisagé (USD, indicatif)</label><input id="interestAmount" type="number" min="1" step="1" placeholder="Ex. 500"></div>
-          <div class="field"><label for="interestMarket">Marché qui vous intéresse</label><select id="interestMarket"><option value="forex">Forex</option><option value="crypto_review">Crypto (sous réserve de validation)</option><option value="both_review">Les deux (sous réserve de validation)</option></select></div>
-          <div class="field"><label for="interestMessage">Message (facultatif)</label><textarea id="interestMessage" rows="3" placeholder="Votre question..."></textarea></div>
-          <button type="submit">Envoyer la demande</button>
+        <form id="signupForm" class="form-view">
+          <div class="field"><label for="suName">Nom complet</label><input id="suName" required autocomplete="name" placeholder="Votre nom complet"></div>
+          <div class="field"><label for="suEmail">Adresse e-mail</label><input id="suEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com"></div>
+          <div class="field"><label for="suPassword">Mot de passe</label><input id="suPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8 caractères minimum"></div>
+          <button class="primary-btn full" type="submit">Créer mon compte</button>
+          <div id="signupStatus" class="status" aria-live="polite"></div>
         </form>
-        <div id="interestStatus" class="status" aria-live="polite"></div>
       </div>
-    </div>
-    <div class="card" style="margin-top:18px">
-      <h2>Mes demandes</h2><div id="requestsList" class="list"><p>Aucune demande chargée.</p></div>
-    </div>
-  </section>
+    </section>
 
-  <footer>XYNERA CLUB · Build. Learn. Analyze. Innovate. · Portail de test uniquement</footer>
+    <section id="appArea" class="hidden">
+      <div class="dashboard-head">
+        <div>
+          <span class="eyebrow">ESPACE PERSONNEL</span>
+          <h1>Bonjour, <span id="welcomeName">membre</span></h1>
+          <p>Gérez vos coordonnées et retrouvez le suivi de vos demandes.</p>
+        </div>
+        <div class="dashboard-actions"><button id="logoutBtn" class="secondary-btn" type="button">Déconnexion</button></div>
+      </div>
+
+      <div class="profile-strip" style="margin-bottom:18px">
+        <div class="avatar" id="avatarInitial">X</div>
+        <div><strong id="userEmail"></strong><small id="roleValue">Membre</small></div>
+      </div>
+
+      <div class="dashboard-grid">
+        <section class="panel">
+          <div class="panel-title"><h2>Mon profil</h2><span class="badge" id="profileStatus">En attente</span></div>
+          <div class="profile-meta">
+            <div class="meta-box"><small>Type de compte</small><strong id="roleMeta">Investisseur</strong></div>
+            <div class="meta-box"><small>Demandes envoyées</small><strong id="requestCount">0</strong></div>
+          </div>
+          <form id="profileForm">
+            <div class="field"><label for="profileName">Nom complet</label><input id="profileName" required autocomplete="name"></div>
+            <div class="field"><label for="profilePhone">Téléphone</label><input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243..."></div>
+            <button class="primary-btn" type="submit">Enregistrer les modifications</button>
+          </form>
+          <div id="profileStatusMsg" class="status" aria-live="polite"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title"><h2>Nouvelle demande</h2></div>
+          <p class="panel-sub">Indiquez le sujet sur lequel vous souhaitez être contacté.</p>
+          <form id="interestForm">
+            <div class="field"><label for="interestAmount">Montant envisagé (USD)</label><input id="interestAmount" type="number" min="1" step="1" placeholder="Ex. 500"></div>
+            <div class="field"><label for="interestMarket">Marché concerné</label><select id="interestMarket"><option value="forex">Forex</option><option value="crypto_review">Crypto</option><option value="both_review">Forex et crypto</option></select></div>
+            <div class="field"><label for="interestMessage">Votre message</label><textarea id="interestMessage" rows="3" placeholder="Écrivez votre message..."></textarea></div>
+            <button class="primary-btn" type="submit">Envoyer la demande</button>
+          </form>
+          <div id="interestStatus" class="status" aria-live="polite"></div>
+        </section>
+      </div>
+
+      <section class="panel history-panel">
+        <div class="panel-title"><h2>Historique de mes demandes</h2><span class="badge" id="historyBadge">0 demande</span></div>
+        <div id="requestsList" class="request-list"><div class="empty-state">Vos demandes apparaîtront ici.</div></div>
+      </section>
+    </section>
+  </main>
+  <footer class="foot"><span>© <span id="year"></span> Xynera Club</span><span>Build. Learn. Analyze. Innovate.</span></footer>
 </div>
 
 <script>
 (() => {
-  // 1) Remplace ces deux valeurs par celles de ton projet Supabase.
-  // URL : Project Settings > API > Project URL
-  // Clé publique : Project Settings > API Keys > anon / publishable key
-  const SUPABASE_URL = "COLLE_ICI_TON_PROJECT_URL";
-  const SUPABASE_ANON_KEY = "COLLE_ICI_TA_CLE_PUBLIQUE_ANON";
-
+  const SUPABASE_URL = "https://fandrhnvlcsdtvemjhib.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhbmRyaG52bGNzZHR2ZW1qaGliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5NDU5OTYsImV4cCI6MjExMDUyMTk5Nn0.DJiPt_PsE5JnhjdyCHnzhFc3NmiOXHDlTMbjCr1JehQ";
   const $ = (id) => document.getElementById(id);
-  const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("COLLE_ICI") &&
-    SUPABASE_ANON_KEY.length > 20 && !SUPABASE_ANON_KEY.includes("COLLE_ICI");
-
-  if (!configured) {
-    $("signupStatus").textContent = "Configuration requise : ajoute d'abord l'URL et la clé publique Supabase dans le code, en bas du fichier.";
-    $("signupStatus").className = "status error";
-    $("loginStatus").textContent = "Configuration requise : ajoute d'abord l'URL et la clé publique Supabase dans le code, en bas du fichier.";
-    $("loginStatus").className = "status error";
-    return;
-  }
-
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   let currentUser = null;
+  let supabaseClient;
 
-  function message(id, text, kind = "") {
-    $(id).textContent = text;
-    $(id).className = "status " + kind;
+  $("year").textContent = new Date().getFullYear();
+  $("brandLogo").addEventListener("error", () => {
+    $("brandLogo").classList.add("hidden");
+    $("brandFallback").style.display = "flex";
+    $("brandCopy").classList.remove("hidden");
+  });
+
+  function setMessage(id, text, type = "") {
+    const el = $(id);
+    el.textContent = text;
+    el.className = "status" + (type ? " " + type : "");
   }
-  function friendlyError(error) {
-    const msg = error?.message || "Une erreur est survenue.";
-    if (msg.includes("Invalid login credentials")) return "E-mail ou mot de passe incorrect.";
-    if (msg.toLowerCase().includes("email not confirmed")) return "Confirme ton adresse e-mail avant de te connecter.";
-    return msg;
+  function errorText(error) {
+    const raw = error?.message || "Une erreur est survenue. Réessayez.";
+    if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
+    if (raw.toLowerCase().includes("email not confirmed")) return "Veuillez confirmer votre adresse e-mail avant de vous connecter.";
+    if (raw.toLowerCase().includes("fetch")) return "Connexion impossible. Vérifiez votre connexion Internet.";
+    return raw;
+  }
+  function switchAuth(mode) {
+    const login = mode === "login";
+    $("loginForm").classList.toggle("active", login);
+    $("signupForm").classList.toggle("active", !login);
+    $("loginTab").classList.toggle("active", login);
+    $("signupTab").classList.toggle("active", !login);
+    $("loginTab").setAttribute("aria-selected", String(login));
+    $("signupTab").setAttribute("aria-selected", String(!login));
+    $("authTitle").textContent = login ? "Heureux de vous revoir" : "Créer votre espace";
+    $("authSubtitle").textContent = login ? "Connectez-vous à votre espace personnel." : "Renseignez vos informations pour commencer.";
+    setMessage("loginStatus", ""); setMessage("signupStatus", "");
+  }
+  $("loginTab").addEventListener("click", () => switchAuth("login"));
+  $("signupTab").addEventListener("click", () => switchAuth("signup"));
+
+  function roleLabel(role) {
+    return ({investor:"Investisseur",trader:"Trader",admin:"Administrateur",compliance:"Conformité",accountant:"Comptabilité"})[role] || "Membre";
+  }
+  function statusLabel(status) {
+    return ({pending:"En cours de vérification",active:"Actif",restricted:"Restreint"})[status] || "En cours de vérification";
+  }
+  function marketLabel(market) {
+    return ({forex:"Forex",crypto_review:"Crypto",both_review:"Forex et crypto"})[market] || market;
+  }
+  function dateLabel(value) {
+    return new Date(value).toLocaleString("fr-FR", {dateStyle:"medium",timeStyle:"short"});
   }
 
   async function loadProfile() {
-    if (!currentUser) return;
-    const { data, error } = await client.from("profiles").select("full_name, phone, role, account_status").eq("id", currentUser.id).maybeSingle();
+    const {data, error} = await supabaseClient.from("profiles")
+      .select("full_name, phone, role, account_status").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
-    $("welcomeName").textContent = profile.full_name || currentUser.email || "membre";
+    const name = profile.full_name || currentUser.email || "membre";
+    $("welcomeName").textContent = name.split(" ")[0];
     $("userEmail").textContent = currentUser.email || "";
-    $("roleValue").textContent = profile.role || "investor";
-    $("profileStatus").textContent = profile.account_status || "pending";
+    $("roleValue").textContent = roleLabel(profile.role || "investor");
+    $("roleMeta").textContent = roleLabel(profile.role || "investor");
+    $("profileStatus").textContent = statusLabel(profile.account_status || "pending");
     $("profileName").value = profile.full_name || "";
     $("profilePhone").value = profile.phone || "";
+    $("avatarInitial").textContent = (name.trim()[0] || "X").toUpperCase();
   }
 
   async function loadRequests() {
-    const { data, error } = await client.from("investment_interest_requests")
+    const {data, error} = await supabaseClient.from("investment_interest_requests")
       .select("id, indicative_amount_usd, market_interest, message, status, created_at")
-      .order("created_at", { ascending: false }).limit(20);
+      .order("created_at", {ascending:false}).limit(20);
     if (error) throw error;
+    const rows = data || [];
+    $("requestCount").textContent = String(rows.length);
+    $("historyBadge").textContent = rows.length + (rows.length > 1 ? " demandes" : " demande");
     const list = $("requestsList");
-    list.innerHTML = "";
-    if (!data || data.length === 0) {
-      const p = document.createElement("p"); p.textContent = "Aucune demande pour le moment."; list.appendChild(p); return;
+    list.replaceChildren();
+    if (!rows.length) {
+      const empty = document.createElement("div"); empty.className = "empty-state";
+      empty.textContent = "Vous n'avez pas encore envoyé de demande."; list.appendChild(empty); return;
     }
-    data.forEach((item) => {
-      const div = document.createElement("div"); div.className = "item";
-      const title = document.createElement("strong");
-      title.textContent = `${item.market_interest} · ${item.indicative_amount_usd ? item.indicative_amount_usd + " USD indicatifs" : "Montant non précisé"}`;
-      const detail = document.createElement("small");
-      detail.textContent = `${item.status} · ${new Date(item.created_at).toLocaleString("fr-FR")}`;
-      div.append(title, detail);
-      if (item.message) { const p = document.createElement("p"); p.textContent = item.message; p.style.margin = "8px 0 0"; div.appendChild(p); }
-      list.appendChild(div);
+    rows.forEach((item) => {
+      const card = document.createElement("div"); card.className = "request-item";
+      const left = document.createElement("div");
+      const title = document.createElement("strong"); title.textContent = marketLabel(item.market_interest);
+      const details = document.createElement("small");
+      const state = ({pending:"En attente",reviewed:"Consultée",contacted:"Contact établi",closed:"Clôturée"})[item.status] || item.status;
+      details.textContent = state + " · " + dateLabel(item.created_at);
+      left.append(title, details);
+      if (item.message) { const note = document.createElement("small"); note.textContent = item.message; left.appendChild(note); }
+      const amount = document.createElement("span"); amount.className = "request-amount";
+      amount.textContent = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString("fr-FR") + " USD" : "—";
+      card.append(left, amount); list.appendChild(card);
     });
   }
 
@@ -178,73 +304,93 @@
     currentUser = user;
     $("authArea").classList.add("hidden");
     $("appArea").classList.remove("hidden");
+    $("topLabel").textContent = "Mon espace";
     try { await loadProfile(); await loadRequests(); }
-    catch (e) { console.error(e); }
+    catch (error) { console.error(error); }
   }
+
+  if (!window.supabase || !window.supabase.createClient) {
+    setMessage("loginStatus", "Le service de connexion n'a pas pu être chargé. Actualisez la page.", "error");
+    return;
+  }
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   $("signupForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const name = $("suName").value.trim(), email = $("suEmail").value.trim(), password = $("suPassword").value;
-    message("signupStatus", "Création du compte en cours...");
-    const { data, error } = await client.auth.signUp({ email, password, options: { data: { full_name: name } } });
-    if (error) return message("signupStatus", friendlyError(error), "error");
+    const name = $("suName").value.trim();
+    const email = $("suEmail").value.trim();
+    const password = $("suPassword").value;
+    setMessage("signupStatus", "Création de votre compte...");
+    const {data, error} = await supabaseClient.auth.signUp({email,password,options:{data:{full_name:name}}});
+    if (error) return setMessage("signupStatus", errorText(error), "error");
     if (data.session && data.user) {
-      message("signupStatus", "Compte créé. Ton espace s'ouvre...", "ok");
+      setMessage("signupStatus", "Votre compte a été créé.", "ok");
       await showApp(data.user);
     } else {
-      message("signupStatus", "Compte créé. Vérifie ta boîte e-mail pour confirmer ton adresse, puis connecte-toi.", "ok");
+      setMessage("signupStatus", "Un e-mail de confirmation vient de vous être envoyé.", "ok");
     }
   });
 
   $("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    message("loginStatus", "Connexion en cours...");
-    const { data, error } = await client.auth.signInWithPassword({ email: $("liEmail").value.trim(), password: $("liPassword").value });
-    if (error) return message("loginStatus", friendlyError(error), "error");
+    setMessage("loginStatus", "Connexion en cours...");
+    const {data, error} = await supabaseClient.auth.signInWithPassword({
+      email:$("liEmail").value.trim(), password:$("liPassword").value
+    });
+    if (error) return setMessage("loginStatus", errorText(error), "error");
     await showApp(data.user);
   });
 
   $("logoutBtn").addEventListener("click", async () => {
-    const { error } = await client.auth.signOut();
-    if (error) return alert(friendlyError(error));
-    currentUser = null; $("appArea").classList.add("hidden"); $("authArea").classList.remove("hidden");
+    const {error} = await supabaseClient.auth.signOut();
+    if (error) return window.alert(errorText(error));
+    currentUser = null;
+    $("appArea").classList.add("hidden");
+    $("authArea").classList.remove("hidden");
+    $("topLabel").textContent = "Espace membre";
+    switchAuth("login");
   });
 
   $("profileForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
-    message("profileStatusMsg", "Enregistrement...");
-    const { error } = await client.from("profiles").update({
-      full_name: $("profileName").value.trim(),
-      phone: $("profilePhone").value.trim() || null, updated_at: new Date().toISOString()
+    setMessage("profileStatusMsg", "Enregistrement...");
+    const {error} = await supabaseClient.from("profiles").update({
+      full_name:$("profileName").value.trim(),
+      phone:$("profilePhone").value.trim() || null,
+      updated_at:new Date().toISOString()
     }).eq("id", currentUser.id);
-    if (error) return message("profileStatusMsg", friendlyError(error), "error");
-    message("profileStatusMsg", "Profil enregistré.", "ok");
+    if (error) return setMessage("profileStatusMsg", errorText(error), "error");
+    setMessage("profileStatusMsg", "Vos informations ont été mises à jour.", "ok");
     await loadProfile();
   });
 
   $("interestForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
-    message("interestStatus", "Envoi de la demande...");
-    const amountValue = $("interestAmount").value;
-    const amount = amountValue ? Number(amountValue) : null;
-    if (amount !== null && (!Number.isFinite(amount) || amount <= 0)) return message("interestStatus", "Indique un montant valide.", "error");
-    const { error } = await client.from("investment_interest_requests").insert({
-      user_id: currentUser.id, indicative_amount_usd: amount,
-      market_interest: $("interestMarket").value, message: $("interestMessage").value.trim() || null
+    setMessage("interestStatus", "Envoi en cours...");
+    const rawAmount = $("interestAmount").value;
+    const amount = rawAmount ? Number(rawAmount) : null;
+    if (amount !== null && (!Number.isFinite(amount) || amount <= 0)) {
+      return setMessage("interestStatus", "Veuillez saisir un montant valide.", "error");
+    }
+    const {error} = await supabaseClient.from("investment_interest_requests").insert({
+      user_id:currentUser.id,
+      indicative_amount_usd:amount,
+      market_interest:$("interestMarket").value,
+      message:$("interestMessage").value.trim() || null
     });
-    if (error) return message("interestStatus", friendlyError(error), "error");
+    if (error) return setMessage("interestStatus", errorText(error), "error");
     $("interestForm").reset();
-    message("interestStatus", "Demande envoyée. Elle ne constitue pas un dépôt ni un engagement d'investissement.", "ok");
+    setMessage("interestStatus", "Votre demande a bien été envoyée.", "ok");
     await loadRequests();
   });
 
-  client.auth.getSession().then(({ data, error }) => {
+  supabaseClient.auth.getSession().then(({data,error}) => {
     if (error) console.error(error);
     if (data?.session?.user) showApp(data.session.user);
   });
-  client.auth.onAuthStateChange((_event, session) => {
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
     if (session?.user && !currentUser) showApp(session.user);
   });
 })();
