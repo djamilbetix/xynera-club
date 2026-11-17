@@ -1,1562 +1,253 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Xynera Club — Communauté de développeurs, innovation numérique, Web3 et blockchain.">
-  <title>Xynera Club — Build. Learn. Analyze. Innovate.</title>
-
-  <!-- ⭐ FAVICON -->
-  <link rel="icon" type="image/png" href="logo-xynera.svg">
-  <link rel="shortcut icon" type="image/png" href="logo-xynera.svg">
-  <link rel="apple-touch-icon" href="logo-xynera.svg">
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xynera Club — Espace Investisseur</title>
+  <meta name="description" content="Portail de préproduction Xynera Club">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* --- TOUT LE STYLE (identique à la version précédente, mais avec les ajouts pour le guide) --- */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #ffffff;
-      color: #1a1a1a;
-      line-height: 1.7;
-      transition: background 0.3s, color 0.3s;
-    }
-    a { text-decoration: none; color: inherit; }
-    img { max-width: 100%; display: block; }
-
-    .loader-container {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: #fff; display: flex; justify-content: center; align-items: center;
-      z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-    .loader-container.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    .bouncing-loader { display: flex; gap: 14px; }
-    .bouncing-loader span {
-      display: block; width: 18px; height: 18px; border-radius: 50%;
-      background: #e50914; animation: bounce 0.6s infinite alternate;
-    }
-    .bouncing-loader span:nth-child(2) { background: #1f7aff; animation-delay: 0.2s; }
-    .bouncing-loader span:nth-child(3) { background: #e50914; animation-delay: 0.4s; }
-    @keyframes bounce {
-      0% { transform: translateY(0) scale(0.8); opacity: 0.4; }
-      100% { transform: translateY(-30px) scale(1); opacity: 1; }
-    }
-
-    body.dark { background: #0a0a0a; color: #eaeaea; }
-    body.dark header { background: rgba(10,10,10,0.95); border-color: #2a2a2a; }
-    body.dark .card, body.dark .team-member { background: #161616; border-color: #2a2a2a; }
-    body.dark .card p, body.dark .team-member .location { color: #b0b0b0; }
-    body.dark .about-box { background: #161616; border-left-color: #e50914; color: #ddd; }
-    body.dark .section-head p { color: #aaa; }
-    body.dark .hero { background: linear-gradient(120deg, #050505, #121212); }
-    body.dark .hero p { color: #bbb; }
-    body.dark .hero-card { background: linear-gradient(145deg, #181818, #0e0e0e); border-color: #292929; }
-    body.dark .stat { border-color: #292929; }
-    body.dark .stat small { color: #999; }
-    body.dark .btn-outline { border-color: #444; background: transparent; color: #eee; }
-    body.dark .btn-outline:hover { border-color: #fff; }
-    body.dark .service-request-box { background: #141414; border-color: #2a2a2a; }
-    body.dark .field input, body.dark .field textarea, body.dark .field select { background: #1a1a1a; border-color: #333; color: #eee; }
-    body.dark .price-display { background: #1a1a1a; }
-    body.dark .payment-item { background: #1a1a1a; border-color: #333; }
-    body.dark .step { background: #222; border-color: #444; color: #666; }
-    body.dark .step.active { background: #e50914; border-color: #e50914; color: #fff; }
-    body.dark .step.done { background: #0a8f3b; border-color: #0a8f3b; color: #fff; }
-    body.dark .cta { background: #1a1a1a; }
-    body.dark .video-area { background: #121212; border-color: #444; }
-    body.dark .disclaimer { background: #121212; border-color: #333; color: #aaa; }
-    body.dark footer { background: #050505; }
-    body.dark .footer-grid a { color: #aaa; }
-    body.dark .copy-btn { background: #2a2a2a; color: #ccc; }
-    body.dark .copy-btn:hover { background: #e50914; color: #fff; }
-    body.dark .client-logo { background: #161616; border-color: #2a2a2a; }
-    body.dark .menu { color: #eee; }
-    body.dark .teaser-cta { background: linear-gradient(135deg, #0a0a0a, #161616); border-bottom-color: #e50914; }
-    body.dark .modal-content { background: #1a1a1a; border-color: #333; }
-    body.dark .help-btn { background: #e50914; color: #fff; }
-    body.dark .help-btn:hover { background: #bd0710; }
-    body.dark .guide-step { background: #161616; border-color: #2a2a2a; }
-    body.dark .guide-step p { color: #aaa; }
-    body.dark .marketing-target { background: #121212; border-bottom: 3px solid #e50914; }
-    body.dark .marketing-target .target-item { background: #1a1a1a; border-color: #333; }
-    body.dark .marketing-target .target-item p { color: #aaa; }
-    body.dark .error-box { background: #2a1515; border-color: #5a2a2a; color: #f0b0b0; }
-    body.dark .link-guide { background: #1a1a1a; border-color: #333; }
-    body.dark .link-guide .step { color: #ccc; }
-
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.8s linear infinite;
-      margin-right: 8px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .container { width: min(92%, 1160px); margin: 0 auto; }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-      padding: 14px 28px; border-radius: 12px; font-weight: 700;
-      border: 1px solid transparent; cursor: pointer; transition: 0.25s;
-      font-size: 15px;
-    }
-    .btn-red { background: #e50914; color: #fff; }
-    .btn-red:hover { background: #bd0710; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(229,9,20,0.25); }
-    .btn-outline { border-color: #ddd; background: #fff; color: #111; }
-    .btn-outline:hover { border-color: #111; background: #f5f5f5; }
-    .btn-success { background: #0a8f3b; color: #fff; }
-    .btn-success:hover { background: #08732f; transform: translateY(-3px); }
-    .btn-secondary { background: #666; color: #fff; }
-    .btn-secondary:hover { background: #444; transform: translateY(-3px); }
-    .btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 8px; }
-    .btn-lg { padding: 22px 55px; font-size: 22px; border-radius: 60px; font-weight: 800; letter-spacing: 0.5px; }
-    .btn-red-lg { background: #e50914; color: #fff; border: 2px solid #e50914; }
-    .btn-red-lg:hover { background: #bd0710; transform: scale(1.04); box-shadow: 0 15px 40px rgba(229,9,20,0.3); }
-    .btn-outline-light { border: 2px solid #fff; color: #fff; background: transparent; }
-    .btn-outline-light:hover { background: #fff; color: #111; transform: scale(1.04); }
-
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
-      border-bottom: 1px solid #eee; transition: 0.3s;
-    }
-    .nav {
-      height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
-    }
-    .logo {
-      display: flex; align-items: center; gap: 12px;
-      font-weight: 800; font-size: 22px; letter-spacing: -0.5px;
-    }
-    .logo img { height: 52px; width: auto; border-radius: 10px; }
-    nav {
-      display: flex; gap: 28px; font-weight: 600; font-size: 14px;
-      align-items: center;
-    }
-    nav a:hover { color: #e50914; }
-    .menu { display: none; background: none; border: 0; font-size: 28px; cursor: pointer; }
-    .close-menu { display: none; background: none; border: 0; font-size: 28px; cursor: pointer; color: inherit; }
-    .theme-toggle {
-      background: none; border: none; font-size: 22px; cursor: pointer;
-      color: inherit; transition: transform 0.3s; display: flex; align-items: center;
-    }
-    .theme-toggle:hover { transform: rotate(25deg); }
-
-    .hero {
-      background: linear-gradient(120deg, #f8f8f8, #efefef);
-      min-height: 560px; display: flex; align-items: center;
-      padding: 50px 0; transition: background 0.3s;
-    }
-    .hero-grid {
-      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 50px;
-      align-items: center;
-    }
-    .eyebrow {
-      display: inline-flex; gap: 10px; align-items: center;
-      border: 1px solid #ddd; background: #fff; padding: 6px 14px;
-      border-radius: 99px; font-size: 12px; font-weight: 700; color: #555;
-      margin-bottom: 20px;
-    }
-    .eyebrow .dot {
-      width: 8px; height: 8px; border-radius: 50%; background: #e50914;
-      box-shadow: 0 0 12px rgba(229,9,20,0.4);
-    }
-    h1 { font-size: clamp(42px, 6vw, 72px); line-height: 1.05; letter-spacing: -3px; margin-bottom: 20px; font-weight: 800; }
-    h1 span { color: #1f7aff; }
-    .hero p { font-size: 18px; color: #555; max-width: 600px; margin-bottom: 25px; line-height: 1.8; }
-    .actions { display: flex; gap: 15px; flex-wrap: wrap; }
-
-    .hero-card {
-      background: #fff; border: 1px solid #e8e8e8; border-radius: 28px;
-      padding: 30px 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.06);
-      transition: 0.3s; text-align: center;
-    }
-    .hero-card .tech-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
-    }
-    .tech-badge {
-      background: #f5f5f5; border: 1px solid #eee; border-radius: 14px;
-      padding: 12px 8px; font-weight: 700; font-size: 14px; color: #222;
-    }
-    .tech-badge i { margin-right: 8px; color: #e50914; }
-    .stats {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
-    }
-    .stat {
-      border: 1px solid #eee; border-radius: 16px; padding: 14px 10px;
-    }
-    .stat strong { display: block; font-size: 24px; font-weight: 800; }
-    .stat small { color: #777; font-size: 13px; }
-
-    .teaser-cta {
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-      color: #fff;
-      text-align: center;
-      padding: 60px 20px;
-      border-bottom: 4px solid #e50914;
-      transition: 0.3s;
-    }
-    .teaser-cta .container { max-width: 900px; }
-    .teaser-cta h2 {
-      font-size: clamp(34px, 5vw, 52px);
-      font-weight: 800;
-      margin-bottom: 15px;
-      letter-spacing: -1px;
-    }
-    .teaser-cta h2 span { color: #e50914; }
-    .teaser-cta p {
-      font-size: 19px;
-      color: #ccc;
-      max-width: 720px;
-      margin: 0 auto 35px;
-      line-height: 1.8;
-    }
-    .teaser-buttons {
-      display: flex;
-      gap: 25px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    section { padding: 70px 0; }
-    .section-head { max-width: 760px; margin-bottom: 35px; }
-    .kicker {
-      color: #e50914; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 2px; font-size: 12px; margin-bottom: 6px; display: block;
-    }
-    .section-head h2 {
-      font-size: clamp(32px, 4vw, 46px); font-weight: 800; letter-spacing: -2px;
-      line-height: 1.1; margin-bottom: 15px;
-    }
-    .section-head p { font-size: 18px; color: #666; line-height: 1.7; }
-
-    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-
-    .card {
-      background: #fff; border: 1px solid #e8e8e8; border-radius: 24px;
-      padding: 25px; transition: 0.3s;
-    }
-    .card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
-    .card .icon {
-      width: 48px; height: 48px; border-radius: 14px; background: #111;
-      color: #fff; display: grid; place-items: center; font-weight: 900;
-      margin-bottom: 16px; font-size: 18px;
-    }
-    .card .icon.red { background: #e50914; }
-    .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-    .card p { color: #666; font-size: 15px; line-height: 1.7; }
-
-    .guide-steps {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;
-      margin-top: 20px;
-    }
-    .guide-step {
-      background: #f9f9f9; border-radius: 20px; padding: 25px;
-      text-align: center; border: 1px solid #eee; transition: 0.3s;
-    }
-    .guide-step:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
-    .guide-step .num {
-      display: inline-block; width: 44px; height: 44px; border-radius: 50%;
-      background: #e50914; color: #fff; font-weight: 900; line-height: 44px;
-      font-size: 20px; margin-bottom: 15px;
-    }
-    .guide-step h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-    .guide-step p { color: #666; font-size: 14px; line-height: 1.7; }
-
-    .marketing-target {
-      background: #f8f8f8;
-      border-top: 3px solid #e50914;
-      border-bottom: 3px solid #e50914;
-      padding: 60px 0;
-      text-align: center;
-      transition: background 0.3s;
-    }
-    .marketing-target .container { max-width: 1060px; }
-    .marketing-target h2 {
-      font-size: clamp(30px, 4vw, 44px);
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 15px;
-    }
-    .marketing-target h2 span { color: #e50914; }
-    .marketing-target .tagline {
-      font-size: 20px;
-      color: #444;
-      max-width: 750px;
-      margin: 0 auto 40px;
-      line-height: 1.8;
-    }
-    body.dark .marketing-target .tagline { color: #ccc; }
-    .target-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 25px;
-      margin-bottom: 40px;
-    }
-    .target-item {
-      background: #fff; border: 1px solid #e8e8e8; border-radius: 20px;
-      padding: 25px 15px; transition: 0.3s;
-    }
-    .target-item:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
-    .target-item i {
-      font-size: 38px;
-      color: #e50914;
-      display: block;
-      margin-bottom: 12px;
-    }
-    .target-item h4 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-    .target-item p { color: #666; font-size: 14px; line-height: 1.6; margin: 0; }
-    body.dark .target-item p { color: #aaa; }
-
-    .about-wrapper {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
-    }
-    .about-box {
-      background: #f5f5f5; border-radius: 28px; padding: 30px;
-      border-left: 6px solid #e50914; transition: 0.3s;
-    }
-    .about-box strong { font-size: 38px; display: block; line-height: 1.1; font-weight: 800; }
-    .about-box span { color: #555; font-size: 17px; }
-    .about-text h4 {
-      font-size: 17px; font-weight: 800; color: #e50914;
-      margin: 20px 0 6px; text-transform: uppercase; letter-spacing: 1px;
-    }
-    .about-text h4:first-of-type { margin-top: 0; }
-    .about-text p { margin-bottom: 12px; line-height: 1.7; color: #333; }
-    body.dark .about-text p { color: #ccc; }
-    .values-list {
-      list-style: none; margin-top: 5px;
-    }
-    .values-list li {
-      display: flex; gap: 12px; align-items: flex-start;
-      padding: 6px 0; border-bottom: 1px solid #eee;
-      font-size: 15px; line-height: 1.6;
-    }
-    body.dark .values-list li { border-bottom-color: #2a2a2a; }
-    .values-list li::before {
-      content: "•"; color: #e50914; font-weight: 900; font-size: 22px; line-height: 1;
-    }
-
-    .team-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
-    }
-    .team-member {
-      background: #fff; border: 1px solid #e8e8e8; border-radius: 16px;
-      padding: 18px 12px; text-align: center; transition: 0.25s;
-    }
-    .team-member:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); }
-    .team-member strong { display: block; font-size: 17px; font-weight: 700; }
-    .team-member .location {
-      font-size: 14px;
-      color: #888;
-      margin-top: 4px;
-    }
-    .team-member .location .flag {
-      font-size: 20px;
-      margin-left: 6px;
-    }
-
-    .client-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
-    }
-    .client-logo {
-      background: #f9f9f9; border: 1px solid #e8e8e8; border-radius: 20px;
-      padding: 25px 15px; text-align: center; transition: 0.3s;
-      display: flex; flex-direction: column; align-items: center;
-    }
-    .client-logo:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
-    .client-logo i { font-size: 30px; color: #1f7aff; margin-bottom: 10px; }
-    .client-logo strong { font-size: 17px; display: block; }
-    .client-logo span { font-size: 13px; color: #888; }
-
-    .project { overflow: hidden; padding: 0; }
-    .project-cover {
-      height: 170px; background: linear-gradient(135deg, #111, #2a2a2a);
-      display: grid; place-items: center; color: #fff;
-      font-size: 38px; font-weight: 900; letter-spacing: -2px;
-    }
-    .project-body { padding: 20px; }
-    .tag {
-      display: inline-block; padding: 4px 12px; background: #f0f0f0;
-      border-radius: 99px; font-size: 11px; font-weight: 700; margin: 5px 5px 0 0;
-    }
-
-    .research-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-    .video-area {
-      border: 2px dashed #ccc; border-radius: 24px; padding: 35px;
-      text-align: center; background: #fafafa; transition: 0.3s;
-    }
-    .video-area input { display: none; }
-    .video-preview { display: none; margin-top: 25px; }
-    .video-preview video { width: 100%; max-height: 500px; border-radius: 18px; background: #000; }
-
-    .cta {
-      background: #111; color: #fff; border-radius: 30px;
-      padding: 45px; display: flex; justify-content: space-between;
-      align-items: center; gap: 30px;
-    }
-    .cta h2 { font-size: 30px; font-weight: 800; }
-    .cta p { color: #aaa; max-width: 600px; font-size: 17px; }
-
-    .contact-wrapper { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
-    .service-request-box {
-      background: #f9f9f9; border-radius: 28px; padding: 35px;
-      border: 1px solid #eee; transition: 0.3s;
-    }
-    .step-indicator {
-      display: flex; justify-content: space-between; margin-bottom: 30px; position: relative;
-    }
-    .step-indicator::before {
-      content: ''; position: absolute; top: 50%; left: 15%; right: 15%;
-      height: 2px; background: #ddd; z-index: 0;
-    }
-    .step {
-      background: #fff; padding: 8px 18px; border-radius: 30px;
-      border: 2px solid #ddd; font-size: 13px; font-weight: 700; color: #888;
-      z-index: 1; transition: 0.3s;
-    }
-    .step.active { border-color: #e50914; background: #e50914; color: #fff; }
-    .step.done { border-color: #0a8f3b; background: #0a8f3b; color: #fff; }
-
-    .step-panel { display: none; animation: fadeUp 0.4s ease; }
-    .step-panel.active { display: block; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-    .field { display: grid; gap: 6px; margin-bottom: 16px; }
-    .field label { font-size: 14px; font-weight: 700; }
-    .field input, .field textarea, .field select {
-      width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px;
-      font: inherit; transition: 0.2s; background: #fff;
-    }
-    .field input:focus, .field textarea:focus, .field select:focus {
-      border-color: #e50914; outline: none; box-shadow: 0 0 0 3px rgba(229,9,20,0.05);
-    }
-
-    .price-display {
-      background: #fff; border: 2px solid #e50914; border-radius: 16px;
-      padding: 15px 20px; margin: 18px 0; display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap;
-    }
-    .price-display .amount { font-size: 28px; font-weight: 900; color: #e50914; }
-
-    .payment-details-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0 18px;
-    }
-    .payment-item {
-      background: #fff; border: 1px solid #e8e8e8; border-radius: 14px;
-      padding: 12px 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    }
-    .payment-icon {
-      width: 44px; height: 44px; border-radius: 12px; background: #f0f0f0;
-      display: grid; place-items: center; font-size: 20px; flex-shrink: 0;
-    }
-    .payment-info { flex: 1; min-width: 100px; }
-    .payment-info strong { display: block; font-size: 14px; }
-    .payment-info .network { font-size: 12px; color: #888; word-break: break-all; display: block; }
-    .copy-btn {
-      background: #f0f0f0; border: none; border-radius: 8px; padding: 6px 12px;
-      cursor: pointer; font-size: 13px; transition: 0.2s; color: #333;
-    }
-    .copy-btn:hover { background: #e50914; color: #fff; }
-    .payment-note { font-size: 13px; color: #888; margin: 8px 0 16px; font-style: italic; }
-
-    .wizard-nav { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
-
-    .notice {
-      padding: 16px; border-radius: 14px; background: #fff7f7;
-      border: 1px solid #ffd2d2; color: #7d1111; font-size: 14px; margin-bottom: 20px;
-    }
-    .list { list-style: none; }
-    .list li { display: flex; gap: 12px; align-items: flex-start; padding: 5px 0; }
-    .list li::before { content: "✓"; color: #e50914; font-weight: 900; }
-
-    .disclaimer {
-      background: #f8f8f8; border-top: 3px solid #e50914;
-      padding: 40px 0; font-size: 14px; color: #555; line-height: 1.9;
-    }
-    .disclaimer strong { color: #111; display: block; font-size: 16px; margin-bottom: 12px; }
-    .disclaimer p { margin-bottom: 12px; }
-    .disclaimer ul { margin: 10px 0 10px 25px; }
-    .disclaimer ul li { margin-bottom: 6px; }
-
-    .help-btn {
-      position: fixed; bottom: 30px; right: 30px;
-      background: #e50914; color: #fff; border: none;
-      border-radius: 60px; padding: 16px 28px; font-size: 18px;
-      font-weight: 700; cursor: pointer; box-shadow: 0 8px 30px rgba(229,9,20,0.3);
-      transition: 0.3s; z-index: 900; display: flex; align-items: center; gap: 12px;
-    }
-    .help-btn:hover { transform: scale(1.05); background: #bd0710; }
-
-    .modal-overlay {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-      z-index: 1000; justify-content: center; align-items: center;
-    }
-    .modal-overlay.active { display: flex; }
-    .modal-content {
-      background: #fff; max-width: 580px; width: 90%; border-radius: 28px;
-      padding: 40px; position: relative; max-height: 90vh; overflow-y: auto;
-      border: 1px solid #eee; animation: fadeUp 0.3s ease;
-    }
-    .modal-close {
-      position: absolute; top: 16px; right: 20px; font-size: 28px;
-      background: none; border: none; cursor: pointer; color: #888;
-      transition: 0.2s;
-    }
-    .modal-close:hover { color: #e50914; transform: rotate(90deg); }
-    .modal-content h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-    .modal-content p { color: #555; margin-bottom: 20px; }
-    .modal-content .field { margin-bottom: 14px; }
-
-    footer {
-      background: #080808; color: #fff; padding: 50px 0 25px;
-    }
-    .footer-grid {
-      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 35px;
-    }
-    .footer-grid p, .footer-grid a { color: #999; font-size: 14px; line-height: 2; }
-    .footer-grid a:hover { color: #e50914; }
-    .footer-grid h4 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
-
-    .social-footer {
-      display: flex; justify-content: center; gap: 16px; margin: 25px 0 18px;
-    }
-    .social-footer a {
-      display: flex; align-items: center; justify-content: center;
-      width: 44px; height: 44px; border-radius: 50%; background: #1a1a1a;
-      color: #fff; transition: 0.3s; font-size: 18px;
-    }
-    .social-footer a:hover { background: #e50914; transform: translateY(-4px); }
-
-    .footer-bottom {
-      border-top: 1px solid #242424; padding-top: 20px;
-      color: #777; font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap;
-    }
-    .footer-bottom a { color: #999; }
-    .footer-bottom a:hover { color: #e50914; }
-
-    /* --- NOUVEAUX STYLES POUR LE GUIDE & LE BOUTON SUPPORT --- */
-    .link-guide {
-      background: #f8f8f8;
-      border: 1px solid #e8e8e8;
-      border-radius: 12px;
-      padding: 16px 18px;
-      margin: 10px 0 16px;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-    .link-guide .step {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 4px;
-    }
-    .link-guide .step .num {
-      display: inline-block;
-      background: #e50914;
-      color: #fff;
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      text-align: center;
-      line-height: 22px;
-      font-size: 12px;
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 3px;
-    }
-    .link-guide .step strong { color: #e50914; }
-    .link-guide a { color: #e50914; text-decoration: underline; }
-
-    .link-preview {
-      margin-top: 10px;
-      display: none;
-      max-width: 100%;
-      border-radius: 12px;
-      border: 1px solid #eee;
-      overflow: hidden;
-    }
-    .link-preview img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      background: #fff;
-    }
-    .link-preview.active { display: block; }
-
-    .support-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-      margin-top: 8px;
-    }
-    .support-row .btn-support {
-      background: #f0f0f0;
-      color: #333;
-      border: 1px solid #ddd;
-      padding: 8px 18px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .support-row .btn-support:hover {
-      background: #e50914;
-      color: #fff;
-      border-color: #e50914;
-      transform: translateY(-2px);
-    }
-    body.dark .support-row .btn-support {
-      background: #2a2a2a;
-      color: #ccc;
-      border-color: #444;
-    }
-    body.dark .support-row .btn-support:hover {
-      background: #e50914;
-      color: #fff;
-      border-color: #e50914;
-    }
-
-    .error-box {
-      background: #fff7f7;
-      border: 1px solid #ffd2d2;
-      color: #7d1111;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 15px;
-      display: none;
-      font-weight: 600;
-    }
-
-    @media (max-width: 992px) {
-      nav { display: none; flex-direction: column; position: absolute; top: 80px; left: 0; right: 0;
-            background: #fff; padding: 25px; border-bottom: 1px solid #ddd; gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-      nav.open { display: flex; }
-      .menu { display: block; }
-      .close-menu { display: none; }
-      .nav .close-menu { display: block; }
-      .hero-grid, .about-wrapper, .contact-wrapper { grid-template-columns: 1fr; }
-      .grid3, .grid4, .team-grid { grid-template-columns: 1fr 1fr; }
-      .client-grid, .payment-details-grid { grid-template-columns: 1fr 1fr; }
-      .research-grid { grid-template-columns: 1fr; }
-      .guide-steps { grid-template-columns: 1fr 1fr; }
-      .target-grid { grid-template-columns: repeat(3, 1fr); }
-      .cta { flex-direction: column; text-align: center; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      .wizard-nav { flex-direction: column; }
-      .wizard-nav .btn { width: 100%; }
-      .step-indicator { flex-wrap: wrap; justify-content: center; gap: 10px; }
-      .step-indicator::before { display: none; }
-      .teaser-buttons { flex-direction: column; align-items: center; }
-      .btn-lg { width: 100%; max-width: 380px; justify-content: center; }
-      .support-row { flex-direction: column; align-items: stretch; }
-    }
-    @media (max-width: 600px) {
-      section { padding: 50px 0; }
-      .grid3, .grid4, .team-grid, .client-grid, .payment-details-grid { grid-template-columns: 1fr; }
-      .guide-steps { grid-template-columns: 1fr; }
-      .target-grid { grid-template-columns: 1fr 1fr; }
-      .hero-grid { gap: 30px; }
-      .hero-card .tech-grid { grid-template-columns: 1fr 1fr; }
-      .cta { padding: 25px; }
-      .service-request-box { padding: 18px; }
-      .footer-grid { grid-template-columns: 1fr; }
-      .social-footer { flex-wrap: wrap; }
-      .teaser-cta { padding: 40px 15px; }
-      .modal-content { padding: 25px; }
-      .help-btn { padding: 14px 20px; font-size: 15px; bottom: 20px; right: 20px; }
-    }
-    .card { opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s forwards; }
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.3s; }
-    .card:nth-child(4) { animation-delay: 0.4s; }
-    .card:nth-child(5) { animation-delay: 0.5s; }
-    .card:nth-child(6) { animation-delay: 0.6s; }
-      .invest-nav { color:#e50914 !important; font-weight:800 !important; }
-    .invest-nav:hover { opacity:.78; }
+    :root{--bg:#080a0f;--panel:#111620;--panel2:#171f2b;--red:#e50914;--blue:#1f7aff;--text:#f5f7fb;--muted:#9aa6b7;--line:#273244;--green:#36c98f}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#14213a 0,transparent 32%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Arial,sans-serif}
+    .wrap{max-width:1120px;margin:auto;padding:28px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;letter-spacing:.3px}.mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--red),#8d0710);display:grid;place-items:center;font-weight:900}
+    .pill{font-size:11px;letter-spacing:1px;color:#ffd5d7;border:1px solid #6f252b;background:#2a1117;border-radius:99px;padding:6px 10px}
+    h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:8px 0 12px}h2{font-size:20px;margin:0 0 14px}p{color:var(--muted);margin:0 0 16px}
+    .hero{margin:25px 0 24px;max-width:760px}.hero p{font-size:16px}
+    .notice{border:1px solid #73551b;background:#211b0e;color:#f5d99a;padding:13px 15px;border-radius:12px;margin:18px 0 24px;font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:linear-gradient(180deg,var(--panel),#0e131b);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 12px 35px #0003}
+    .field{margin:12px 0}.field label{display:block;color:#c6cfdb;font-size:13px;margin-bottom:6px}
+    input,textarea,select{width:100%;background:#0a0f17;border:1px solid #303d50;border-radius:10px;padding:12px;color:var(--text);font:inherit;outline:none}
+    input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1f7aff22}
+    button{border:0;border-radius:10px;padding:12px 16px;background:var(--red);color:white;font-weight:700;font:inherit;cursor:pointer}
+    button.secondary{background:#202b3b;border:1px solid #34445c}button:disabled{opacity:.55;cursor:not-allowed}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.status{min-height:22px;margin-top:12px;font-size:13px;color:var(--muted)}.status.error{color:#ff8d94}.status.ok{color:#69e0b0}
+    .hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+    .stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}.stat small{display:block;color:var(--muted);margin-bottom:5px}.stat strong{font-size:15px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}.tag{font-size:12px;background:#152c26;color:#8ce4bf;border:1px solid #235c47;padding:4px 8px;border-radius:99px}
+    .list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:12px;padding:13px;background:#0c121b}.item strong{display:block}.item small{color:var(--muted)}
+    footer{margin-top:28px;color:#758195;font-size:12px;text-align:center}
+    @media(max-width:760px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
 <body>
-
-  <!-- LOADER -->
-  <div class="loader-container" id="loader">
-    <div class="bouncing-loader"><span></span><span></span><span></span></div>
-  </div>
-
-  <!-- HEADER -->
-  <header>
-    <div class="container nav">
-      <a href="#accueil" class="logo">
-        <img src="logo-xynera.svg" alt="Xynera Club">
-        <span>Xynera Club</span>
-      </a>
-      <nav id="mainNav">
-        <a href="#about">À propos</a>
-        <a href="#services">Services</a>
-        <a href="#projects">Projets</a>
-        <a href="#team">Équipe</a>
-        <a href="investir.html" class="invest-nav">Investir</a>
-        <a href="#contact">Contact</a>
-        <button class="close-menu" id="closeMenuBtn" aria-label="Fermer le menu">✕</button>
-      </nav>
-      <div style="display:flex;align-items:center;gap:12px; flex-wrap:wrap;">
-        <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-        <button class="menu" id="menuBtn" aria-label="Ouvrir le menu">☰</button>
-      </div>
-    </div>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="mark">X</div><span>XYNERA CLUB</span></div>
+    <span class="pill">PRÉPRODUCTION · DEMO</span>
   </header>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero" id="accueil">
-      <div class="container hero-grid">
-        <div>
-          <div class="eyebrow"><span class="dot"></span> DEVELOPER • WEB3 • DIGITAL INNOVATION</div>
-          <h1>Nous construisons le <span>futur numérique.</span></h1>
-          <p>Xynera Club réunit des développeurs et étudiants passionnés qui mettent leurs compétences en commun pour créer des applications, des sites web, des solutions Web3 et transmettre des connaissances technologiques.</p>
-          <div class="actions">
-            <a class="btn btn-red" href="#services">Découvrir nos services</a>
-            <a class="btn btn-outline" href="#contact">Travailler avec nous</a>
-          </div>
-        </div>
-        <div class="hero-card">
-          <div class="tech-grid">
-            <div class="tech-badge"><i class="fab fa-react"></i> React / Next</div>
-            <div class="tech-badge"><i class="fas fa-link"></i> Web3 / DApps</div>
-            <div class="tech-badge"><i class="fas fa-code"></i> Blockchain</div>
-            <div class="tech-badge"><i class="fas fa-brain"></i> AI & Data</div>
-          </div>
-          <div class="stats">
-            <div class="stat"><strong>15+</strong><small>Développeurs</small></div>
-            <div class="stat"><strong>Web3</strong><small>Innovation</small></div>
-            <div class="stat"><strong>∞</strong><small>Idées à construire</small></div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <section class="hero">
+    <h1>Votre espace<br><span style="color:var(--red)">Xynera Club</span></h1>
+    <p>Un portail de démonstration pour créer un compte, consulter votre profil et transmettre une demande d'information. Les opérations financières ne sont pas activées.</p>
+  </section>
 
-    <!-- TEASER -->
-    <section class="teaser-cta">
-      <div class="container">
-        <h2>Prêt à bâtir l'<span>avenir numérique</span> ?</h2>
-        <p>Que vous ayez une idée de projet à concrétiser ou que vous souhaitiez intégrer une équipe dynamique de passionnés, Xynera Club est votre porte d'entrée vers l'innovation. Rejoignez un écosystème où la technologie, la collaboration et la créativité se rencontrent pour façonner le monde de demain.</p>
-        <div class="teaser-buttons">
-          <a href="#contact" class="btn btn-red-lg"><i class="fas fa-rocket"></i> Demander un service</a>
-          <a href="mailto:xenaryclub@gmail.com?subject=Demande d'adhésion - Xynera Club" class="btn btn-outline-light"><i class="fas fa-users"></i> Rejoindre le club</a>
-        </div>
-      </div>
-    </section>
+  <div class="notice"><strong>Environnement de test :</strong> aucun dépôt, retrait, rendement, solde réel ou ordre de trading n'est traité ici. N'envoyez pas d'argent via cette page.</div>
 
-    <!-- MARKETING -->
-    <section class="marketing-target" id="marketing">
-      <div class="container">
-        <h2>Vous avez un projet <span>numérique</span> ?</h2>
-        <p class="tagline">Vous voulez une application ou un site web pour votre entreprise, restaurant, école, activité privée ou autres ? <strong>N'hésitez pas à contacter Xynera Club.</strong> Nous concrétisons vos idées avec une équipe d'experts passionnés.</p>
-        <div class="target-grid">
-          <div class="target-item"><i class="fas fa-building"></i><h4>Entreprise</h4><p>Site vitrine, plateforme e-commerce, outils de gestion et solutions B2B.</p></div>
-          <div class="target-item"><i class="fas fa-utensils"></i><h4>Restaurant</h4><p>Menu en ligne, réservation de tables, commandes en ligne et application fidélité.</p></div>
-          <div class="target-item"><i class="fas fa-graduation-cap"></i><h4>École</h4><p>Portail de cours, plateforme de formation, gestion des notes et communication.</p></div>
-          <div class="target-item"><i class="fas fa-users"></i><h4>Activité privée</h4><p>Blog, portfolio, réseau social, événementiel et applications personnalisées.</p></div>
-          <div class="target-item"><i class="fas fa-plus-circle"></i><h4>Autres</h4><p>Startups, associations, collectivités, clubs sportifs et tout autre besoin.</p></div>
-        </div>
-        <a href="#contact" class="btn btn-red btn-lg" style="padding:18px 50px; font-size:20px;"><i class="fas fa-paper-plane"></i> Contactez-nous dès maintenant</a>
-      </div>
-    </section>
-
-    <!-- GUIDE PRINCIPAL -->
-    <section id="guide">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Guide</span>
-          <h2>Comment demander un service ?</h2>
-          <p>Suivez ces étapes simples pour bénéficier de notre expertise.</p>
-        </div>
-        <div class="guide-steps">
-          <div class="guide-step"><div class="num">1</div><h4>Choisissez votre prestation</h4><p>Parcourez notre offre et sélectionnez le service qui correspond à votre besoin (développement, Web3, audit, formation, etc.).</p></div>
-          <div class="guide-step"><div class="num">2</div><h4>Effectuez le paiement</h4><p>Utilisez l'un des moyens de paiement crypto proposés (BTC, USDT, BNB, TRON). Le montant exact est affiché avant validation.</p></div>
-          <div class="guide-step"><div class="num">3</div><h4>Envoyez votre reçu</h4><p>Remplissez le formulaire avec vos coordonnées et collez le lien de votre capture d'écran (hébergée sur Imgur).</p></div>
-          <div class="guide-step"><div class="num">4</div><h4>Confirmation</h4><p>Notre équipe valide votre demande sous 24h et vous contacte pour démarrer le projet ou la formation.</p></div>
-        </div>
-        <div style="text-align:center; margin-top:30px;">
-          <a href="#contact" class="btn btn-red">Commencer maintenant</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Qui sommes-nous ?</span>
-          <h2>Notre vision, notre mission.</h2>
-          <p>Xynera Club est une communauté de développeurs et d'étudiants qui travaillent ensemble pour transformer des idées en solutions numériques utiles.</p>
-        </div>
-        <div class="about-wrapper">
-          <div class="about-text">
-            <h4>Mission</h4>
-            <p>Notre mission est de démocratiser l'accès aux technologies de pointe, notamment le Web3, la blockchain et l'intelligence artificielle, en les rendant compréhensibles et applicables par tous. Nous formons, accompagnons et développons des solutions concrètes pour répondre aux défis numériques actuels.</p>
-            <h4>Vision</h4>
-            <p>Devenir un écosystème de référence en Afrique et dans le monde, où l'innovation technologique, la collaboration et l'éducation se rencontrent pour résoudre des problèmes concrets. Nous aspirons à créer un réseau de talents capables de façonner le futur numérique.</p>
-            <h4>Valeurs</h4>
-            <ul class="values-list">
-              <li><strong>Collaboration</strong> – Le collectif prime sur l'individualité. Les meilleures solutions naissent de l'intelligence collective.</li>
-              <li><strong>Créativité</strong> – Nous encourageons l'expérimentation et la prise de risque calculée.</li>
-              <li><strong>Apprentissage continu</strong> – La veille technologique et le partage de connaissances sont au cœur de notre démarche.</li>
-              <li><strong>Intégrité</strong> – Nous agissons avec transparence et éthique dans toutes nos relations et projets.</li>
-            </ul>
-          </div>
-          <div class="about-box">
-            <strong>15+</strong>
-            <span>développeurs et étudiants réunis autour d'une même ambition.</span>
-            <div style="display:flex;gap:10px;margin-top:15px;">
-              <span style="width:50px;height:8px;border-radius:99px;background:#0757d9;"></span>
-              <span style="width:50px;height:8px;border-radius:99px;background:#e50914;"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SERVICES -->
-    <section class="dark" id="services">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Nos expertises</span>
-          <h2>Des solutions numériques de l'idée au produit.</h2>
-          <p>Nous structurons notre accompagnement en 6 étapes clés, de la conception à la transmission du savoir.</p>
-        </div>
-        <div class="grid3">
-          <article class="card"><div class="icon red">01</div><h3>Développement web & mobile</h3><p>Conception de sites web, applications mobiles (React, Next.js, Flutter) avec une expérience utilisateur soignée.</p></article>
-          <article class="card"><div class="icon">02</div><h3>Web3 & DApps</h3><p>Création d'applications décentralisées, intégration de wallets et interaction avec les réseaux Ethereum, Solana ou Polygon.</p></article>
-          <article class="card"><div class="icon">03</div><h3>Audit blockchain</h3><p>Analyse de projets blockchain, vérification de smart contracts et recommandations pour minimiser les risques techniques.</p></article>
-          <article class="card"><div class="icon red">04</div><h3>Recherche & innovation</h3><p>Étude approfondie des tokenomics, des architectures décentralisées et des cas d'usage émergents.</p></article>
-          <article class="card"><div class="icon">05</div><h3>Formation</h3><p>Programmes pédagogiques modulaires (du débutant au builder) sur la blockchain, le Web3 et la sécurité.</p></article>
-          <article class="card"><div class="icon">06</div><h3>Accompagnement</h3><p>Conseil en transformation numérique et stratégie d'innovation pour institutions, entrepreneurs et associations.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Portfolio</span>
-          <h2>Nos réalisations</h2>
-          <p>Quelques projets développés par l'équipe Xynera Club.</p>
-        </div>
-        <div class="grid3">
-          <article class="card project"><div class="project-cover">BETIX</div><div class="project-body"><h3>Betix</h3><p>Plateforme numérique de billetterie et gestion d'événements avec paiement intégré.</p><span class="tag">Web</span><span class="tag">Web3</span></div></article>
-          <article class="card project"><div class="project-cover">NESTIFY</div><div class="project-body"><h3>Nestify</h3><p>Solution numérique orientée location et services, avec système de réservation intelligent.</p><span class="tag">App</span><span class="tag">Digital</span></div></article>
-          <article class="card project"><div class="project-cover">WORKLY</div><div class="project-body"><h3>Workly</h3><p>Plateforme connectant freelances et entreprises, avec gestion de contrats et paiements sécurisés.</p><span class="tag">Platform</span><span class="tag">Innovation</span></div></article>
-        </div>
-      </div>
-    </section>
-
-    <!-- CLIENTS -->
-    <section class="dark" id="clients">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Partenaires</span>
-          <h2>Ils nous font confiance</h2>
-          <p>Des applications, plateformes et sites web développés par Xynera Club.</p>
-        </div>
-        <div class="client-grid">
-          <div class="client-logo"><i class="fas fa-store"></i><strong>Betix</strong><span>Billetterie</span></div>
-          <div class="client-logo"><i class="fas fa-home"></i><strong>Nestify</strong><span>Location</span></div>
-          <div class="client-logo"><i class="fas fa-briefcase"></i><strong>Workly</strong><span>Freelance</span></div>
-          <div class="client-logo"><i class="fas fa-coins"></i><strong>Web3 Hub</strong><span>DApps</span></div>
-          <div class="client-logo"><i class="fas fa-graduation-cap"></i><strong>EduChain</strong><span>Formation</span></div>
-          <div class="client-logo"><i class="fas fa-handshake"></i><strong>InnoConnect</strong><span>Réseau</span></div>
-          <div class="client-logo"><i class="fas fa-chart-line"></i><strong>CryptoView</strong><span>Analyse</span></div>
-          <div class="client-logo"><i class="fas fa-shield-alt"></i><strong>SecureAudit</strong><span>Audit</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TEAM -->
-    <section id="team">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Notre équipe</span>
-          <h2>Une équipe fondatrice engagée</h2>
-          <p>Deux profils réunis autour de l’innovation, du développement et des technologies financières.</p>
-        </div>
-        <div class="team-grid">
-          <div class="team-member"><strong>Djamil</strong><span class="location">RDC, Kinshasa <span class="flag">🇨🇩</span></span></div>
-          <div class="team-member"><strong>Florentin</strong><span class="location">Belgique <span class="flag">🇧🇪</span></span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MEDIA -->
-    <section class="dark">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Xynera Media</span>
-          <h2>Présentez votre équipe en vidéo</h2>
-          <p>Sélectionnez une vidéo depuis votre appareil pour la prévisualiser directement.</p>
-        </div>
-        <div class="video-area">
-          <label class="btn btn-red upload-label" for="videoInput"><i class="fas fa-video"></i> Ajouter une vidéo</label>
-          <input id="videoInput" type="file" accept="video/*">
-          <div id="videoPreview" class="video-preview"><video id="player" controls></video></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section>
-      <div class="container">
-        <div class="cta">
-          <div>
-            <h2>Une idée ? Construisons-la ensemble.</h2>
-            <p>Institutions, entrepreneurs, organisations et porteurs de projets peuvent présenter leur besoin à l'équipe Xynera Club.</p>
-          </div>
-          <a href="#contact" class="btn btn-red">Nous contacter</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT WIZARD AVEC GUIDE ET BOUTON SUPPORT -->
-    <section id="contact">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Demande de service</span>
-          <h2>Choisissez votre prestation</h2>
-          <p>Sélectionnez un service, consultez le prix, effectuez le paiement et validez avec votre reçu.</p>
-        </div>
-
-        <div class="contact-wrapper">
-          <div>
-            <div class="notice"><i class="fas fa-info-circle"></i> Ce formulaire vous guide en 3 étapes. Tous les champs sont obligatoires.</div>
-            <div style="background:#f5f5f5; border-radius:20px; padding:25px; margin-top:20px;">
-              <h4 style="color:#e50914; font-size:18px;">Pourquoi Xynera Club ?</h4>
-              <ul class="list" style="margin-top:8px;">
-                <li>Expertise reconnue en Web3 et développement</li>
-                <li>Équipe de 15+ développeurs passionnés</li>
-                <li>Paiements sécurisés via crypto (BTC, USDT, BNB, TRON)</li>
-                <li>Support et accompagnement dédié</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="service-request-box">
-            <div class="step-indicator">
-              <span class="step active" id="step1Label">1. Service</span>
-              <span class="step" id="step2Label">2. Paiement</span>
-              <span class="step" id="step3Label">3. Validation</span>
-            </div>
-
-            <!-- Étape 1 -->
-            <div class="step-panel active" id="panel1">
-              <div class="field">
-                <label for="serviceSelect"><i class="fas fa-cogs"></i> Quel service souhaitez-vous ?</label>
-                <select id="serviceSelect">
-                  <option value="">-- Choisissez une prestation --</option>
-                  <option value="web-basic">Développement Web (Basique) - Site vitrine</option>
-                  <option value="web-adv">Développement Web (Avancé) - E-commerce / SaaS</option>
-                  <option value="mobile">Application Mobile (iOS / Android)</option>
-                  <option value="web3-dapp">DApp / Web3 (Intégration blockchain)</option>
-                  <option value="audit">Audit de Smart Contracts</option>
-                  <option value="research">Analyse & Research (Tokenomics)</option>
-                  <option value="training">Formation (Academy - Session)</option>
-                  <option value="consulting">Consulting Stratégique</option>
-                </select>
-              </div>
-              <div class="wizard-nav">
-                <span></span>
-                <button class="btn btn-red" id="step1Next" disabled>Continuer <i class="fas fa-arrow-right"></i></button>
-              </div>
-            </div>
-
-            <!-- Étape 2 : UNIQUEMENT CRYPTO -->
-            <div class="step-panel" id="panel2">
-              <div class="price-display">
-                <span><strong>Service :</strong> <span id="selectedServiceName">-</span></span>
-                <span class="amount" id="selectedServicePrice">$0</span>
-              </div>
-              <p style="font-weight:700; margin:12px 0 8px;">Effectuez le paiement en crypto à l'une des adresses ci-dessous :</p>
-              
-              <div class="payment-details-grid">
-                <div class="payment-item">
-                  <div class="payment-icon" style="background:#fef3c7;"><i class="fab fa-bitcoin" style="color:#f7931a;"></i></div>
-                  <div class="payment-info"><strong>Bitcoin (BTC)</strong><span class="network">1GPdPJTgswiD9XsCE648vtuEMP7SApgzWf</span></div>
-                  <button class="copy-btn" onclick="copyText('1GPdPJTgswiD9XsCE648vtuEMP7SApgzWf')"><i class="fas fa-copy"></i></button>
-                </div>
-                <div class="payment-item">
-                  <div class="payment-icon" style="background:#dbeafe;"><i class="fas fa-coins" style="color:#26a17b;"></i></div>
-                  <div class="payment-info"><strong>USDT (TRC20)</strong><span class="network">TUU4bBsiUkesd3wbWQniXpjxZkSZEmCfvn</span></div>
-                  <button class="copy-btn" onclick="copyText('TUU4bBsiUkesd3wbWQniXpjxZkSZEmCfvn')"><i class="fas fa-copy"></i></button>
-                </div>
-                <div class="payment-item">
-                  <div class="payment-icon" style="background:#fef9c3;"><i class="fas fa-cube" style="color:#f3ba2f;"></i></div>
-                  <div class="payment-info"><strong>BNB (BEP20)</strong><span class="network">0x6d774face7030190f696d08b583608467084fa4d</span></div>
-                  <button class="copy-btn" onclick="copyText('0x6d774face7030190f696d08b583608467084fa4d')"><i class="fas fa-copy"></i></button>
-                </div>
-                <div class="payment-item">
-                  <div class="payment-icon" style="background:#fce7f3;"><i class="fas fa-bolt" style="color:#ef0027;"></i></div>
-                  <div class="payment-info"><strong>TRON (TRC20)</strong><span class="network">0x6d774face7030190f696d08b583608467084fa4d</span></div>
-                  <button class="copy-btn" onclick="copyText('0x6d774face7030190f696d08b583608467084fa4d')"><i class="fas fa-copy"></i></button>
-                </div>
-              </div>
-
-              <p class="payment-note"><i class="fas fa-shield-alt"></i> Envoyez le montant exact et conservez la capture d'écran (hash de transaction).</p>
-              <div class="wizard-nav">
-                <button class="btn btn-secondary" id="step2Back"><i class="fas fa-arrow-left"></i> Précédent</button>
-                <button class="btn btn-success" id="step2Next">J'ai effectué le paiement <i class="fas fa-arrow-right"></i></button>
-              </div>
-            </div>
-
-            <!-- Étape 3 : Champ Lien + Guide + Bouton Support -->
-            <div class="step-panel" id="panel3">
-              <p style="font-weight:700; margin-bottom:18px;">Remplissez vos coordonnées et fournissez le lien de votre reçu :</p>
-              
-              <form id="finalRequestForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
-                <input type="hidden" name="service_name" id="hiddenServiceName">
-                <input type="hidden" name="service_price" id="hiddenServicePrice">
-
-                <div class="field">
-                  <label><i class="fas fa-user"></i> Nom complet</label>
-                  <input type="text" name="fullName" placeholder="Jean Dupont" required>
-                </div>
-                <div class="field">
-                  <label><i class="fas fa-envelope"></i> Email</label>
-                  <input type="email" name="emailAddr" placeholder="jean@example.com" required>
-                </div>
-                <div class="field">
-                  <label><i class="fas fa-phone"></i> Téléphone (WhatsApp / Mobile)</label>
-                  <input type="tel" name="phoneNum" placeholder="+243 123 456 789" required>
-                </div>
-                <div class="field">
-                  <label><i class="fas fa-hashtag"></i> Référence de la transaction</label>
-                  <input type="text" name="txRef" placeholder="Hash de la transaction / ID" required>
-                </div>
-
-                <!-- 📸 Lien du reçu + GUIDE + BOUTON SUPPORT -->
-                <div class="field">
-                  <label><i class="fas fa-link"></i> Lien du reçu (capture d'écran)</label>
-                  <input type="url" name="receipt_link" id="receiptLink" placeholder="https://exemple.com/mon-reçu.png" required>
-                  
-                  <!-- Guide intégré -->
-                  <div class="link-guide">
-                    <div class="step"><span class="num">1</span> <span>Allez sur <strong><a href="https://imgur.com/upload" target="_blank">Imgur.com</a></strong> (gratuit, pas d'inscription).</span></div>
-                    <div class="step"><span class="num">2</span> <span>Téléchargez votre capture d'écran (cliquez sur "Choose Photo/Video").</span></div>
-                    <div class="step"><span class="num">3</span> <span>Une fois l'image en ligne, <strong>copiez le lien direct</strong> de l'image (cliquez sur "Copy Link" ou faites un clic droit sur l'image → "Copier l'adresse de l'image").</span></div>
-                    <div class="step"><span class="num">4</span> <span>Collez le lien dans le champ ci-dessus. Un <strong>aperçu</strong> de votre image apparaîtra automatiquement.</span></div>
-                  </div>
-
-                  <!-- Aperçu de l'image -->
-                  <div class="link-preview" id="linkPreview">
-                    <img id="previewImage" src="#" alt="Aperçu du reçu">
-                  </div>
-
-                  <!-- Ligne avec bouton support -->
-                  <div class="support-row">
-                    <span style="font-size:14px; color:#888;">Vous rencontrez un problème ?</span>
-                    <button type="button" class="btn-support" id="openSupportBtn">
-                      <i class="fas fa-headset"></i> Contacter le support
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Zone d'erreur -->
-                <div class="error-box" id="errorBox" style="display:none;"></div>
-
-                <div class="wizard-nav">
-                  <button class="btn btn-secondary" id="step3Back"><i class="fas fa-arrow-left"></i> Précédent</button>
-                  <button type="submit" class="btn btn-red" id="submitBtn">
-                    <i class="fas fa-check-circle"></i> Soumettre ma demande
-                  </button>
-                </div>
-                <div id="finalMessage" style="display:none; margin-top:18px; padding:14px; background:#d4edda; color:#155724; border-radius:12px; font-weight:700;">
-                  <i class="fas fa-check-circle"></i> Votre demande a été reçue ! Notre équipe vous contactera sous 24h.
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION PROPOSITION -->
-    <section id="discuss" style="background:#f5f5f5;">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Échange & proposition</span>
-          <h2>Discuter avec notre équipe</h2>
-          <p>Vous avez un projet, une idée, ou souhaitez simplement en savoir plus ? Envoyez-nous un message, nous vous répondrons dans les plus brefs délais.</p>
-        </div>
-        <div style="max-width:700px; margin:0 auto;">
-          <form id="proposalForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
-            <div class="field">
-              <label><i class="fas fa-user"></i> Votre nom</label>
-              <input type="text" name="proposal_name" placeholder="Votre nom" required>
-            </div>
-            <div class="field">
-              <label><i class="fas fa-envelope"></i> Votre email</label>
-              <input type="email" name="proposal_email" placeholder="votre@email.com" required>
-            </div>
-            <div class="field">
-              <label><i class="fas fa-phone"></i> Téléphone (optionnel)</label>
-              <input type="tel" name="proposal_phone" placeholder="+243 ...">
-            </div>
-            <div class="field">
-              <label><i class="fas fa-tag"></i> Sujet</label>
-              <select name="proposal_subject">
-                <option value="general">Demande d'information générale</option>
-                <option value="project">Proposition de projet</option>
-                <option value="partnership">Partenariat</option>
-                <option value="collab">Collaboration / Rejoindre le club</option>
-                <option value="support">Support / Assistance</option>
-              </select>
-            </div>
-            <div class="field">
-              <label><i class="fas fa-comment"></i> Votre message</label>
-              <textarea name="proposal_message" rows="5" placeholder="Décrivez votre besoin..." required></textarea>
-            </div>
-            <button type="submit" class="btn btn-red" style="width:100%;"><i class="fas fa-paper-plane"></i> Envoyer la proposition</button>
-            <div id="proposalMessage" style="display:none; margin-top:15px; padding:12px; background:#d4edda; color:#155724; border-radius:10px; font-weight:700;">
-              <i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons dans les 24h.
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- DISCLAIMER -->
-  <section class="disclaimer" id="disclaimer">
-    <div class="container">
-      <strong>Clause de non-responsabilité – Informations importantes</strong>
-      <p>Les informations fournies sur ce site web (Xynera Club) sont diffusées à titre purement éducatif et informatif. Elles ne constituent en aucun cas des conseils financiers, juridiques, fiscaux ou en investissement. Xynera Club n'est pas un conseiller en investissement, ni un intermédiaire financier.</p>
-      <p><strong>Risques liés aux cryptomonnaies :</strong> Les cryptomonnaies, les tokens et les projets Web3 comportent des risques élevés. Aucun rendement n'est garanti. Chaque investisseur doit effectuer ses propres recherches (DYOR).</p>
-      <p><strong>Protection des données :</strong> Vos informations personnelles sont utilisées uniquement pour le traitement des demandes et ne sont jamais partagées avec des tiers. Vous disposez d'un droit d'accès, de rectification et de suppression en nous contactant à : <a href="mailto:xenaryclub@gmail.com" style="color:#e50914;">xenaryclub@gmail.com</a>.</p>
-      <p><em>Dernière mise à jour : 2026 – Xynera Club.</em></p>
+  <section id="authArea" class="grid">
+    <div class="card">
+      <h2>Créer un compte</h2>
+      <form id="signupForm">
+        <div class="field"><label for="suName">Nom complet</label><input id="suName" required autocomplete="name" placeholder="Votre nom complet"></div>
+        <div class="field"><label for="suEmail">Adresse e-mail</label><input id="suEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com"></div>
+        <div class="field"><label for="suPassword">Mot de passe</label><input id="suPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8 caractères minimum"></div>
+        <button type="submit">Créer mon compte</button>
+      </form>
+      <div id="signupStatus" class="status" aria-live="polite"></div>
+    </div>
+    <div class="card">
+      <h2>Se connecter</h2>
+      <form id="loginForm">
+        <div class="field"><label for="liEmail">Adresse e-mail</label><input id="liEmail" type="email" required autocomplete="email"></div>
+        <div class="field"><label for="liPassword">Mot de passe</label><input id="liPassword" type="password" required autocomplete="current-password"></div>
+        <button type="submit">Connexion</button>
+      </form>
+      <div id="loginStatus" class="status" aria-live="polite"></div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="logo" style="color:#fff;">
-            <img src="logo-xynera.svg" alt="Xynera Club" style="height:50px;width:auto;border-radius:8px;">
-            <span>Xynera Club</span>
-          </div>
-          <p style="margin-top:15px;">Build. Learn. Analyze. Innovate.</p>
-          <p style="margin-top:10px;font-size:13px;color:#999;">
-            <i class="fas fa-envelope"></i> <a href="mailto:xenaryclub@gmail.com">xenaryclub@gmail.com</a>
-          </p>
-        </div>
-        <div><h4>Explorer</h4><a href="#about">À propos</a><br><a href="#services">Services</a><br><a href="#projects">Projets</a></div>
-        <div><h4>Apprendre</h4><a href="#academy">Academy</a><br><a href="#research">Research</a><br><a href="#team">Équipe</a></div>
-        <div><h4>Contact</h4><a href="#contact">Demander</a><br><a href="#discuss">Proposition</a><br><a href="#disclaimer">Disclaimer</a><br><a href="#accueil">Haut</a></div>
-      </div>
-      <div class="social-footer">
-        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      </div>
-      <div class="footer-bottom">
-        <span>© <span id="year"></span> Xynera Club.</span>
-        <span><a href="#">Mentions légales</a> • <a href="#">Politique de confidentialité</a></span>
+  <section id="appArea" class="hidden">
+    <div class="card">
+      <div class="row"><div><span class="tag">Compte connecté</span><h2 style="margin-top:10px">Bienvenue, <span id="welcomeName">membre</span></h2><p id="userEmail"></p></div><button id="logoutBtn" class="secondary">Déconnexion</button></div>
+      <div class="stats">
+        <div class="stat"><small>Type de compte</small><strong id="roleValue">investisseur</strong></div>
+        <div class="stat"><small>Statut du profil</small><strong id="profileStatus">à compléter</strong></div>
+        <div class="stat"><small>Portefeuille</small><strong>Non activé</strong></div>
       </div>
     </div>
-  </footer>
-
-  <!-- BOUTON AIDE FLOTTANT -->
-  <button class="help-btn" id="helpBtn" aria-label="Aide et contact">
-    <i class="fas fa-life-ring"></i> Aide
-  </button>
-
-  <!-- MODALE SUPPORT -->
-  <div class="modal-overlay" id="supportModal">
-    <div class="modal-content">
-      <button class="modal-close" id="closeSupportModalBtn">✕</button>
-      <h3><i class="fas fa-headset" style="color:#e50914;"></i> Contacter le support</h3>
-      <p>Notre équipe est là pour vous aider. Posez votre question, demandez un devis ou un accompagnement personnalisé. Nous vous répondons sous 24h.</p>
-      <form id="supportForm" action="https://formspree.io/f/xjyvbkyp" method="POST">
-        <div class="field">
-          <label><i class="fas fa-user"></i> Votre nom</label>
-          <input type="text" name="support_name" placeholder="Votre nom" required>
-        </div>
-        <div class="field">
-          <label><i class="fas fa-envelope"></i> Votre email</label>
-          <input type="email" name="support_email" placeholder="votre@email.com" required>
-        </div>
-        <div class="field">
-          <label><i class="fas fa-phone"></i> Téléphone (optionnel)</label>
-          <input type="tel" name="support_phone" placeholder="+243 ...">
-        </div>
-        <div class="field">
-          <label><i class="fas fa-tag"></i> Sujet</label>
-          <select name="support_subject">
-            <option value="general">Demande d'information</option>
-            <option value="help_crypto">Problème avec le paiement crypto</option>
-            <option value="project">Proposition de projet</option>
-            <option value="support">Assistance technique</option>
-            <option value="other">Autre</option>
-          </select>
-        </div>
-        <div class="field">
-          <label><i class="fas fa-comment"></i> Votre message</label>
-          <textarea name="support_message" rows="4" placeholder="Décrivez votre besoin..." required></textarea>
-        </div>
-        <button type="submit" class="btn btn-red" style="width:100%;" id="supportSubmitBtn">
-          <i class="fas fa-paper-plane"></i> Envoyer au support
-        </button>
-        <div id="supportMessage" style="display:none; margin-top:12px; padding:12px; background:#d4edda; color:#155724; border-radius:10px; font-weight:700;">
-          <i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons rapidement.
-        </div>
-      </form>
+    <div class="grid" style="margin-top:18px">
+      <div class="card">
+        <h2>Mes informations</h2>
+        <form id="profileForm">
+          <div class="field"><label for="profileName">Nom complet</label><input id="profileName" required></div>
+          <div class="field"><label for="profilePhone">Téléphone (facultatif)</label><input id="profilePhone" placeholder="+243..."></div>
+          <button type="submit">Enregistrer mon profil</button>
+        </form>
+        <div id="profileStatusMsg" class="status" aria-live="polite"></div>
+      </div>
+      <div class="card">
+        <h2>Demande d'information</h2>
+        <p>Cette demande ne constitue pas un investissement et ne déclenche aucun paiement.</p>
+        <form id="interestForm">
+          <div class="field"><label for="interestAmount">Montant envisagé (USD, indicatif)</label><input id="interestAmount" type="number" min="1" step="1" placeholder="Ex. 500"></div>
+          <div class="field"><label for="interestMarket">Marché qui vous intéresse</label><select id="interestMarket"><option value="forex">Forex</option><option value="crypto_review">Crypto (sous réserve de validation)</option><option value="both_review">Les deux (sous réserve de validation)</option></select></div>
+          <div class="field"><label for="interestMessage">Message (facultatif)</label><textarea id="interestMessage" rows="3" placeholder="Votre question..."></textarea></div>
+          <button type="submit">Envoyer la demande</button>
+        </form>
+        <div id="interestStatus" class="status" aria-live="polite"></div>
+      </div>
     </div>
-  </div>
+    <div class="card" style="margin-top:18px">
+      <h2>Mes demandes</h2><div id="requestsList" class="list"><p>Aucune demande chargée.</p></div>
+    </div>
+  </section>
 
-  <script>
-    // --- FONCTIONS UTILITAIRES ---
-    function copyText(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert(text + ' copié dans le presse-papiers !');
-      }).catch(() => {
-        alert('Copie manuelle requise.');
-      });
+  <footer>XYNERA CLUB · Build. Learn. Analyze. Innovate. · Portail de test uniquement</footer>
+</div>
+
+<script>
+(() => {
+  // 1) Remplace ces deux valeurs par celles de ton projet Supabase.
+  // URL : Project Settings > API > Project URL
+  // Clé publique : Project Settings > API Keys > anon / publishable key
+  const SUPABASE_URL = "COLLE_ICI_TON_PROJECT_URL";
+  const SUPABASE_ANON_KEY = "COLLE_ICI_TA_CLE_PUBLIQUE_ANON";
+
+  const $ = (id) => document.getElementById(id);
+  const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("COLLE_ICI") &&
+    SUPABASE_ANON_KEY.length > 20 && !SUPABASE_ANON_KEY.includes("COLLE_ICI");
+
+  if (!configured) {
+    $("signupStatus").textContent = "Configuration requise : ajoute d'abord l'URL et la clé publique Supabase dans le code, en bas du fichier.";
+    $("signupStatus").className = "status error";
+    $("loginStatus").textContent = "Configuration requise : ajoute d'abord l'URL et la clé publique Supabase dans le code, en bas du fichier.";
+    $("loginStatus").className = "status error";
+    return;
+  }
+
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let currentUser = null;
+
+  function message(id, text, kind = "") {
+    $(id).textContent = text;
+    $(id).className = "status " + kind;
+  }
+  function friendlyError(error) {
+    const msg = error?.message || "Une erreur est survenue.";
+    if (msg.includes("Invalid login credentials")) return "E-mail ou mot de passe incorrect.";
+    if (msg.toLowerCase().includes("email not confirmed")) return "Confirme ton adresse e-mail avant de te connecter.";
+    return msg;
+  }
+
+  async function loadProfile() {
+    if (!currentUser) return;
+    const { data, error } = await client.from("profiles").select("full_name, phone, role, account_status").eq("id", currentUser.id).maybeSingle();
+    if (error) throw error;
+    const profile = data || {};
+    $("welcomeName").textContent = profile.full_name || currentUser.email || "membre";
+    $("userEmail").textContent = currentUser.email || "";
+    $("roleValue").textContent = profile.role || "investor";
+    $("profileStatus").textContent = profile.account_status || "pending";
+    $("profileName").value = profile.full_name || "";
+    $("profilePhone").value = profile.phone || "";
+  }
+
+  async function loadRequests() {
+    const { data, error } = await client.from("investment_interest_requests")
+      .select("id, indicative_amount_usd, market_interest, message, status, created_at")
+      .order("created_at", { ascending: false }).limit(20);
+    if (error) throw error;
+    const list = $("requestsList");
+    list.innerHTML = "";
+    if (!data || data.length === 0) {
+      const p = document.createElement("p"); p.textContent = "Aucune demande pour le moment."; list.appendChild(p); return;
     }
+    data.forEach((item) => {
+      const div = document.createElement("div"); div.className = "item";
+      const title = document.createElement("strong");
+      title.textContent = `${item.market_interest} · ${item.indicative_amount_usd ? item.indicative_amount_usd + " USD indicatifs" : "Montant non précisé"}`;
+      const detail = document.createElement("small");
+      detail.textContent = `${item.status} · ${new Date(item.created_at).toLocaleString("fr-FR")}`;
+      div.append(title, detail);
+      if (item.message) { const p = document.createElement("p"); p.textContent = item.message; p.style.margin = "8px 0 0"; div.appendChild(p); }
+      list.appendChild(div);
+    });
+  }
 
-    // --- MENU MOBILE ---
-    const menuBtn = document.getElementById('menuBtn');
-    const closeMenuBtn = document.getElementById('closeMenuBtn');
-    const mainNav = document.getElementById('mainNav');
+  async function showApp(user) {
+    currentUser = user;
+    $("authArea").classList.add("hidden");
+    $("appArea").classList.remove("hidden");
+    try { await loadProfile(); await loadRequests(); }
+    catch (e) { console.error(e); }
+  }
 
-    function toggleMenu(open) {
-      if (open === undefined) open = !mainNav.classList.contains('open');
-      mainNav.classList.toggle('open', open);
-      menuBtn.style.display = open ? 'none' : 'block';
-      closeMenuBtn.style.display = open ? 'block' : 'none';
-      if (open) {
-        mainNav.style.display = 'flex';
-      } else {
-        mainNav.style.display = '';
-      }
+  $("signupForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const name = $("suName").value.trim(), email = $("suEmail").value.trim(), password = $("suPassword").value;
+    message("signupStatus", "Création du compte en cours...");
+    const { data, error } = await client.auth.signUp({ email, password, options: { data: { full_name: name } } });
+    if (error) return message("signupStatus", friendlyError(error), "error");
+    if (data.session && data.user) {
+      message("signupStatus", "Compte créé. Ton espace s'ouvre...", "ok");
+      await showApp(data.user);
+    } else {
+      message("signupStatus", "Compte créé. Vérifie ta boîte e-mail pour confirmer ton adresse, puis connecte-toi.", "ok");
     }
+  });
 
-    menuBtn.addEventListener('click', () => toggleMenu(true));
-    closeMenuBtn.addEventListener('click', () => toggleMenu(false));
-    mainNav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth < 992) toggleMenu(false);
-      });
+  $("loginForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    message("loginStatus", "Connexion en cours...");
+    const { data, error } = await client.auth.signInWithPassword({ email: $("liEmail").value.trim(), password: $("liPassword").value });
+    if (error) return message("loginStatus", friendlyError(error), "error");
+    await showApp(data.user);
+  });
+
+  $("logoutBtn").addEventListener("click", async () => {
+    const { error } = await client.auth.signOut();
+    if (error) return alert(friendlyError(error));
+    currentUser = null; $("appArea").classList.add("hidden"); $("authArea").classList.remove("hidden");
+  });
+
+  $("profileForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!currentUser) return;
+    message("profileStatusMsg", "Enregistrement...");
+    const { error } = await client.from("profiles").update({
+      full_name: $("profileName").value.trim(),
+      phone: $("profilePhone").value.trim() || null, updated_at: new Date().toISOString()
+    }).eq("id", currentUser.id);
+    if (error) return message("profileStatusMsg", friendlyError(error), "error");
+    message("profileStatusMsg", "Profil enregistré.", "ok");
+    await loadProfile();
+  });
+
+  $("interestForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!currentUser) return;
+    message("interestStatus", "Envoi de la demande...");
+    const amountValue = $("interestAmount").value;
+    const amount = amountValue ? Number(amountValue) : null;
+    if (amount !== null && (!Number.isFinite(amount) || amount <= 0)) return message("interestStatus", "Indique un montant valide.", "error");
+    const { error } = await client.from("investment_interest_requests").insert({
+      user_id: currentUser.id, indicative_amount_usd: amount,
+      market_interest: $("interestMarket").value, message: $("interestMessage").value.trim() || null
     });
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 992) toggleMenu(false);
-    });
+    if (error) return message("interestStatus", friendlyError(error), "error");
+    $("interestForm").reset();
+    message("interestStatus", "Demande envoyée. Elle ne constitue pas un dépôt ni un engagement d'investissement.", "ok");
+    await loadRequests();
+  });
 
-    // --- THÈME ---
-    const toggleBtn = document.getElementById('themeToggle');
-    const icon = toggleBtn.querySelector('i');
-    function setTheme(theme) {
-      if (theme === 'dark') {
-        document.body.classList.add('dark');
-        icon.className = 'fas fa-sun';
-      } else {
-        document.body.classList.remove('dark');
-        icon.className = 'fas fa-moon';
-      }
-      localStorage.setItem('theme', theme);
-    }
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    toggleBtn.addEventListener('click', () => {
-      const current = document.body.classList.contains('dark') ? 'dark' : 'light';
-      setTheme(current === 'dark' ? 'light' : 'dark');
-    });
-
-    // --- LOADER ---
-    const loader = document.getElementById('loader');
-    window.addEventListener('load', function() {
-      setTimeout(() => { loader.classList.add('hidden'); }, 1000);
-    });
-    setTimeout(() => {
-      if (!loader.classList.contains('hidden')) { loader.classList.add('hidden'); }
-    }, 3000);
-
-    // --- VIDÉO ---
-    const videoInput = document.getElementById('videoInput');
-    const preview = document.getElementById('videoPreview');
-    const player = document.getElementById('player');
-    let videoUrl = null;
-    if (videoInput) {
-      videoInput.addEventListener('change', function () {
-        const file = this.files[0];
-        if (!file) return;
-        if (videoUrl) URL.revokeObjectURL(videoUrl);
-        videoUrl = URL.createObjectURL(file);
-        player.src = videoUrl;
-        preview.style.display = 'block';
-        player.play().catch(() => {});
-      });
-    }
-
-    // --- WIZARD (3 étapes) ---
-    const serviceSelect = document.getElementById('serviceSelect');
-    const step1Next = document.getElementById('step1Next');
-    const step2Next = document.getElementById('step2Next');
-    const step2Back = document.getElementById('step2Back');
-    const step3Back = document.getElementById('step3Back');
-    const panel1 = document.getElementById('panel1');
-    const panel2 = document.getElementById('panel2');
-    const panel3 = document.getElementById('panel3');
-    const step1Label = document.getElementById('step1Label');
-    const step2Label = document.getElementById('step2Label');
-    const step3Label = document.getElementById('step3Label');
-    const hiddenServiceName = document.getElementById('hiddenServiceName');
-    const hiddenServicePrice = document.getElementById('hiddenServicePrice');
-
-    const prices = {
-      'web-basic': { name: 'Développement Web (Basique)', price: '500' },
-      'web-adv': { name: 'Développement Web (Avancé)', price: '1500' },
-      'mobile': { name: 'Application Mobile', price: '2000' },
-      'web3-dapp': { name: 'DApp / Web3', price: '2500' },
-      'audit': { name: 'Audit Smart Contracts', price: '800' },
-      'research': { name: 'Analyse & Research', price: '600' },
-      'training': { name: 'Formation (Session)', price: '300' },
-      'consulting': { name: 'Consulting Stratégique', price: '1000' }
-    };
-
-    serviceSelect.addEventListener('change', function() {
-      step1Next.disabled = !this.value;
-    });
-
-    step1Next.addEventListener('click', function() {
-      const val = serviceSelect.value;
-      if (!val) return;
-      const data = prices[val];
-      document.getElementById('selectedServiceName').textContent = data.name;
-      document.getElementById('selectedServicePrice').textContent = '$' + data.price;
-      hiddenServiceName.value = data.name;
-      hiddenServicePrice.value = data.price;
-
-      panel1.classList.remove('active');
-      panel2.classList.add('active');
-      step1Label.classList.remove('active');
-      step1Label.classList.add('done');
-      step2Label.classList.add('active');
-    });
-
-    step2Next.addEventListener('click', function() {
-      panel2.classList.remove('active');
-      panel3.classList.add('active');
-      step2Label.classList.remove('active');
-      step2Label.classList.add('done');
-      step3Label.classList.add('active');
-    });
-
-    step2Back.addEventListener('click', function() {
-      panel2.classList.remove('active');
-      panel1.classList.add('active');
-      step2Label.classList.remove('active');
-      step2Label.classList.remove('done');
-      step1Label.classList.add('active');
-    });
-
-    step3Back.addEventListener('click', function() {
-      panel3.classList.remove('active');
-      panel2.classList.add('active');
-      step3Label.classList.remove('active');
-      step2Label.classList.add('active');
-    });
-
-    // --- APERÇU DE L'IMAGE DEPUIS LE LIEN ---
-    const receiptLink = document.getElementById('receiptLink');
-    const linkPreview = document.getElementById('linkPreview');
-    const previewImage = document.getElementById('previewImage');
-
-    receiptLink.addEventListener('input', function() {
-      const url = this.value.trim();
-      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-        previewImage.src = url;
-        previewImage.onload = function() {
-          linkPreview.classList.add('active');
-        };
-        previewImage.onerror = function() {
-          linkPreview.classList.remove('active');
-        };
-      } else {
-        linkPreview.classList.remove('active');
-        previewImage.src = '#';
-      }
-    });
-
-    // --- SOUMISSION FORMULAIRE PRINCIPAL (VERS FORMSPREE) ---
-    document.getElementById('finalRequestForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = this;
-      const formData = new FormData(form);
-      const submitBtn = document.getElementById('submitBtn');
-      const originalText = submitBtn.innerHTML;
-      const finalMsg = document.getElementById('finalMessage');
-      const errorBox = document.getElementById('errorBox');
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner"></span> Envoi en cours...';
-      finalMsg.style.display = 'none';
-      errorBox.style.display = 'none';
-
-      fetch('https://formspree.io/f/xjyvbkyp', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          finalMsg.style.display = 'block';
-          finalMsg.innerHTML = '<i class="fas fa-check-circle"></i> Votre demande a été reçue ! Notre équipe vous contactera sous 24h.';
-          form.reset();
-          linkPreview.classList.remove('active');
-          previewImage.src = '#';
-          finalMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          response.json().then(data => {
-            errorBox.style.display = 'block';
-            errorBox.innerHTML = '<strong>Erreur :</strong> ' + (data.error || 'Veuillez vérifier vos informations.');
-            errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }).catch(() => {
-            errorBox.style.display = 'block';
-            errorBox.innerHTML = '<strong>Erreur :</strong> Une erreur est survenue. Veuillez réessayer.';
-          });
-        }
-      })
-      .catch(() => {
-        errorBox.style.display = 'block';
-        errorBox.innerHTML = '<strong>Erreur réseau :</strong> Vérifiez votre connexion internet.';
-      })
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-      });
-    });
-
-    // --- SOUMISSION FORMULAIRE SUPPORT ---
-    document.getElementById('supportForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = this;
-      const formData = new FormData(form);
-      const submitBtn = document.getElementById('supportSubmitBtn');
-      const originalText = submitBtn.innerHTML;
-      const msg = document.getElementById('supportMessage');
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
-      msg.style.display = 'none';
-
-      fetch('https://formspree.io/f/xjyvbkyp', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          msg.style.display = 'block';
-          msg.innerHTML = '<i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons rapidement.';
-          form.reset();
-          msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-        }
-      })
-      .catch(() => alert('Erreur de connexion.'))
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-      });
-    });
-
-    // --- SOUMISSION FORMULAIRE PROPOSITION ---
-    document.getElementById('proposalForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = this;
-      const formData = new FormData(form);
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      const msg = document.getElementById('proposalMessage');
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
-      msg.style.display = 'none';
-
-      fetch('https://formspree.io/f/xjyvbkyp', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          msg.style.display = 'block';
-          msg.innerHTML = '<i class="fas fa-check-circle"></i> Votre message a été envoyé ! Nous vous répondrons dans les 24h.';
-          form.reset();
-          msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          alert('Erreur lors de l\'envoi.');
-        }
-      })
-      .catch(() => alert('Erreur de connexion.'))
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-      });
-    });
-
-    // --- MODALE SUPPORT ---
-    const supportModal = document.getElementById('supportModal');
-    const openSupportBtn = document.getElementById('openSupportBtn');
-    const closeSupportModalBtn = document.getElementById('closeSupportModalBtn');
-    const helpBtn = document.getElementById('helpBtn');
-
-    function openSupportModal() {
-      supportModal.classList.add('active');
-    }
-
-    function closeSupportModal() {
-      supportModal.classList.remove('active');
-    }
-
-    openSupportBtn.addEventListener('click', openSupportModal);
-    helpBtn.addEventListener('click', openSupportModal);
-    closeSupportModalBtn.addEventListener('click', closeSupportModal);
-    supportModal.addEventListener('click', (e) => {
-      if (e.target === supportModal) closeSupportModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeSupportModal();
-    });
-
-    // --- ANNÉE ---
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-
+  client.auth.getSession().then(({ data, error }) => {
+    if (error) console.error(error);
+    if (data?.session?.user) showApp(data.session.user);
+  });
+  client.auth.onAuthStateChange((_event, session) => {
+    if (session?.user && !currentUser) showApp(session.user);
+  });
+})();
+</script>
 </body>
 </html>
