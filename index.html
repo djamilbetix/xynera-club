@@ -57,11 +57,12 @@
     .field textarea{resize:vertical;min-height:92px}
     .field input::placeholder,.field textarea::placeholder{color:#a1aab7}
     .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,122,255,.1)}
-    .primary-btn,.secondary-btn{min-height:46px;border-radius:10px;padding:11px 17px;font-size:13px;font-weight:750;transition:transform .15s,filter .15s}
+    .primary-btn,.secondary-btn{min-height:46px;border-radius:10px;padding:11px 17px;font-size:13px;font-weight:750;transition:transform .15s,filter .15s,opacity .15s}
     .primary-btn{border:0;background:var(--red);color:#fff;box-shadow:0 7px 15px rgba(229,9,20,.16)}
-    .primary-btn:hover{filter:brightness(.96);transform:translateY(-1px)}
+    .primary-btn:hover:not(:disabled){filter:brightness(.96);transform:translateY(-1px)}
+    .primary-btn:disabled,.secondary-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;filter:none}
     .secondary-btn{border:1px solid #dce2ea;background:#fff;color:#263247}
-    .secondary-btn:hover{background:#f7f9fc}
+    .secondary-btn:hover:not(:disabled){background:#f7f9fc}
     .full{width:100%}
     .status{min-height:20px;margin:12px 0 0;font-size:12px;color:#667386}
     .status.error{color:#c42b35}.status.ok{color:var(--green)}
@@ -222,7 +223,7 @@
             <div class="field"><label for="profileName">Nom complet</label><input id="profileName" required autocomplete="name"></div>
             <div class="field"><label for="profilePhone">Téléphone</label><input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243..."></div>
             <div class="field"><label for="profileWallet">Adresse du portefeuille de retrait *</label><input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse de portefeuille"></div>
-            <div class="wallet-warning"><strong>Important — vérifiez votre adresse</strong><br>Les bénéfices éventuels à la fin de votre contrat seront envoyés exclusivement à l’adresse de portefeuille enregistrée dans votre compte. Vérifiez que l’adresse est correcte et compatible avec le réseau utilisé. Si vous changez de portefeuille, modifiez cette information dans votre profil.</div>
+            <div class="wallet-warning"><strong>Important — vérifiez votre adresse</strong><br>Les bénéfices éventuels à la fin de votre contrat seront envoyés exclusivement à l'adresse de portefeuille enregistrée dans votre compte. Vérifiez que l'adresse est correcte et compatible avec le réseau utilisé. Si vous changez de portefeuille, modifiez cette information dans votre profil.</div>
             <button class="primary-btn" type="submit">Enregistrer les modifications</button>
           </form>
           <div id="profileStatusMsg" class="status" aria-live="polite"></div>
@@ -291,68 +292,75 @@
 
   function setMessage(id, text, type = "") {
     const el = $(id);
+    if (!el) return;
     el.textContent = text;
     el.className = "status" + (type ? " " + type : "");
   }
   let confirmationEmail = "";
   let cooldownUntil = 0;
   let cooldownTimer = null;
-  function showModal(title, description, kind="loading", canResend=false) {
+
+  function showModal(title, description, kind = "loading", canResend = false) {
     $("actionModal").classList.remove("hidden");
     $("modalTitle").textContent = title;
     $("modalDescription").textContent = description;
     $("modalSymbol").className = "modal-symbol" + (kind === "error" ? " error" : kind === "success" ? " success" : "");
     $("modalSymbol").innerHTML = kind === "loading" ? '<span class="spin" aria-hidden="true"></span>' : "";
     if (kind !== "loading") $("modalSymbol").textContent = kind === "success" ? "✓" : "!";
-    $("modalActions").classList.toggle("hidden",kind==="loading");
+    $("modalActions").classList.toggle("hidden", kind === "loading");
     $("resendButton").classList.add("hidden");
     updateCooldown();
   }
-  function closeModal(){
+  function closeModal() {
     $("actionModal").classList.add("hidden");
     $("modalClose").textContent = "Fermer";
     if ($("loginForm").classList.contains("active")) $("liEmail").focus();
   }
-  $("modalClose").addEventListener("click",closeModal);
-  function updateCooldown(){
-    const remaining = Math.max(0,Math.ceil((cooldownUntil-Date.now())/1000));
+  $("modalClose").addEventListener("click", closeModal);
+  function updateCooldown() {
+    const remaining = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
     const button = $("resendButton");
     button.disabled = remaining > 0;
     button.textContent = remaining ? `Réessayer dans ${remaining} s` : "Renvoyer l'e-mail de confirmation";
-    if(cooldownTimer) clearTimeout(cooldownTimer);
-    if(remaining) cooldownTimer = setTimeout(updateCooldown,1000);
+    if (cooldownTimer) clearTimeout(cooldownTimer);
+    if (remaining) cooldownTimer = setTimeout(updateCooldown, 1000);
   }
-  function beginCooldown(seconds=60){cooldownUntil=Date.now()+seconds*1000;updateCooldown();}
-  function isRateLimit(error){return /security purposes|only request this after|after \d+ seconds|rate limit|too many requests/i.test(error?.message||"");}
-  function secondsFromError(error){
-    const m=(error?.message||"").match(/after (\d+) seconds/i);
+  function beginCooldown(seconds = 60) { cooldownUntil = Date.now() + seconds * 1000; updateCooldown(); }
+  function isRateLimit(error) { return /security purposes|only request this after|after \d+ seconds|rate limit|too many requests/i.test(error?.message || ""); }
+  function secondsFromError(error) {
+    const m = (error?.message || "").match(/after (\d+) seconds/i);
     return m ? Number(m[1]) : 60;
   }
-  $("resendButton").addEventListener("click",async()=>{
-    if(!confirmationEmail || Date.now()<cooldownUntil)return;
-    showModal("Renvoi en cours","Nous transmettons votre demande de nouvel e-mail.");
-    try{
-      const {error}=await supabaseClient.auth.resend({type:"signup",email:confirmationEmail});
-      if(error){
-        if(isRateLimit(error))beginCooldown(secondsFromError(error));
-        showModal("Renvoi non effectué",errorText(error),"error",true);
-      }else{
+  $("resendButton").addEventListener("click", async () => {
+    if (!confirmationEmail || Date.now() < cooldownUntil) return;
+    showModal("Renvoi en cours", "Nous transmettons votre demande de nouvel e-mail.");
+    try {
+      const { error } = await supabaseClient.auth.resend({ type: "signup", email: confirmationEmail });
+      if (error) {
+        if (isRateLimit(error)) beginCooldown(secondsFromError(error));
+        showModal("Renvoi non effectué", errorText(error), "error", true);
+      } else {
         beginCooldown(60);
         showModal("Demande de renvoi enregistrée",
-          "Vérifiez la boîte de réception et les courriers indésirables de "+confirmationEmail+". La réception dépend du service e-mail configuré dans Supabase.",
-          "success",true);
+          "Vérifiez la boîte de réception et les courriers indésirables de " + confirmationEmail + ". La réception dépend du service e-mail configuré dans Supabase.",
+          "success", true);
       }
-    }catch(e){showModal("Connexion indisponible",errorText(e),"error",true);}
+    } catch (e) { showModal("Connexion indisponible", errorText(e), "error", true); }
   });
+
   function errorText(error) {
     const raw = error?.message || "Une erreur est survenue. Réessayez.";
     if (isRateLimit(error)) return "Trop de tentatives rapprochées. Attendez quelques minutes avant de réessayer.";
     if (/user already registered|already been registered|already exists/i.test(raw)) return "Cette adresse e-mail possède déjà un compte. Connectez-vous plutôt que de créer un nouveau compte.";
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
     if (raw.toLowerCase().includes("email not confirmed")) return "Veuillez confirmer votre adresse e-mail avant de vous connecter.";
-    if (raw.toLowerCase().includes("fetch")) return "Connexion impossible. Vérifiez votre connexion Internet.";
+    if (/password should be at least/i.test(raw)) return "Le mot de passe doit contenir au moins 8 caractères.";
+    if (/unable to validate email|invalid email|invalid format/i.test(raw)) return "Adresse e-mail invalide.";
+    if (/signup (is )?disabled|signups? not allowed/i.test(raw)) return "Les inscriptions sont momentanément désactivées. Réessayez plus tard.";
+    if (raw.toLowerCase().includes("fetch") || raw.toLowerCase().includes("network")) return "Connexion impossible. Vérifiez votre connexion Internet.";
     return raw;
   }
+
   function switchAuth(mode) {
     const login = mode === "login";
     $("loginForm").classList.toggle("active", login);
@@ -363,26 +371,27 @@
     $("signupTab").setAttribute("aria-selected", String(!login));
     $("authTitle").textContent = login ? "Heureux de vous revoir" : "Créer votre espace";
     $("authSubtitle").textContent = login ? "Connectez-vous à votre espace personnel." : "Renseignez vos informations pour commencer.";
-    setMessage("loginStatus", ""); setMessage("signupStatus", "");
+    setMessage("loginStatus", "");
+    setMessage("signupStatus", "");
   }
   $("loginTab").addEventListener("click", () => switchAuth("login"));
   $("signupTab").addEventListener("click", () => switchAuth("signup"));
 
   function roleLabel(role) {
-    return ({investor:"Investisseur",trader:"Trader",admin:"Administrateur",compliance:"Conformité",accountant:"Comptabilité"})[role] || "Membre";
+    return ({ investor: "Investisseur", trader: "Trader", admin: "Administrateur", compliance: "Conformité", accountant: "Comptabilité" })[role] || "Membre";
   }
   function statusLabel(status) {
-    return ({pending:"En cours de vérification",active:"Actif",restricted:"Restreint"})[status] || "En cours de vérification";
+    return ({ pending: "En cours de vérification", active: "Actif", restricted: "Restreint" })[status] || "En cours de vérification";
   }
   function marketLabel(market) {
-    return ({forex:"Forex",crypto_review:"Crypto",both_review:"Forex et crypto"})[market] || market;
+    return ({ forex: "Forex", crypto_review: "Crypto", both_review: "Forex et crypto" })[market] || market;
   }
   function dateLabel(value) {
-    return new Date(value).toLocaleString("fr-FR", {dateStyle:"medium",timeStyle:"short"});
+    return new Date(value).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" });
   }
 
   async function loadProfile() {
-    const {data, error} = await supabaseClient.from("profiles")
+    const { data, error } = await supabaseClient.from("profiles")
       .select("full_name, phone, wallet_address, role, account_status, referral_code").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
@@ -393,7 +402,8 @@
     $("roleMeta").textContent = roleLabel(profile.role || "investor");
     $("profileStatus").textContent = statusLabel(profile.account_status || "pending");
     $("profileName").value = profile.full_name || "";
-    $("profilePhone").value = profile.phone || "";\n    $("profileWallet").value = profile.wallet_address || "";
+    $("profilePhone").value = profile.phone || "";
+    $("profileWallet").value = profile.wallet_address || "";
     $("avatarInitial").textContent = (name.trim()[0] || "X").toUpperCase();
     $("myReferralCode").textContent = profile.referral_code || "En préparation";
     await loadReferralCount();
@@ -415,7 +425,7 @@
     if (!members.length) {
       const empty = document.createElement("p");
       empty.className = "empty-team";
-      empty.textContent = "Vous n’avez pas encore parrainé de membre.";
+      empty.textContent = "Vous n'avez pas encore parrainé de membre.";
       list.appendChild(empty);
       return;
     }
@@ -453,9 +463,9 @@
   });
 
   async function loadRequests() {
-    const {data, error} = await supabaseClient.from("investment_interest_requests")
+    const { data, error } = await supabaseClient.from("investment_interest_requests")
       .select("id, indicative_amount_usd, market_interest, message, status, created_at")
-      .order("created_at", {ascending:false}).limit(20);
+      .order("created_at", { ascending: false }).limit(20);
     if (error) throw error;
     const rows = data || [];
     $("requestCount").textContent = String(rows.length);
@@ -471,7 +481,7 @@
       const left = document.createElement("div");
       const title = document.createElement("strong"); title.textContent = marketLabel(item.market_interest);
       const details = document.createElement("small");
-      const state = ({pending:"En attente",reviewed:"Consultée",contacted:"Contact établi",closed:"Clôturée"})[item.status] || item.status;
+      const state = ({ pending: "En attente", reviewed: "Consultée", contacted: "Contact établi", closed: "Clôturée" })[item.status] || item.status;
       details.textContent = state + " · " + dateLabel(item.created_at);
       left.append(title, details);
       if (item.message) { const note = document.createElement("small"); note.textContent = item.message; left.appendChild(note); }
@@ -496,90 +506,150 @@
   }
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  /* ------- INSCRIPTION (corrigée) ------- */
   $("signupForm").addEventListener("submit", async (event) => {
     event.preventDefault();
+    const button = $("signupForm").querySelector('button[type="submit"]');
+    if (button.disabled) return; // anti double-clic
+
     const name = $("suName").value.trim();
     const email = $("suEmail").value.trim();
     const password = $("suPassword").value;
     const referralCode = $("suReferral").value.trim().toUpperCase();
-    if (!name) { showModal("Nom requis", "Veuillez saisir votre nom complet.", "error"); return; }
 
-    if (referralCode) {
-      const { data: validCode, error: validationError } = await supabaseClient.rpc(
-        "xynera_validate_referral_code", { p_code: referralCode }
-      );
-      if (validationError) {
-        showModal("Vérification impossible", "Le système de parrainage n'est pas encore configuré. Réessayez plus tard ou laissez le champ vide.", "error");
-        return;
-      }
-      if (!validCode) {
-        showModal("Code invalide", "Ce code de parrainage n'existe pas. Vérifiez-le ou laissez le champ vide.", "error");
-        return;
-      }
+    if (!name) {
+      showModal("Nom requis", "Veuillez saisir votre nom complet.", "error");
+      return;
+    }
+    if (password.length < 8) {
+      showModal("Mot de passe trop court", "Choisissez un mot de passe d'au moins 8 caractères.", "error");
+      return;
     }
 
-    const button = $("signupForm").querySelector('button[type="submit"]');
+    const originalText = button.textContent;
     button.disabled = true;
-    showModal("Création du compte", "Nous préparons votre espace personnel.");
+    button.textContent = "Création en cours…";
+
     try {
+      // Validation du code de parrainage — ne JAMAIS bloquer l'inscription si le RPC est absent
+      if (referralCode) {
+        try {
+          const { data: validCode, error: validationError } = await supabaseClient.rpc(
+            "xynera_validate_referral_code", { p_code: referralCode }
+          );
+          if (validationError) {
+            console.warn("Validation parrainage indisponible :", validationError.message);
+            // on continue l'inscription sans bloquer
+          } else if (!validCode) {
+            showModal("Code invalide", "Ce code de parrainage n'existe pas. Vérifiez-le ou laissez le champ vide.", "error");
+            return;
+          }
+        } catch (err) {
+          console.warn("Erreur validation parrainage :", err);
+          // on continue sans bloquer
+        }
+      }
+
+      showModal("Création du compte", "Nous préparons votre espace personnel.");
+
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
         options: { data: { full_name: name, referral_code: referralCode || null } }
       });
+
       if (error) {
         showModal("Inscription non finalisée", errorText(error), "error");
         return;
       }
 
-      // With Supabase Email Confirmations disabled, a session is returned immediately.
+      // Cas 1 : Confirmation e-mail DÉSACTIVÉE dans Supabase → session immédiate
       if (!data.session || !data.user) {
-        showModal("Configuration à terminer", "Le compte a été créé, mais Supabase attend encore une confirmation. Désactivez « Confirm email » dans les paramètres du fournisseur Email pour activer le parcours sans lien.", "error");
+        // Cas 2 : Confirmation e-mail ACTIVÉE → on informe l'utilisateur
+        confirmationEmail = email;
+        $("liEmail").value = email;
+        $("liPassword").value = "";
+        $("suReferral").value = "";
+        switchAuth("login");
+        $("modalClose").textContent = "Aller à la connexion";
+        showModal(
+          "Vérifiez votre e-mail",
+          "Votre compte a été créé. Un e-mail de confirmation a été envoyé à " + email +
+          ". Cliquez sur le lien qu'il contient pour activer votre compte, puis connectez-vous.",
+          "success"
+        );
         return;
       }
 
-      // Prepare the login screen behind the success modal.
+      // Nettoyage + bascule vers l'écran de connexion
       $("liEmail").value = email;
       $("liPassword").value = "";
       $("suReferral").value = "";
       switchAuth("login");
       $("modalClose").textContent = "Aller à la connexion";
 
-      // Welcome email is sent by a Supabase Edge Function; never expose the Resend API key in this HTML.
+      // Envoi optionnel de l'e-mail de bienvenue via Edge Function
       let welcomeSent = false;
       try {
         const { error: mailError } = await supabaseClient.functions.invoke("send-welcome-email", {
           body: { fullName: name }
         });
         welcomeSent = !mailError;
-      } catch (_) {
-        welcomeSent = false;
-      }
+      } catch (_) { welcomeSent = false; }
 
       if (welcomeSent) {
-        showModal("Inscription réussie", "Votre compte Xynera Club a été créé. Un message de bienvenue vient d'être envoyé à " + email + ". Vous pouvez maintenant vous connecter.", "success");
+        showModal(
+          "Inscription réussie",
+          "Votre compte Xynera Club a été créé. Un message de bienvenue vient d'être envoyé à " + email + ". Vous pouvez maintenant vous connecter.",
+          "success"
+        );
       } else {
-        showModal("Inscription réussie", "Votre compte a bien été créé. Vous pouvez maintenant vous connecter. L'envoi du message de bienvenue sera disponible après la configuration du service e-mail.", "success");
+        showModal(
+          "Inscription réussie",
+          "Votre compte a bien été créé. Vous pouvez maintenant vous connecter.",
+          "success"
+        );
       }
     } catch (error) {
       showModal("Connexion indisponible", errorText(error), "error");
     } finally {
       button.disabled = false;
+      button.textContent = originalText;
     }
   });
 
+  /* ------- CONNEXION ------- */
   $("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    setMessage("loginStatus", "Connexion en cours...");
-    const {data, error} = await supabaseClient.auth.signInWithPassword({
-      email:$("liEmail").value.trim(), password:$("liPassword").value
-    });
-    if (error) return setMessage("loginStatus", errorText(error), "error");
-    await showApp(data.user);
+    const button = $("loginForm").querySelector('button[type="submit"]');
+    if (button.disabled) return;
+
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Connexion…";
+    setMessage("loginStatus", "");
+
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: $("liEmail").value.trim(),
+        password: $("liPassword").value
+      });
+      if (error) {
+        setMessage("loginStatus", errorText(error), "error");
+        return;
+      }
+      await showApp(data.user);
+    } catch (e) {
+      setMessage("loginStatus", errorText(e), "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
   });
 
+  /* ------- DÉCONNEXION ------- */
   $("logoutBtn").addEventListener("click", async () => {
-    const {error} = await supabaseClient.auth.signOut();
+    const { error } = await supabaseClient.auth.signOut();
     if (error) return window.alert(errorText(error));
     currentUser = null;
     $("appArea").classList.add("hidden");
@@ -588,31 +658,33 @@
     switchAuth("login");
   });
 
+  /* ------- PROFIL (validation regex corrigée) ------- */
   $("profileForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
     const walletAddress = $("profileWallet").value.trim();
     if (!walletAddress) return setMessage("profileStatusMsg", "Veuillez enregistrer votre adresse de portefeuille de retrait.", "error");
-    if (walletAddress.length < 20 || walletAddress.length > 150 || /\\s/.test(walletAddress)) {
+    if (walletAddress.length < 20 || walletAddress.length > 150 || /\s/.test(walletAddress)) {
       return setMessage("profileStatusMsg", "Vérifiez le format de votre adresse de portefeuille (sans espace).", "error");
     }
     setMessage("profileStatusMsg", "Enregistrement...");
-    const {error} = await supabaseClient.from("profiles").update({
-      full_name:$("profileName").value.trim(),
-      phone:$("profilePhone").value.trim() || null,
-      wallet_address:walletAddress,
-      updated_at:new Date().toISOString()
+    const { error } = await supabaseClient.from("profiles").update({
+      full_name: $("profileName").value.trim(),
+      phone: $("profilePhone").value.trim() || null,
+      wallet_address: walletAddress,
+      updated_at: new Date().toISOString()
     }).eq("id", currentUser.id);
     if (error) return setMessage("profileStatusMsg", errorText(error), "error");
     setMessage("profileStatusMsg", "Vos informations ont été mises à jour.", "ok");
     await loadProfile();
   });
 
+  /* ------- NOUVELLE DEMANDE ------- */
   $("interestForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
     if (!$("profileWallet").value.trim()) {
-      setMessage("interestStatus", "Enregistrez d’abord votre adresse de portefeuille dans la section « Mon profil ».", "error");
+      setMessage("interestStatus", "Enregistrez d'abord votre adresse de portefeuille dans la section « Mon profil ».", "error");
       $("profileWallet").focus();
       return;
     }
@@ -622,11 +694,11 @@
     if (amount !== null && (!Number.isFinite(amount) || amount <= 0)) {
       return setMessage("interestStatus", "Veuillez saisir un montant valide.", "error");
     }
-    const {error} = await supabaseClient.from("investment_interest_requests").insert({
-      user_id:currentUser.id,
-      indicative_amount_usd:amount,
-      market_interest:$("interestMarket").value,
-      message:$("interestMessage").value.trim() || null
+    const { error } = await supabaseClient.from("investment_interest_requests").insert({
+      user_id: currentUser.id,
+      indicative_amount_usd: amount,
+      market_interest: $("interestMarket").value,
+      message: $("interestMessage").value.trim() || null
     });
     if (error) return setMessage("interestStatus", errorText(error), "error");
     $("interestForm").reset();
@@ -634,7 +706,8 @@
     await loadRequests();
   });
 
-  supabaseClient.auth.getSession().then(({data,error}) => {
+  /* ------- SESSION INITIALE ------- */
+  supabaseClient.auth.getSession().then(({ data, error }) => {
     if (error) console.error(error);
     if (data?.session?.user) showApp(data.session.user);
   });
