@@ -90,6 +90,18 @@
     .dashboard-head .eyebrow{color:#778397}
     .dashboard-head h1{font-size:32px;line-height:1.2;letter-spacing:-.035em;color:var(--navy);margin:10px 0 4px}
     .dashboard-head p{margin:0;color:var(--muted);font-size:14px}
+    .team-members{margin-top:18px;padding-top:16px;border-top:1px solid var(--border,#e8e8e8)}
+    .team-members-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .team-members-head h3{font-size:14px;margin:0}
+    #teamCountLabel{font-size:12px;color:var(--muted,#777)}
+    .team-list{display:grid;gap:8px}
+    .team-member{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid var(--border,#e8e8e8);border-radius:11px;background:rgba(127,127,127,.04)}
+    .team-avatar{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:rgba(31,122,255,.12);color:#1f7aff;font-weight:700;flex:none}
+    .team-member-name{font-size:13px;font-weight:650}
+    .team-member-date{font-size:11px;color:var(--muted,#777);margin-top:2px}
+    .empty-team{font-size:12px;color:var(--muted,#777);margin:4px 0}
+    .wallet-warning{padding:13px 14px;margin:0 0 16px;border:1px solid #f0d28b;background:#fff9e9;color:#76530b;border-radius:11px;font-size:12px;line-height:1.5}
+    .wallet-warning strong{display:block;margin-bottom:3px;color:#6b4700}
     .profile-strip{display:flex;align-items:center;gap:13px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;min-width:210px}
     .avatar{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;color:#fff;font-weight:800;background:linear-gradient(140deg,var(--blue),#17428f)}
     .profile-strip strong{display:block;font-size:13px;color:var(--navy)}.profile-strip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
@@ -162,6 +174,7 @@
           <div class="field"><label for="suName">Nom complet</label><input id="suName" required autocomplete="name" placeholder="Votre nom complet"></div>
           <div class="field"><label for="suEmail">Adresse e-mail</label><input id="suEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com"></div>
           <div class="field"><label for="suPassword">Mot de passe</label><input id="suPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8 caractères minimum"></div>
+          <div class="field"><label for="suReferral">Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" autocomplete="off" placeholder="Ex. XYNERA8F2K"></div>
           <button class="primary-btn full" type="submit">Créer mon compte</button>
           <div id="signupStatus" class="status" aria-live="polite"></div>
         </form>
@@ -183,6 +196,21 @@
         <div><strong id="userEmail"></strong><small id="roleValue">Membre</small></div>
       </div>
 
+      <section class="panel" style="margin-bottom:18px">
+        <div class="panel-title"><h2>Mon équipe</h2><span class="badge">Programme Xynera</span></div>
+        <p class="panel-sub">Partagez votre code personnel. Les inscriptions réalisées avec ce code seront associées à votre compte. Le programme prévoit une commission de 3 % sur les frais de plateforme effectivement encaissés auprès de vos filleuls, après validation.</p>
+        <div class="profile-meta">
+          <div class="meta-box"><small>Votre code</small><strong id="myReferralCode">—</strong></div>
+          <div class="meta-box"><small>Membres parrainés</small><strong id="myReferralCount">0</strong></div>
+        </div>
+        <button id="copyReferralBtn" class="secondary-btn" type="button">Copier mon code</button>
+        <div class="team-members">
+          <div class="team-members-head"><h3>Personnes que vous avez parrainées</h3><span id="teamCountLabel">0 membre</span></div>
+          <div id="myTeamList" class="team-list"><p class="empty-team">Chargement de votre équipe...</p></div>
+        </div>
+        <div id="referralStatus" class="status" aria-live="polite"></div>
+      </section>
+
       <div class="dashboard-grid">
         <section class="panel">
           <div class="panel-title"><h2>Mon profil</h2><span class="badge" id="profileStatus">En attente</span></div>
@@ -193,6 +221,8 @@
           <form id="profileForm">
             <div class="field"><label for="profileName">Nom complet</label><input id="profileName" required autocomplete="name"></div>
             <div class="field"><label for="profilePhone">Téléphone</label><input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243..."></div>
+            <div class="field"><label for="profileWallet">Adresse du portefeuille de retrait *</label><input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse de portefeuille"></div>
+            <div class="wallet-warning"><strong>Important — vérifiez votre adresse</strong><br>Les bénéfices éventuels à la fin de votre contrat seront envoyés exclusivement à l’adresse de portefeuille enregistrée dans votre compte. Vérifiez que l’adresse est correcte et compatible avec le réseau utilisé. Si vous changez de portefeuille, modifiez cette information dans votre profil.</div>
             <button class="primary-btn" type="submit">Enregistrer les modifications</button>
           </form>
           <div id="profileStatusMsg" class="status" aria-live="polite"></div>
@@ -293,7 +323,7 @@
     if(remaining) cooldownTimer = setTimeout(updateCooldown,1000);
   }
   function beginCooldown(seconds=60){cooldownUntil=Date.now()+seconds*1000;updateCooldown();}
-  function isRateLimit(error){return /security purposes|after \d+ seconds|rate limit|too many requests/i.test(error?.message||"");}
+  function isRateLimit(error){return /security purposes|only request this after|after \d+ seconds|rate limit|too many requests/i.test(error?.message||"");}
   function secondsFromError(error){
     const m=(error?.message||"").match(/after (\d+) seconds/i);
     return m ? Number(m[1]) : 60;
@@ -316,7 +346,8 @@
   });
   function errorText(error) {
     const raw = error?.message || "Une erreur est survenue. Réessayez.";
-    if (isRateLimit(error)) return "Veuillez patienter avant une nouvelle tentative. Supabase limite temporairement les demandes répétées.";
+    if (isRateLimit(error)) return "Trop de tentatives rapprochées. Attendez quelques minutes avant de réessayer.";
+    if (/user already registered|already been registered|already exists/i.test(raw)) return "Cette adresse e-mail possède déjà un compte. Connectez-vous plutôt que de créer un nouveau compte.";
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
     if (raw.toLowerCase().includes("email not confirmed")) return "Veuillez confirmer votre adresse e-mail avant de vous connecter.";
     if (raw.toLowerCase().includes("fetch")) return "Connexion impossible. Vérifiez votre connexion Internet.";
@@ -352,7 +383,7 @@
 
   async function loadProfile() {
     const {data, error} = await supabaseClient.from("profiles")
-      .select("full_name, phone, role, account_status").eq("id", currentUser.id).maybeSingle();
+      .select("full_name, phone, wallet_address, role, account_status, referral_code").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || currentUser.email || "membre";
@@ -362,9 +393,64 @@
     $("roleMeta").textContent = roleLabel(profile.role || "investor");
     $("profileStatus").textContent = statusLabel(profile.account_status || "pending");
     $("profileName").value = profile.full_name || "";
-    $("profilePhone").value = profile.phone || "";
+    $("profilePhone").value = profile.phone || "";\n    $("profileWallet").value = profile.wallet_address || "";
     $("avatarInitial").textContent = (name.trim()[0] || "X").toUpperCase();
+    $("myReferralCode").textContent = profile.referral_code || "En préparation";
+    await loadReferralCount();
   }
+
+  async function loadReferralCount() {
+    const { data, error } = await supabaseClient.rpc("xynera_my_team");
+    if (error) {
+      $("myReferralCount").textContent = "—";
+      $("teamCountLabel").textContent = "Indisponible";
+      $("myTeamList").innerHTML = '<p class="empty-team">Impossible de charger votre équipe. Vérifiez que la migration SQL 005 a été exécutée.</p>';
+      return;
+    }
+    const members = Array.isArray(data) ? data : [];
+    $("myReferralCount").textContent = String(members.length);
+    $("teamCountLabel").textContent = members.length + (members.length > 1 ? " membres" : " membre");
+    const list = $("myTeamList");
+    list.replaceChildren();
+    if (!members.length) {
+      const empty = document.createElement("p");
+      empty.className = "empty-team";
+      empty.textContent = "Vous n’avez pas encore parrainé de membre.";
+      list.appendChild(empty);
+      return;
+    }
+    members.forEach(member => {
+      const item = document.createElement("div");
+      item.className = "team-member";
+      const avatar = document.createElement("div");
+      avatar.className = "team-avatar";
+      avatar.textContent = (member.full_name || "M").trim().charAt(0).toUpperCase();
+      const info = document.createElement("div");
+      const name = document.createElement("div");
+      name.className = "team-member-name";
+      name.textContent = member.full_name || "Nom non renseigné";
+      const date = document.createElement("div");
+      date.className = "team-member-date";
+      date.textContent = member.joined_at ? "Inscrit(e) le " + new Date(member.joined_at).toLocaleDateString("fr-FR") : "Membre parrainé";
+      info.append(name, date);
+      item.append(avatar, info);
+      list.appendChild(item);
+    });
+  }
+
+  $("copyReferralBtn").addEventListener("click", async () => {
+    const code = $("myReferralCode").textContent.trim();
+    if (!code || code === "—" || code === "En préparation") {
+      setMessage("referralStatus", "Votre code de parrainage n'est pas encore disponible.", "error");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(code);
+      setMessage("referralStatus", "Code copié. Vous pouvez le partager.", "success");
+    } catch (_) {
+      setMessage("referralStatus", "Votre code : " + code);
+    }
+  });
 
   async function loadRequests() {
     const {data, error} = await supabaseClient.from("investment_interest_requests")
@@ -415,7 +501,22 @@
     const name = $("suName").value.trim();
     const email = $("suEmail").value.trim();
     const password = $("suPassword").value;
+    const referralCode = $("suReferral").value.trim().toUpperCase();
     if (!name) { showModal("Nom requis", "Veuillez saisir votre nom complet.", "error"); return; }
+
+    if (referralCode) {
+      const { data: validCode, error: validationError } = await supabaseClient.rpc(
+        "xynera_validate_referral_code", { p_code: referralCode }
+      );
+      if (validationError) {
+        showModal("Vérification impossible", "Le système de parrainage n'est pas encore configuré. Réessayez plus tard ou laissez le champ vide.", "error");
+        return;
+      }
+      if (!validCode) {
+        showModal("Code invalide", "Ce code de parrainage n'existe pas. Vérifiez-le ou laissez le champ vide.", "error");
+        return;
+      }
+    }
 
     const button = $("signupForm").querySelector('button[type="submit"]');
     button.disabled = true;
@@ -424,7 +525,7 @@
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
-        options: { data: { full_name: name } }
+        options: { data: { full_name: name, referral_code: referralCode || null } }
       });
       if (error) {
         showModal("Inscription non finalisée", errorText(error), "error");
@@ -440,6 +541,7 @@
       // Prepare the login screen behind the success modal.
       $("liEmail").value = email;
       $("liPassword").value = "";
+      $("suReferral").value = "";
       switchAuth("login");
       $("modalClose").textContent = "Aller à la connexion";
 
@@ -489,10 +591,16 @@
   $("profileForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
+    const walletAddress = $("profileWallet").value.trim();
+    if (!walletAddress) return setMessage("profileStatusMsg", "Veuillez enregistrer votre adresse de portefeuille de retrait.", "error");
+    if (walletAddress.length < 20 || walletAddress.length > 150 || /\\s/.test(walletAddress)) {
+      return setMessage("profileStatusMsg", "Vérifiez le format de votre adresse de portefeuille (sans espace).", "error");
+    }
     setMessage("profileStatusMsg", "Enregistrement...");
     const {error} = await supabaseClient.from("profiles").update({
       full_name:$("profileName").value.trim(),
       phone:$("profilePhone").value.trim() || null,
+      wallet_address:walletAddress,
       updated_at:new Date().toISOString()
     }).eq("id", currentUser.id);
     if (error) return setMessage("profileStatusMsg", errorText(error), "error");
@@ -503,6 +611,11 @@
   $("interestForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
+    if (!$("profileWallet").value.trim()) {
+      setMessage("interestStatus", "Enregistrez d’abord votre adresse de portefeuille dans la section « Mon profil ».", "error");
+      $("profileWallet").focus();
+      return;
+    }
     setMessage("interestStatus", "Envoi en cours...");
     const rawAmount = $("interestAmount").value;
     const amount = rawAmount ? Number(rawAmount) : null;
