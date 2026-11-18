@@ -23,7 +23,6 @@
     
     .app-layout { display: flex; flex-direction: row-reverse; width: 100%; height: 100vh; overflow: hidden; }
     
-    /* Sidebar (Menu à droite) */
     .sidebar { width: 260px; background: var(--navy); color: #fff; display: flex; flex-direction: column; z-index: 100; flex-shrink: 0; }
     .sidebar-header { padding: 30px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; text-align: center; }
     .sidebar-header img { max-height: 50px; width: auto; object-fit: contain; margin-bottom: 12px; }
@@ -40,27 +39,21 @@
     .logout-btn { width: 100%; padding: 10px; border-radius: var(--radius); background: rgba(220,38,38,0.1); color: #f87171; font-weight: 600; font-size: 13px; text-align: center; }
     .logout-btn:hover { background: rgba(220,38,38,0.2); }
 
-    /* Main Content Area */
     .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); position: relative; }
     
-    /* Mobile Header */
     .mobile-header { display: none; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; flex-direction: row-reverse; }
     .hamburger { color: var(--navy); cursor: pointer; padding: 4px; display: flex; align-items: center; }
     
-    /* Views */
     .view { display: none; padding: 32px 40px 60px; max-width: 1100px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
     .view.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Page Headers */
     .page-header { margin-bottom: 32px; }
     .page-header h1 { font-size: 26px; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 8px; font-weight: 700;}
     .page-header p { color: var(--muted); font-size: 14px; }
 
-    /* Dashboard Grid Layout */
     .dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
     
-    /* Balance Card */
     .balance-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius); padding: 32px; color: #fff; box-shadow: 0 10px 25px -5px rgba(15,23,42,0.3); position: relative; overflow: hidden; }
     .balance-label { color: #94a3b8; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
     .balance-amount { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 32px; display: flex; align-items: baseline; gap: 8px; }
@@ -71,7 +64,6 @@
     .btn-withdraw { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;}
     .btn-withdraw:hover { background: rgba(255,255,255,0.1); }
 
-    /* Stats Grid */
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
     .stat-card { background: #fff; border-radius: var(--radius); padding: 20px; border: 1px solid var(--line); display: flex; align-items: center; gap: 16px; }
     .stat-icon-wrapper { width: 40px; height: 40px; border-radius: 8px; background: #eff6ff; color: var(--blue); display: grid; place-items: center; flex-shrink: 0; }
@@ -79,12 +71,10 @@
     .stat-value { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
     .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
 
-    /* Info Cards */
     .info-card { background: #fff; border-radius: var(--radius); padding: 24px; border: 1px solid var(--line); margin-top: 24px; }
     .info-card h3 { font-size: 16px; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
     .info-card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
 
-    /* History List */
     .op-list { display: flex; flex-direction: column; gap: 8px; }
     .op-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 16px 20px; border-radius: var(--radius); border: 1px solid var(--line); }
     .op-info { display: flex; align-items: center; gap: 16px; }
@@ -100,7 +90,6 @@
     .status-badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
     .status-badge.pending { background: #fef3c7; color: #92400e; }
 
-    /* Forms (Profile) */
     .form-card { background: #fff; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); max-width: 600px; }
     .field { margin-bottom: 20px; }
     .field label { display: block; color: var(--navy); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
@@ -110,24 +99,20 @@
     .primary-btn:hover { background: var(--navy-light); }
     .wallet-warning { padding: 16px; border: 1px solid #fca5a5; background: #fef2f2; color: #991b1b; border-radius: 8px; font-size: 13px; line-height: 1.5; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start;}
 
-    /* Modal Global */
     .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
     .modal-box { background: #fff; width: min(100%, 440px); border-radius: var(--radius); padding: 32px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto;}
     .modal-overlay.active .modal-box { transform: scale(1); }
     .modal-title { font-size: 20px; color: var(--navy); margin-bottom: 24px; text-align: center; font-weight: 700; }
 
-    /* Deposit Box */
     .address-box { background: #f8fafc; border: 1px solid var(--line); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; }
     .address-text { font-family: monospace; font-size: 16px; word-break: break-all; color: var(--navy); font-weight: 700; margin: 12px 0 16px; display: block; letter-spacing: 0.5px;}
     .copy-btn { background: #e2e8f0; color: var(--navy); padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
     .copy-btn:hover { background: #cbd5e1; }
 
-    /* Team / Referral */
     .team-member { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
     .team-avatar { width: 32px; height: 32px; border-radius: 50%; background: #eff6ff; color: var(--blue); display: grid; place-items: center; font-weight: 600; font-size: 12px;}
 
-    /* Responsive */
     @media (max-width: 1024px) {
       .dashboard-grid { grid-template-columns: 1fr; }
       .sidebar { position: fixed; height: 100vh; right: 0; transform: translateX(100%); box-shadow: -5px 0 15px rgba(0,0,0,0.1);}
@@ -145,7 +130,6 @@
 </head>
 <body>
 
-<!-- ZONE D'AUTHENTIFICATION -->
 <section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;">
   <div style="background:#fff; border-radius:var(--radius); box-shadow:0 10px 25px rgba(0,0,0,0.05); padding:40px; width:100%; max-width:420px; border: 1px solid var(--line);">
     <div style="text-align:center; margin-bottom:32px;">
@@ -178,7 +162,6 @@
 </section>
 
 <div class="app-layout">
-  <!-- SIDEBAR MENU (À droite) -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <img id="brandLogo" src="logo-xenary.png" alt="Xynera" onerror="this.style.display='none'; document.getElementById('brandFallback').style.display='block';">
@@ -214,10 +197,7 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <main class="main-content">
-    
-    <!-- Mobile Header -->
     <header class="mobile-header">
       <div class="hamburger" onclick="toggleSidebar()">
         <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -225,7 +205,6 @@
       <img src="logo-xenary.png" style="height:24px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
     </header>
 
-    <!-- VUE : DASHBOARD -->
     <section id="view-dashboard" class="view active">
       <div class="page-header">
         <h1>Vue d'ensemble</h1>
@@ -233,7 +212,6 @@
       </div>
 
       <div class="dashboard-grid">
-        <!-- Colonne Principale -->
         <div>
           <div class="balance-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -295,7 +273,6 @@
           </div>
         </div>
 
-        <!-- Colonne de droite -->
         <div>
           <div class="info-card" style="margin-top:0;">
             <h3>Coordonnées de retrait</h3>
@@ -315,7 +292,6 @@
       </div>
     </section>
 
-    <!-- VUE : HISTORIQUE -->
     <section id="view-history" class="view">
       <div class="page-header">
         <h1>Historique</h1>
@@ -326,7 +302,6 @@
       </div>
     </section>
 
-    <!-- VUE : MON PROFIL -->
     <section id="view-profile" class="view">
       <div class="page-header">
         <h1>Paramètres du compte</h1>
@@ -364,7 +339,6 @@
       </div>
     </section>
 
-    <!-- VUE : MON ÉQUIPE -->
     <section id="view-team" class="view">
       <div class="page-header">
         <h1>Réseau de parrainage</h1>
@@ -395,10 +369,8 @@
   </main>
 </div>
 
-<!-- MODALE DÉPÔT -->
 <div id="depositModal" class="modal-overlay">
   <div class="modal-box">
-    
     <div id="depositStep1">
       <div class="modal-title">Nouveau Dépôt</div>
       <form id="depositAmountForm">
@@ -414,19 +386,16 @@
 
     <div id="depositStep2" class="hidden">
       <div class="modal-title">Effectuer le transfert</div>
-      
       <div style="text-align:center; margin-bottom: 24px;">
          <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Montant à envoyer</div>
          <div style="font-size: 24px; font-weight: 700; color: var(--navy);" id="displayDepositAmount">0.00 $</div>
       </div>
-
       <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin-bottom: 20px; display:flex; gap:12px; align-items:flex-start;">
         <svg viewBox="0 0 24 24" style="color:var(--red); width:24px; height:24px; flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         <div style="font-size:13px; color:#991b1b; font-weight: 500; line-height:1.4;">
           Utilisez <strong>UNIQUEMENT</strong> le réseau TRC20 (Tron). Les autres réseaux entraîneront une perte définitive des fonds.
         </div>
       </div>
-
       <div class="address-box">
         <p style="font-size:12px; color:var(--muted); margin-bottom:0;">Adresse USDT (TRC20)</p>
         <span class="address-text" id="addr-usdt_trc">TJgfBr2eLatokAaTFNt8dnDDvkFJQ1BiCU</span>
@@ -435,7 +404,6 @@
           Copier
         </button>
       </div>
-
       <button class="primary-btn" id="confirmDepositBtn" style="background:var(--green);">J'ai effectué le dépôt</button>
       <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
     </div>
@@ -446,34 +414,33 @@
       </div>
       <div class="modal-title" style="margin-bottom: 12px;">Dépôt en attente</div>
       <p style="color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">
-        Votre demande de dépôt a été enregistrée. Votre solde sera mis à jour dès que l'administrateur aura confirmé la réception des fonds.
+        Votre demande de dépôt a été enregistrée. Un e-mail de confirmation vous a été envoyé. Votre solde sera mis à jour dès que l'administrateur aura confirmé la réception des fonds.
       </p>
       <button class="primary-btn" onclick="closeModal('depositModal')">Retour au tableau de bord</button>
     </div>
-
   </div>
 </div>
 
-<!-- MODALE RETRAIT -->
 <div id="withdrawModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-title">Demande de Retrait</div>
-    <div class="field">
-      <label>Montant à retirer (USD)</label>
-      <input type="number" placeholder="Ex: 100" min="20">
-    </div>
-    <div class="field">
-      <label>Réseau de réception</label>
-      <select style="background:var(--page);">
-        <option>USDT (TRC20)</option>
-      </select>
-    </div>
-    <button class="primary-btn" style="background:var(--red);" onclick="closeModal('withdrawModal')">Demander le retrait</button>
-    <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('withdrawModal')">Annuler</button>
+    <form id="withdrawForm">
+      <div class="field">
+        <label>Montant à retirer (USD)</label>
+        <input type="number" id="withdrawAmountInput" placeholder="Ex: 100" min="20" required>
+      </div>
+      <div class="field">
+        <label>Réseau de réception</label>
+        <select style="background:var(--page);">
+          <option>USDT (TRC20)</option>
+        </select>
+      </div>
+      <button type="submit" class="primary-btn" style="background:var(--red);">Demander le retrait</button>
+      <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('withdrawModal')">Annuler</button>
+    </form>
   </div>
 </div>
 
-<!-- MODALE INFO -->
 <div id="actionModal" class="modal-overlay">
   <div class="modal-box" style="text-align:center;">
     <div id="modalIconWrapper" style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: var(--blue); display: grid; place-items: center; margin: 0 auto 16px;">
@@ -498,30 +465,30 @@
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  // --- GÉNÉRATEUR D'UID (10 chiffres) ---
-  function generateAccountNumber() {
-    return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+  // --- ENVOI D'EMAIL VIA RESEND (Nom de la fonction mis à jour : resend-email) ---
+  async function sendEmailNotification(to, subject, htmlContent) {
+    try {
+      const { data, error } = await supabaseClient.functions.invoke('resend-email', {
+        body: { to, subject, html: htmlContent }
+      });
+      if (error) console.error("Erreur Supabase Function:", error);
+      else console.log("Email envoyé avec succès:", data);
+    } catch (e) {
+      console.error("Erreur d'envoi d'email :", e);
+    }
   }
 
   // --- UI NAVIGATION ---
-  window.toggleSidebar = () => {
-    $("sidebar").classList.toggle("open");
-  };
-
+  window.toggleSidebar = () => { $("sidebar").classList.toggle("open"); };
   window.switchView = (viewName, element) => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     $(`view-${viewName}`).classList.add('active');
-    
     if(element) {
       document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
       element.classList.add('active');
     }
-    
-    if(window.innerWidth <= 1024) {
-      $("sidebar").classList.remove("open");
-    }
+    if(window.innerWidth <= 1024) $("sidebar").classList.remove("open");
   };
-
   window.openModal = (id) => $(id).classList.add('active');
   window.closeModal = (id) => {
     $(id).classList.remove('active');
@@ -533,61 +500,24 @@
         $("depositAmountForm").reset();
       }, 300);
     }
+    if(id === 'withdrawModal') $("withdrawForm").reset();
   };
-
-  window.openDepositModal = () => {
-    window.openModal('depositModal');
-  };
-
-  // Gestion du flux de dépôt
-  $("depositAmountForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const amount = parseFloat($("depositAmountInput").value);
-    if (amount < 150) {
-      alert("Le montant minimum de dépôt est de 150 $.");
-      return;
-    }
-    currentDepositAmount = amount;
-    $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
-    
-    $("depositStep1").classList.add("hidden");
-    $("depositStep2").classList.remove("hidden");
-  });
-
-  $("confirmDepositBtn").addEventListener("click", async () => {
-    $("confirmDepositBtn").textContent = "Enregistrement...";
-    $("confirmDepositBtn").disabled = true;
-
-    setTimeout(() => {
-      $("depositStep2").classList.add("hidden");
-      $("depositStep3").classList.remove("hidden");
-      $("confirmDepositBtn").textContent = "J'ai effectué le dépôt";
-      $("confirmDepositBtn").disabled = false;
-    }, 800);
-  });
-
+  window.openDepositModal = () => window.openModal('depositModal');
   window.copyDepositAddress = (elementId) => {
     const address = $(elementId).textContent;
-    navigator.clipboard.writeText(address).then(() => {
-      alert("Adresse copiée. N'oubliez pas d'utiliser le réseau TRC20.");
-    }).catch(() => {
-      alert("Erreur de copie.");
-    });
+    navigator.clipboard.writeText(address).then(() => alert("Adresse copiée.")).catch(() => alert("Erreur."));
   };
 
   window.switchAuthTab = (mode) => {
     const isLogin = mode === 'login';
     $("loginForm").style.display = isLogin ? "block" : "none";
     $("signupForm").style.display = isLogin ? "none" : "block";
-    
     $("loginTab").style.background = "transparent";
     $("loginTab").style.borderBottomColor = isLogin ? "var(--navy)" : "transparent";
     $("loginTab").style.color = isLogin ? "var(--navy)" : "var(--muted)";
-    
     $("signupTab").style.background = "transparent";
     $("signupTab").style.borderBottomColor = !isLogin ? "var(--navy)" : "transparent";
     $("signupTab").style.color = !isLogin ? "var(--navy)" : "var(--muted)";
-    
     $("authTitle").textContent = isLogin ? "Connexion" : "Inscription";
     $("authSubtitle").textContent = isLogin ? "Accédez à votre espace investisseur." : "Créez votre compte Xynera Club.";
   };
@@ -595,56 +525,43 @@
   function showInfo(title, desc, isError = false) {
     $("modalTitle").textContent = title;
     $("modalDescription").textContent = desc;
-    
     const iconWrapper = $("modalIconWrapper");
     if(isError) {
-      iconWrapper.style.background = "#fef2f2";
-      iconWrapper.style.color = "var(--red)";
+      iconWrapper.style.background = "#fef2f2"; iconWrapper.style.color = "var(--red)";
       iconWrapper.innerHTML = '<svg viewBox="0 0 24 24" style="width:28px;height:28px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
     } else {
-      iconWrapper.style.background = "#eff6ff";
-      iconWrapper.style.color = "var(--blue)";
+      iconWrapper.style.background = "#eff6ff"; iconWrapper.style.color = "var(--blue)";
       iconWrapper.innerHTML = '<svg viewBox="0 0 24 24" style="width:28px;height:28px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
     }
     window.openModal("actionModal");
   }
 
-  // --- SUPABASE AUTH & DATA ---
   function errorText(error) {
     const raw = error?.message || "Erreur inconnue.";
-    
-    // Gestion stricte des doublons
-    if (/user already registered/i.test(raw) || /already exists/i.test(raw) || /already in use/i.test(raw)) {
-      return "Cette adresse e-mail est déjà associée à un compte. Veuillez vous connecter.";
-    }
+    if (/user already registered|already exists|already in use/i.test(raw)) return "Cette adresse e-mail est déjà associée à un compte. Veuillez vous connecter.";
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
-    if (raw.includes("Password should be at least 6 characters")) return "Le mot de passe doit contenir au moins 6 caractères.";
     return raw;
   }
 
+  function generateAccountNumber() {
+    return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+  }
+
   async function loadProfile() {
-    const { data, error } = await supabaseClient.from("profiles")
-      .select("full_name, phone, wallet_address, referral_code, account_number").eq("id", currentUser.id).maybeSingle();
-    
+    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || currentUser.email || "membre";
-    
     $("sideName").textContent = name;
     $("sideEmail").textContent = currentUser.email;
     $("sideAvatar").textContent = (name.trim()[0] || "U").toUpperCase();
-    
     $("profileName").value = profile.full_name || "";
     $("profilePhone").value = profile.phone || "";
     $("profileWallet").value = profile.wallet_address || "";
-    
-    const accNumber = profile.account_number || "---";
-    $("dashAccountNumber").textContent = accNumber;
-    $("profileAccountNumber").textContent = accNumber;
-
+    $("dashAccountNumber").textContent = profile.account_number || "---";
+    $("profileAccountNumber").textContent = profile.account_number || "---";
     $("dashWalletDisplay").textContent = profile.wallet_address || "Non configuré";
     $("myReferralCode").textContent = profile.referral_code || "En attente";
-    
     loadReferralCount();
   }
 
@@ -654,69 +571,30 @@
       const members = Array.isArray(data) ? data : [];
       $("myReferralCount").textContent = members.length;
       const list = $("myTeamList");
-      list.innerHTML = "";
-      if(members.length === 0) {
-        list.innerHTML = '<p style="font-size:13px; color:var(--muted);">Vous n\'avez pas encore parrainé de membre.</p>';
-      } else {
-        members.forEach(m => {
-          list.innerHTML += `
-            <div class="team-member">
-              <div class="team-avatar">${(m.full_name || "M")[0].toUpperCase()}</div>
-              <div>
-                <strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong>
-                <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
-              </div>
-            </div>
-          `;
-        });
-      }
+      list.innerHTML = members.length === 0 ? '<p style="font-size:13px; color:var(--muted);">Aucun membre.</p>' : "";
+      members.forEach(m => {
+        list.innerHTML += `<div class="team-member"><div class="team-avatar">${(m.full_name || "M")[0].toUpperCase()}</div><div><strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong><small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small></div></div>`;
+      });
     }
   }
 
   async function loadRequests() {
-    const { data, error } = await supabaseClient.from("investment_interest_requests")
-      .select("*").order("created_at", { ascending: false });
-      
+    const { data, error } = await supabaseClient.from("investment_interest_requests").select("*").order("created_at", { ascending: false });
     if (error) throw error;
     const rows = data || [];
-    
     const recentList = $("recentActivityList");
     const fullList = $("fullHistoryList");
-    recentList.innerHTML = "";
-    fullList.innerHTML = "";
-    
+    recentList.innerHTML = ""; fullList.innerHTML = "";
     if(rows.length === 0) {
-      const emptyMsg = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune opération enregistrée.</div>';
-      recentList.innerHTML = emptyMsg;
-      fullList.innerHTML = emptyMsg;
-      return;
+      const emptyMsg = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune opération.</div>';
+      recentList.innerHTML = emptyMsg; fullList.innerHTML = emptyMsg; return;
     }
-
     rows.forEach((item, index) => {
       const isRecent = index < 3;
       const amount = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString() + " $" : "—";
       const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-      
       const statusHtml = `<span class="status-badge pending">En attente</span>`;
-
-      const html = `
-        <div class="op-item">
-          <div class="op-info">
-            <div class="op-icon request">
-              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            </div>
-            <div class="op-details">
-              <strong>Demande de dépôt/investissement</strong>
-              <small>${date}</small>
-            </div>
-          </div>
-          <div style="text-align: right;">
-             <div class="op-amount">${amount}</div>
-             <div style="margin-top: 4px;">${statusHtml}</div>
-          </div>
-        </div>
-      `;
-      
+      const html = `<div class="op-item"><div class="op-info"><div class="op-icon request"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div><div class="op-details"><strong>Demande d'opération</strong><small>${date}</small></div></div><div style="text-align: right;"><div class="op-amount">${amount}</div><div style="margin-top: 4px;">${statusHtml}</div></div></div>`;
       if(isRecent) recentList.innerHTML += html;
       fullList.innerHTML += html;
     });
@@ -725,17 +603,11 @@
   async function initApp(user) {
     currentUser = user;
     $("authArea").classList.add("hidden");
-    try {
-      await loadProfile();
-      await loadRequests();
-    } catch(e) {
-      console.error(e);
-      showInfo("Erreur", "Impossible de charger les données de votre profil.", true);
-    }
+    try { await loadProfile(); await loadRequests(); }
+    catch(e) { console.error(e); showInfo("Erreur", "Impossible de charger les données.", true); }
   }
 
-  // --- EVENT LISTENERS ---
-
+  // 1. INSCRIPTION & EMAIL DE BIENVENUE
   $("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("signupForm").querySelector('button[type="submit"]');
@@ -750,36 +622,35 @@
 
     const { data, error } = await supabaseClient.auth.signUp({
       email, password: pwd,
-      options: { 
-        data: { 
-          full_name: name, 
-          referral_code: ref || null,
-          account_number: newAccountNumber
-        } 
-      }
+      options: { data: { full_name: name, referral_code: ref || null, account_number: newAccountNumber } }
     });
 
     if(error) {
       const msg = errorText(error);
-      
-      // Si le compte existe déjà, on affiche la modale et on bascule sur "Connexion"
       if (msg.includes("déjà associée")) {
         showInfo("Compte déjà existant", msg, true);
-        
-        // Pré-remplir l'email pour la connexion
-        $("liEmail").value = email;
-        $("liPassword").value = "";
+        $("liEmail").value = email; $("liPassword").value = "";
         switchAuthTab('login');
       } else {
         $("signupStatus").textContent = msg;
       }
-      
-      btn.disabled = false; btn.textContent = "Créer un compte";
-      return;
+      btn.disabled = false; btn.textContent = "Créer un compte"; return;
     }
 
     if(data.session) {
-      showInfo("Bienvenue", "Votre compte est prêt. Connexion à votre espace...");
+      const welcomeHtml = `
+        <h2>Bienvenue ${name} !</h2>
+        <p>Votre compte Xynera Club a été créé avec succès.</p>
+        <p><strong>Vos informations de connexion :</strong></p>
+        <ul>
+          <li>Numéro de compte (UID) : <strong>${newAccountNumber}</strong></li>
+          <li>Adresse e-mail : <strong>${email}</strong></li>
+        </ul>
+        <p>Vous pouvez désormais vous connecter et effectuer votre premier dépôt.</p>
+      `;
+      sendEmailNotification(email, "Bienvenue sur Xynera Club", welcomeHtml);
+
+      showInfo("Bienvenue", "Votre compte est prêt. Connexion...");
       setTimeout(() => { closeModal('actionModal'); initApp(data.user); }, 1500);
     } else {
       showInfo("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé.");
@@ -787,74 +658,95 @@
     }
   });
 
+  // 2. CONNEXION
   $("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("loginForm").querySelector('button[type="submit"]');
     btn.disabled = true; btn.textContent = "Connexion...";
     $("loginStatus").textContent = "";
-
     const { data, error } = await supabaseClient.auth.signInWithPassword({
-      email: $("liEmail").value.trim(),
-      password: $("liPassword").value
+      email: $("liEmail").value.trim(), password: $("liPassword").value
     });
-
-    if(error) {
-      $("loginStatus").textContent = errorText(error);
-      btn.disabled = false; btn.textContent = "Se connecter";
-      return;
-    }
-    
+    if(error) { $("loginStatus").textContent = errorText(error); btn.disabled = false; btn.textContent = "Se connecter"; return; }
     await initApp(data.user);
     btn.disabled = false; btn.textContent = "Se connecter";
   });
 
+  // 3. DÉPÔT & EMAIL DE CONFIRMATION
+  $("depositAmountForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const amount = parseFloat($("depositAmountInput").value);
+    if (amount < 150) { alert("Le montant minimum de dépôt est de 150 $."); return; }
+    currentDepositAmount = amount;
+    $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
+    $("depositStep1").classList.add("hidden");
+    $("depositStep2").classList.remove("hidden");
+  });
+
+  $("confirmDepositBtn").addEventListener("click", async () => {
+    $("confirmDepositBtn").textContent = "Enregistrement...";
+    $("confirmDepositBtn").disabled = true;
+
+    const depositHtml = `
+      <h2>Demande de dépôt reçue</h2>
+      <p>Nous avons bien reçu votre demande de dépôt d'un montant de <strong>${currentDepositAmount.toFixed(2)} $</strong>.</p>
+      <p>Votre demande est actuellement en cours de vérification. Votre solde sera mis à jour dès que l'administrateur aura validé la réception des fonds sur le réseau TRC20.</p>
+    `;
+    sendEmailNotification(currentUser.email, "Confirmation de dépôt - Xynera Club", depositHtml);
+
+    setTimeout(() => {
+      $("depositStep2").classList.add("hidden");
+      $("depositStep3").classList.remove("hidden");
+      $("confirmDepositBtn").textContent = "J'ai effectué le dépôt";
+      $("confirmDepositBtn").disabled = false;
+    }, 800);
+  });
+
+  // 4. RETRAIT & EMAIL DE DEMANDE
+  $("withdrawForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const amount = parseFloat($("withdrawAmountInput").value);
+    if (amount < 20) { alert("Le montant minimum de retrait est de 20 $."); return; }
+
+    const withdrawHtml = `
+      <h2>Demande de retrait reçue</h2>
+      <p>Nous avons bien reçu votre demande de retrait d'un montant de <strong>${amount.toFixed(2)} $</strong>.</p>
+      <p>Votre demande est en cours de traitement. Vous recevrez un autre e-mail dès que le retrait aura été effectué sur votre portefeuille.</p>
+    `;
+    sendEmailNotification(currentUser.email, "Demande de retrait - Xynera Club", withdrawHtml);
+
+    closeModal('withdrawModal');
+    showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée. Un e-mail de confirmation vous a été envoyé.");
+  });
+
+  // 6. MISE À JOUR DU PROFIL
   $("profileForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const wallet = $("profileWallet").value.trim();
     if(wallet && (wallet.length < 20 || /\s/.test(wallet))) {
-      $("profileStatusMsg").textContent = "Format d'adresse invalide (sans espaces).";
-      $("profileStatusMsg").style.color = "var(--red)";
-      return;
+      $("profileStatusMsg").textContent = "Format d'adresse invalide."; $("profileStatusMsg").style.color = "var(--red)"; return;
     }
-
-    $("profileStatusMsg").textContent = "Enregistrement...";
-    $("profileStatusMsg").style.color = "var(--muted)";
-
+    $("profileStatusMsg").textContent = "Enregistrement..."; $("profileStatusMsg").style.color = "var(--muted)";
     const { error } = await supabaseClient.from("profiles").update({
       full_name: $("profileName").value.trim(),
       phone: $("profilePhone").value.trim() || null,
       wallet_address: wallet || null,
       updated_at: new Date().toISOString()
     }).eq("id", currentUser.id);
-
-    if(error) {
-      $("profileStatusMsg").textContent = errorText(error);
-      $("profileStatusMsg").style.color = "var(--red)";
-    } else {
-      $("profileStatusMsg").textContent = "Profil mis à jour avec succès.";
-      $("profileStatusMsg").style.color = "var(--green)";
-      loadProfile();
-    }
+    if(error) { $("profileStatusMsg").textContent = errorText(error); $("profileStatusMsg").style.color = "var(--red)"; }
+    else { $("profileStatusMsg").textContent = "Profil mis à jour."; $("profileStatusMsg").style.color = "var(--green)"; loadProfile(); }
   });
 
   window.copyCode = () => {
     const code = $("myReferralCode").textContent;
-    if(code && code !== "En attente") {
-      navigator.clipboard.writeText(code);
-      alert("Code copié : " + code);
-    }
+    if(code && code !== "En attente") { navigator.clipboard.writeText(code); alert("Code copié."); }
   };
 
-  $("logoutBtn").addEventListener("click", async () => {
-    await supabaseClient.auth.signOut();
-    window.location.reload();
-  });
+  $("logoutBtn").addEventListener("click", async () => { await supabaseClient.auth.signOut(); window.location.reload(); });
 
   supabaseClient.auth.getSession().then(({ data: { session } }) => {
-    if (session) initApp(session.user);
-    else $("authArea").classList.remove("hidden");
+    if (session) initApp(session.user); else $("authArea").classList.remove("hidden");
   });
-
 })();
 </script>
 </body>
