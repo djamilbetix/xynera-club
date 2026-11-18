@@ -14,59 +14,54 @@
       --page:#f4f6fa;--green:#13865c;--shadow:0 18px 55px rgba(16,24,39,.09)
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--page);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+    body{margin:0;background:var(--page);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
     button,input,textarea,select{font:inherit}
     button{cursor:pointer}
-    .page{max-width:1200px;margin:0 auto;padding:0 28px 44px}
-    .topbar{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e9edf3;margin-bottom:28px}
-    .brand{display:flex;align-items:center;gap:12px;min-width:0}
-    .brand img{display:block;width:auto;max-width:190px;height:48px;object-fit:contain}
+    .page{max-width:1200px;margin:0 auto;padding:0 20px 44px;width:100%;display:flex;flex-direction:column;flex:1}
+    
+    /* Header centré pour la page de connexion */
+    .topbar{height:100px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0;justify-content:center;text-align:center}
+    .brand img{display:block;width:auto;max-width:200px;height:55px;object-fit:contain}
     .brand-fallback{display:none;width:42px;height:42px;align-items:center;justify-content:center;border-radius:12px;background:var(--navy);color:#fff;font-size:21px;font-weight:800}
     .brand-copy{display:flex;flex-direction:column;line-height:1.2}
-    .brand-copy strong{font-size:16px;letter-spacing:.09em;color:var(--navy)}
+    .brand-copy strong{font-size:18px;letter-spacing:.09em;color:var(--navy)}
     .brand-copy small{font-size:11px;color:#8792a2;letter-spacing:.04em;margin-top:4px}
-    .top-label{display:flex;align-items:center;gap:9px;color:#5d6878;font-size:13px;font-weight:600}
-    .top-dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 0 4px #e4f4ed}
-    .auth-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);gap:26px;align-items:stretch;min-height:560px}
-    .welcome-panel{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(140deg,#101827 0%,#17243a 60%,#202d45 100%);border-radius:24px;padding:54px 48px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow)}
-    .welcome-panel:before,.welcome-panel:after{content:"";position:absolute;z-index:-1;border-radius:50%;pointer-events:none}
-    .welcome-panel:before{width:380px;height:380px;right:-145px;top:-150px;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 40px rgba(255,255,255,.025),0 0 0 80px rgba(255,255,255,.02)}
-    .welcome-panel:after{width:260px;height:260px;right:35px;bottom:-165px;background:radial-gradient(circle,rgba(31,122,255,.35),transparent 68%)}
-    .eyebrow{display:inline-flex;align-items:center;gap:9px;color:#b8c8df;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
-    .eyebrow:before{content:"";height:2px;width:24px;background:var(--red);border-radius:2px}
-    .welcome-panel h1{font-size:clamp(34px,4.2vw,52px);line-height:1.08;letter-spacing:-.04em;max-width:520px;margin:26px 0 18px}
-    .welcome-panel h1 span{color:#75aaff}
-    .welcome-panel p{max-width:470px;color:#c0cada;font-size:16px;margin:0}
-    .feature-list{display:grid;gap:14px;margin-top:40px}
-    .feature{display:flex;align-items:center;gap:12px;color:#e5ebf4;font-size:13px}
-    .feature-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.09);color:#9fc4ff;font-size:15px}
-    .welcome-foot{color:#8f9cb0;font-size:12px;margin-top:42px}
-    .auth-card,.panel{background:var(--surface);border:1px solid #e9edf3;border-radius:22px;box-shadow:var(--shadow)}
-    .auth-card{padding:34px 34px 30px;display:flex;flex-direction:column;justify-content:center}
-    .auth-heading{margin-bottom:24px}
-    .auth-heading h2{font-size:25px;letter-spacing:-.025em;margin:0 0 6px;color:var(--navy)}
-    .auth-heading p{font-size:13px;color:var(--muted);margin:0}
-    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;background:#f1f4f8;border-radius:12px;margin-bottom:22px}
-    .tab{border:0;border-radius:9px;padding:10px;background:transparent;color:#657184;font-size:13px;font-weight:700;transition:.2s}
+
+    /* Layout d'authentification centré */
+    .auth-layout{display:flex;align-items:center;justify-content:center;flex:1;padding:10px 0 40px}
+    
+    .auth-card{background:var(--surface);border:1px solid #e9edf3;border-radius:22px;box-shadow:var(--shadow);padding:40px;width:100%;max-width:480px;transition:transform 0.3s ease}
+    
+    .auth-heading{margin-bottom:28px;text-align:center}
+    .auth-heading h2{font-size:26px;letter-spacing:-.025em;margin:0 0 8px;color:var(--navy)}
+    .auth-heading p{font-size:14px;color:var(--muted);margin:0}
+    
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;background:#f1f4f8;border-radius:12px;margin-bottom:28px}
+    .tab{border:0;border-radius:9px;padding:12px;background:transparent;color:#657184;font-size:13px;font-weight:700;transition:.2s}
     .tab.active{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(16,24,39,.08)}
+    
     .form-view{display:none}.form-view.active{display:block}
-    .field{margin:0 0 16px}
-    .field label{display:block;color:#344054;font-size:12px;font-weight:700;margin:0 0 7px}
-    .field input,.field textarea,.field select{width:100%;border:1px solid #dce2ea;background:#fff;border-radius:10px;padding:12px 13px;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
-    .field input,.field select{height:46px}
+    .field{margin:0 0 18px}
+    .field label{display:block;color:#344054;font-size:12px;font-weight:700;margin:0 0 8px}
+    .field input,.field textarea,.field select{width:100%;border:1px solid #dce2ea;background:#fff;border-radius:10px;padding:12px 14px;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
+    .field input,.field select{height:48px}
     .field textarea{resize:vertical;min-height:92px}
     .field input::placeholder,.field textarea::placeholder{color:#a1aab7}
     .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,122,255,.1)}
-    .primary-btn,.secondary-btn{min-height:46px;border-radius:10px;padding:11px 17px;font-size:13px;font-weight:750;transition:transform .15s,filter .15s,opacity .15s}
-    .primary-btn{border:0;background:var(--red);color:#fff;box-shadow:0 7px 15px rgba(229,9,20,.16)}
+    
+    .primary-btn,.secondary-btn{min-height:48px;border-radius:10px;padding:12px 18px;font-size:14px;font-weight:750;transition:transform .15s,filter .15s,opacity .15s}
+    .primary-btn{border:0;background:var(--red);color:#fff;box-shadow:0 7px 15px rgba(229,9,20,.16);width:100%;margin-top:8px}
     .primary-btn:hover:not(:disabled){filter:brightness(.96);transform:translateY(-1px)}
     .primary-btn:disabled,.secondary-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;filter:none}
     .secondary-btn{border:1px solid #dce2ea;background:#fff;color:#263247}
     .secondary-btn:hover:not(:disabled){background:#f7f9fc}
-    .full{width:100%}
-    .status{min-height:20px;margin:12px 0 0;font-size:12px;color:#667386}
+    
+    .status{min-height:20px;margin:12px 0 0;font-size:12px;text-align:center;color:#667386}
     .status.error{color:#c42b35}.status.ok{color:var(--green)}
     .hidden{display:none!important}
+    
+    /* Modales */
     .modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(10,18,32,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:18px}
     .modal-box{background:#fff;width:min(100%,440px);border-radius:22px;padding:30px;box-shadow:0 25px 90px #08101b60;text-align:center;position:relative}
     .modal-box h2{font-size:23px;margin:13px 0 8px;color:var(--navy)}
@@ -78,36 +73,29 @@
     @keyframes rotate{to{transform:rotate(360deg)}}
     .modal-actions{display:grid;gap:10px;margin-top:16px}
     .modal-actions button:disabled{opacity:.55;cursor:not-allowed}
-    .info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
-    .info-tile{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px}
-    .info-tile b{display:block;font-size:13px;color:var(--navy);margin-bottom:5px}
-    .info-tile span{font-size:12px;color:var(--muted)}
-    .step-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-    .step{background:#f8faff;border:1px solid #e6ebf5;padding:14px;border-radius:12px;font-size:12px;color:#697586}
-    .step b{display:block;color:var(--navy);margin:4px 0}
-    .step-number{color:#1f7aff;font-weight:800}
-    @media(max-width:600px){.info-grid,.step-list{grid-template-columns:1fr}.modal-box{padding:24px}}
+    
+    /* Dashboard (espace connecté) */
     .dashboard-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:36px 0 22px}
-    .dashboard-head .eyebrow{color:#778397}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;color:#778397;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    .eyebrow:before{content:"";height:2px;width:24px;background:var(--red);border-radius:2px}
     .dashboard-head h1{font-size:32px;line-height:1.2;letter-spacing:-.035em;color:var(--navy);margin:10px 0 4px}
     .dashboard-head p{margin:0;color:var(--muted);font-size:14px}
-    .team-members{margin-top:18px;padding-top:16px;border-top:1px solid var(--border,#e8e8e8)}
+    .team-members{margin-top:18px;padding-top:16px;border-top:1px solid #e8e8e8}
     .team-members-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
     .team-members-head h3{font-size:14px;margin:0}
-    #teamCountLabel{font-size:12px;color:var(--muted,#777)}
     .team-list{display:grid;gap:8px}
-    .team-member{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid var(--border,#e8e8e8);border-radius:11px;background:rgba(127,127,127,.04)}
+    .team-member{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid #e8e8e8;border-radius:11px;background:rgba(127,127,127,.04)}
     .team-avatar{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:rgba(31,122,255,.12);color:#1f7aff;font-weight:700;flex:none}
     .team-member-name{font-size:13px;font-weight:650}
-    .team-member-date{font-size:11px;color:var(--muted,#777);margin-top:2px}
-    .empty-team{font-size:12px;color:var(--muted,#777);margin:4px 0}
+    .team-member-date{font-size:11px;color:#777;margin-top:2px}
+    .empty-team{font-size:12px;color:#777;margin:4px 0}
     .wallet-warning{padding:13px 14px;margin:0 0 16px;border:1px solid #f0d28b;background:#fff9e9;color:#76530b;border-radius:11px;font-size:12px;line-height:1.5}
     .wallet-warning strong{display:block;margin-bottom:3px;color:#6b4700}
     .profile-strip{display:flex;align-items:center;gap:13px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;min-width:210px}
     .avatar{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;color:#fff;font-weight:800;background:linear-gradient(140deg,var(--blue),#17428f)}
     .profile-strip strong{display:block;font-size:13px;color:var(--navy)}.profile-strip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
     .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-    .panel{padding:25px}
+    .panel{background:var(--surface);border:1px solid #e9edf3;border-radius:22px;box-shadow:var(--shadow);padding:25px}
     .panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:19px}
     .panel-title h2{font-size:17px;margin:0;color:var(--navy);letter-spacing:-.015em}
     .panel-sub{font-size:12px;color:var(--muted);margin:-12px 0 18px}
@@ -124,64 +112,100 @@
     .request-amount{white-space:nowrap;color:#263247;font-size:12px;font-weight:750}
     .empty-state{padding:24px 12px;text-align:center;color:#8994a4;font-size:13px;background:#f8f9fb;border:1px dashed #dce2ea;border-radius:12px}
     .dashboard-actions{display:flex;gap:10px;align-items:center}
+    .info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
+    .info-tile{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px}
+    .info-tile b{display:block;font-size:13px;color:var(--navy);margin-bottom:5px}
+    .info-tile span{font-size:12px;color:var(--muted)}
+    .step-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .step{background:#f8faff;border:1px solid #e6ebf5;padding:14px;border-radius:12px;font-size:12px;color:#697586}
+    .step b{display:block;color:var(--navy);margin:4px 0}
+    .step-number{color:#1f7aff;font-weight:800}
     .foot{display:flex;justify-content:space-between;gap:12px;color:#929baa;font-size:11px;margin:28px 2px 0}
-    @media(max-width:900px){.auth-layout{grid-template-columns:1fr}.welcome-panel{min-height:350px;padding:38px}.welcome-panel h1{font-size:40px}.auth-card{max-width:none}.dashboard-grid{grid-template-columns:1fr}}
-    @media(max-width:600px){.page{padding:0 15px 28px}.topbar{height:70px;margin-bottom:18px}.brand img{max-width:150px;height:40px}.brand-copy strong{font-size:14px}.brand-copy small{font-size:10px}.top-label{font-size:11px}.welcome-panel{padding:30px 25px;min-height:330px;border-radius:18px}.welcome-panel h1{font-size:35px}.auth-card{padding:26px 21px;border-radius:18px}.dashboard-head{align-items:flex-start;flex-direction:column;margin-top:26px}.dashboard-head h1{font-size:27px}.profile-strip{width:100%}.panel{padding:20px;border-radius:17px}.foot{flex-direction:column}.request-item{flex-direction:column;gap:5px}}
+
+    /* Responsive */
+    @media(max-width:900px){
+      .dashboard-grid{grid-template-columns:1fr}
+      .info-grid,.step-list{grid-template-columns:1fr}
+    }
+    @media(max-width:600px){
+      .topbar{height:80px}
+      .brand img{max-width:160px;height:45px}
+      .auth-card{padding:30px 22px;border-radius:18px}
+      .dashboard-head{align-items:flex-start;flex-direction:column;margin-top:26px}
+      .profile-strip{width:100%}
+      .foot{flex-direction:column;align-items:center;text-align:center}
+      .request-item{flex-direction:column;gap:5px}
+      .modal-box{padding:24px}
+    }
   </style>
 </head>
 <body>
 <div class="page">
+  <!-- HEADER ÉPURÉ AVEC LOGO CENTRÉ -->
   <header class="topbar">
     <div class="brand">
       <img id="brandLogo" src="logo-xenary.png" alt="Xynera Club">
       <span id="brandFallback" class="brand-fallback" aria-hidden="true">X</span>
-      <div id="brandCopy" class="brand-copy hidden"><strong>XYNERA CLUB</strong><small>Build. Learn. Analyze. Innovate.</small></div>
+      <div id="brandCopy" class="brand-copy hidden">
+        <strong>XYNERA CLUB</strong>
+        <small>Build. Learn. Analyze. Innovate.</small>
+      </div>
     </div>
-    <div class="top-label"><span class="top-dot"></span><span id="topLabel">Espace membre</span></div>
   </header>
 
-  <main>
+  <main style="display:flex; flex-direction:column; flex:1;">
+    <!-- ZONE D'AUTHENTIFICATION (CENTRÉE) -->
     <section id="authArea" class="auth-layout">
-      <div class="welcome-panel">
-        <div>
-          <span class="eyebrow">XYNERA CLUB</span>
-          <h1>Votre espace.<br><span>Votre vision.</span></h1>
-          <p>Retrouvez vos informations et vos échanges avec Xynera Club dans un espace personnel, clair et sécurisé.</p>
-          <div class="feature-list">
-            <div class="feature"><span class="feature-icon">✓</span><span>Un profil personnel centralisé</span></div>
-            <div class="feature"><span class="feature-icon">↗</span><span>Un suivi simple de vos demandes</span></div>
-            <div class="feature"><span class="feature-icon">⌁</span><span>Un accès depuis ordinateur et mobile</span></div>
-          </div>
-        </div>
-        <div class="welcome-foot">Build. Learn. Analyze. Innovate.</div>
-      </div>
-
       <div class="auth-card">
         <div class="auth-heading">
           <h2 id="authTitle">Heureux de vous revoir</h2>
           <p id="authSubtitle">Connectez-vous à votre espace personnel.</p>
         </div>
+        
         <div class="tabs" role="tablist" aria-label="Accès au compte">
           <button type="button" class="tab active" id="loginTab" role="tab" aria-selected="true">Connexion</button>
           <button type="button" class="tab" id="signupTab" role="tab" aria-selected="false">Créer un compte</button>
         </div>
+        
+        <!-- Formulaire Connexion -->
         <form id="loginForm" class="form-view active">
-          <div class="field"><label for="liEmail">Adresse e-mail</label><input id="liEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com"></div>
-          <div class="field"><label for="liPassword">Mot de passe</label><input id="liPassword" type="password" required autocomplete="current-password" placeholder="Votre mot de passe"></div>
-          <button class="primary-btn full" type="submit">Se connecter</button>
+          <div class="field">
+            <label for="liEmail">Adresse e-mail</label>
+            <input id="liEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com">
+          </div>
+          <div class="field">
+            <label for="liPassword">Mot de passe</label>
+            <input id="liPassword" type="password" required autocomplete="current-password" placeholder="Votre mot de passe">
+          </div>
+          <button class="primary-btn" type="submit">Se connecter</button>
           <div id="loginStatus" class="status" aria-live="polite"></div>
         </form>
+        
+        <!-- Formulaire Inscription -->
         <form id="signupForm" class="form-view">
-          <div class="field"><label for="suName">Nom complet</label><input id="suName" required autocomplete="name" placeholder="Votre nom complet"></div>
-          <div class="field"><label for="suEmail">Adresse e-mail</label><input id="suEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com"></div>
-          <div class="field"><label for="suPassword">Mot de passe</label><input id="suPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8 caractères minimum"></div>
-          <div class="field"><label for="suReferral">Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" autocomplete="off" placeholder="Ex. XYNERA8F2K"></div>
-          <button class="primary-btn full" type="submit">Créer mon compte</button>
+          <div class="field">
+            <label for="suName">Nom complet</label>
+            <input id="suName" required autocomplete="name" placeholder="Votre nom complet">
+          </div>
+          <div class="field">
+            <label for="suEmail">Adresse e-mail</label>
+            <input id="suEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com">
+          </div>
+          <div class="field">
+            <label for="suPassword">Mot de passe</label>
+            <input id="suPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8 caractères minimum">
+          </div>
+          <div class="field">
+            <label for="suReferral">Code de parrainage (facultatif)</label>
+            <input id="suReferral" type="text" maxlength="12" autocomplete="off" placeholder="Ex. XYNERA8F2K">
+          </div>
+          <button class="primary-btn" type="submit">Créer mon compte</button>
           <div id="signupStatus" class="status" aria-live="polite"></div>
         </form>
       </div>
     </section>
 
+    <!-- ZONE APPLICATION (DASHBOARD CONNECTÉ) -->
     <section id="appArea" class="hidden">
       <div class="dashboard-head">
         <div>
@@ -189,7 +213,9 @@
           <h1>Bonjour, <span id="welcomeName">membre</span></h1>
           <p>Gérez vos coordonnées et retrouvez le suivi de vos demandes.</p>
         </div>
-        <div class="dashboard-actions"><button id="logoutBtn" class="secondary-btn" type="button">Déconnexion</button></div>
+        <div class="dashboard-actions">
+          <button id="logoutBtn" class="secondary-btn" type="button">Déconnexion</button>
+        </div>
       </div>
 
       <div class="profile-strip" style="margin-bottom:18px">
@@ -199,7 +225,7 @@
 
       <section class="panel" style="margin-bottom:18px">
         <div class="panel-title"><h2>Mon équipe</h2><span class="badge">Programme Xynera</span></div>
-        <p class="panel-sub">Partagez votre code personnel. Les inscriptions réalisées avec ce code seront associées à votre compte. Le programme prévoit une commission de 3 % sur les frais de plateforme effectivement encaissés auprès de vos filleuls, après validation.</p>
+        <p class="panel-sub">Partagez votre code personnel. Les inscriptions réalisées avec ce code seront associées à votre compte.</p>
         <div class="profile-meta">
           <div class="meta-box"><small>Votre code</small><strong id="myReferralCode">—</strong></div>
           <div class="meta-box"><small>Membres parrainés</small><strong id="myReferralCount">0</strong></div>
@@ -209,7 +235,7 @@
           <div class="team-members-head"><h3>Personnes que vous avez parrainées</h3><span id="teamCountLabel">0 membre</span></div>
           <div id="myTeamList" class="team-list"><p class="empty-team">Chargement de votre équipe...</p></div>
         </div>
-        <div id="referralStatus" class="status" aria-live="polite"></div>
+        <div id="referralStatus" class="status" aria-live="polite" style="text-align:left"></div>
       </section>
 
       <div class="dashboard-grid">
@@ -223,10 +249,10 @@
             <div class="field"><label for="profileName">Nom complet</label><input id="profileName" required autocomplete="name"></div>
             <div class="field"><label for="profilePhone">Téléphone</label><input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243..."></div>
             <div class="field"><label for="profileWallet">Adresse du portefeuille de retrait *</label><input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse de portefeuille"></div>
-            <div class="wallet-warning"><strong>Important — vérifiez votre adresse</strong><br>Les bénéfices éventuels à la fin de votre contrat seront envoyés exclusivement à l'adresse de portefeuille enregistrée dans votre compte. Vérifiez que l'adresse est correcte et compatible avec le réseau utilisé. Si vous changez de portefeuille, modifiez cette information dans votre profil.</div>
+            <div class="wallet-warning"><strong>Important — vérifiez votre adresse</strong><br>Les bénéfices éventuels seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est correcte et compatible avec le réseau utilisé.</div>
             <button class="primary-btn" type="submit">Enregistrer les modifications</button>
           </form>
-          <div id="profileStatusMsg" class="status" aria-live="polite"></div>
+          <div id="profileStatusMsg" class="status" aria-live="polite" style="text-align:left"></div>
         </section>
 
         <section class="panel">
@@ -238,41 +264,34 @@
             <div class="field"><label for="interestMessage">Votre message</label><textarea id="interestMessage" rows="3" placeholder="Écrivez votre message..."></textarea></div>
             <button class="primary-btn" type="submit">Envoyer la demande</button>
           </form>
-          <div id="interestStatus" class="status" aria-live="polite"></div>
+          <div id="interestStatus" class="status" aria-live="polite" style="text-align:left"></div>
         </section>
       </div>
 
-      <div class="info-grid">
-        <div class="info-tile"><b>Gestion des demandes</b><span>Consultation de votre historique et de l'état de chaque dossier.</span></div>
-        <div class="info-tile"><b>Suivi du profil</b><span>Coordonnées, statut du compte et informations personnelles.</span></div>
-        <div class="info-tile"><b>Marchés suivis</b><span>Forex et crypto, selon les services et autorisations applicables.</span></div>
-      </div>
-      <section class="panel" style="margin-bottom:18px">
-        <div class="panel-title"><h2>Parcours de votre dossier</h2><span class="badge">Suivi des étapes</span></div>
-        <div class="step-list">
-          <div class="step"><span class="step-number">01</span><b>Création du compte</b>Inscription et confirmation de l'adresse e-mail.</div>
-          <div class="step"><span class="step-number">02</span><b>Informations personnelles</b>Renseignement du profil et transmission d'une demande.</div>
-          <div class="step"><span class="step-number">03</span><b>Étude du dossier</b>Examen et retour de l'équipe selon la situation du dossier.</div>
-        </div>
-      </section>
       <section class="panel history-panel">
         <div class="panel-title"><h2>Historique de mes demandes</h2><span class="badge" id="historyBadge">0 demande</span></div>
         <div id="requestsList" class="request-list"><div class="empty-state">Vos demandes apparaîtront ici.</div></div>
       </section>
     </section>
   </main>
+
+  <!-- MODALE D'ACTION -->
   <div id="actionModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-box">
       <div id="modalSymbol" class="modal-symbol"><span class="spin" aria-hidden="true"></span></div>
       <h2 id="modalTitle">Traitement en cours</h2>
       <p id="modalDescription">Veuillez patienter quelques instants.</p>
       <div id="modalActions" class="modal-actions hidden">
-        <button id="resendButton" type="button" class="secondary-btn hidden">Renvoyer l'e-mail de confirmation</button>
+        <button id="resendButton" type="button" class="secondary-btn hidden">Renvoyer l'e-mail</button>
         <button id="modalClose" type="button" class="primary-btn">Fermer</button>
       </div>
     </div>
   </div>
-  <footer class="foot"><span>© <span id="year"></span> Xynera Club</span><span>Build. Learn. Analyze. Innovate.</span></footer>
+
+  <footer class="foot">
+    <span>© <span id="year"></span> Xynera Club</span>
+    <span>Build. Learn. Analyze. Innovate.</span>
+  </footer>
 </div>
 
 <script>
@@ -342,7 +361,7 @@
       } else {
         beginCooldown(60);
         showModal("Demande de renvoi enregistrée",
-          "Vérifiez la boîte de réception et les courriers indésirables de " + confirmationEmail + ". La réception dépend du service e-mail configuré dans Supabase.",
+          "Vérifiez la boîte de réception et les courriers indésirables de " + confirmationEmail + ".",
           "success", true);
       }
     } catch (e) { showModal("Connexion indisponible", errorText(e), "error", true); }
@@ -495,7 +514,10 @@
     currentUser = user;
     $("authArea").classList.add("hidden");
     $("appArea").classList.remove("hidden");
-    $("topLabel").textContent = "Mon espace";
+    // Change le header en mode "connecté"
+    document.querySelector(".topbar").style.justifyContent = "space-between";
+    document.querySelector(".topbar").insertAdjacentHTML('beforeend', '<div class="top-label" id="topLabelConnected"><span class="top-dot"></span><span>Mon espace</span></div>');
+    
     try { await loadProfile(); await loadRequests(); }
     catch (error) { console.error(error); }
   }
@@ -506,11 +528,11 @@
   }
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  /* ------- INSCRIPTION (corrigée) ------- */
+  /* ------- INSCRIPTION ------- */
   $("signupForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const button = $("signupForm").querySelector('button[type="submit"]');
-    if (button.disabled) return; // anti double-clic
+    if (button.disabled) return;
 
     const name = $("suName").value.trim();
     const email = $("suEmail").value.trim();
@@ -531,7 +553,6 @@
     button.textContent = "Création en cours…";
 
     try {
-      // Validation du code de parrainage — ne JAMAIS bloquer l'inscription si le RPC est absent
       if (referralCode) {
         try {
           const { data: validCode, error: validationError } = await supabaseClient.rpc(
@@ -539,14 +560,12 @@
           );
           if (validationError) {
             console.warn("Validation parrainage indisponible :", validationError.message);
-            // on continue l'inscription sans bloquer
           } else if (!validCode) {
             showModal("Code invalide", "Ce code de parrainage n'existe pas. Vérifiez-le ou laissez le champ vide.", "error");
             return;
           }
         } catch (err) {
           console.warn("Erreur validation parrainage :", err);
-          // on continue sans bloquer
         }
       }
 
@@ -563,9 +582,7 @@
         return;
       }
 
-      // Cas 1 : Confirmation e-mail DÉSACTIVÉE dans Supabase → session immédiate
       if (!data.session || !data.user) {
-        // Cas 2 : Confirmation e-mail ACTIVÉE → on informe l'utilisateur
         confirmationEmail = email;
         $("liEmail").value = email;
         $("liPassword").value = "";
@@ -581,14 +598,12 @@
         return;
       }
 
-      // Nettoyage + bascule vers l'écran de connexion
       $("liEmail").value = email;
       $("liPassword").value = "";
       $("suReferral").value = "";
       switchAuth("login");
       $("modalClose").textContent = "Aller à la connexion";
 
-      // Envoi optionnel de l'e-mail de bienvenue via Edge Function
       let welcomeSent = false;
       try {
         const { error: mailError } = await supabaseClient.functions.invoke("send-welcome-email", {
@@ -654,11 +669,16 @@
     currentUser = null;
     $("appArea").classList.add("hidden");
     $("authArea").classList.remove("hidden");
-    $("topLabel").textContent = "Espace membre";
+    
+    // Remet le header en mode déconnecté
+    const topLabelConnected = $("topLabelConnected");
+    if (topLabelConnected) topLabelConnected.remove();
+    document.querySelector(".topbar").style.justifyContent = "center";
+    
     switchAuth("login");
   });
 
-  /* ------- PROFIL (validation regex corrigée) ------- */
+  /* ------- PROFIL ------- */
   $("profileForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
