@@ -4,295 +4,414 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101827">
-  <title>Xynera Club | Espace membre</title>
-  <meta name="description" content="Espace membre Xynera Club">
+  <title>Xynera Club | Espace Investisseur</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root{
-      --navy:#101827;--navy2:#17243a;--red:#e50914;--blue:#1f7aff;
-      --ink:#172033;--muted:#697586;--line:#e6eaf0;--surface:#fff;
-      --page:#f4f6fa;--green:#13865c;--shadow:0 18px 55px rgba(16,24,39,.09)
+    :root {
+      --navy: #101827; --navy-light: #17243a; --red: #e50914; --blue: #1f7aff; --green: #10b981;
+      --ink: #172033; --muted: #697586; --line: #e6eaf0; --surface: #fff; --page: #f4f6fa;
+      --shadow: 0 10px 30px rgba(16,24,39,.06); --radius: 20px;
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--page);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
-    button,input,textarea,select{font:inherit}
-    button{cursor:pointer}
-    .page{max-width:1200px;margin:0 auto;padding:0 20px 44px;width:100%;display:flex;flex-direction:column;flex:1}
+    *{box-sizing:border-box; margin:0; padding:0;}
+    body{background:var(--page); color:var(--ink); font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif; min-height:100vh; display:flex; overflow-x:hidden;}
+    button,input,textarea,select{font:inherit;}
+    button{cursor:pointer; border:none; background:none;}
+    .hidden{display:none!important;}
     
-    /* Header centré pour la page de connexion */
-    .topbar{height:100px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:all 0.3s ease}
-    .brand{display:flex;align-items:center;gap:12px;min-width:0;justify-content:center;text-align:center}
-    .brand img{display:block;width:auto;max-width:200px;height:55px;object-fit:contain}
-    .brand-fallback{display:none;width:42px;height:42px;align-items:center;justify-content:center;border-radius:12px;background:var(--navy);color:#fff;font-size:21px;font-weight:800}
-    .brand-copy{display:flex;flex-direction:column;line-height:1.2}
-    .brand-copy strong{font-size:18px;letter-spacing:.09em;color:var(--navy)}
-    .brand-copy small{font-size:11px;color:#8792a2;letter-spacing:.04em;margin-top:4px}
-    .top-label{display:flex;align-items:center;gap:9px;color:#5d6878;font-size:13px;font-weight:600}
-    .top-dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 0 4px #e4f4ed}
+    /* Layout Global */
+    .app-layout { display: flex; width: 100%; height: 100vh; overflow: hidden; }
+    
+    /* Sidebar (Menu) */
+    .sidebar { width: 280px; background: var(--navy); color: #fff; display: flex; flex-direction: column; transition: transform .3s ease; z-index: 100; flex-shrink: 0; }
+    .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
+    .sidebar-header img { height: 40px; width: auto; object-fit: contain; }
+    .sidebar-header strong { font-size: 16px; letter-spacing: .05em; display: block; }
+    .sidebar-header small { font-size: 10px; color: #8792a2; }
+    .nav-menu { padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 12px; color: #a5b1c2; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
+    .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: #fff; }
+    .nav-item.active { border-left: 4px solid var(--blue); border-radius: 4px 12px 12px 4px; }
+    .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .user-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); display: grid; place-items: center; font-weight: 800; font-size: 18px; }
+    .user-info strong { display: block; font-size: 13px; }
+    .user-info small { font-size: 11px; color: #8792a2; display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn { width: 100%; padding: 12px; border-radius: 10px; background: rgba(229,9,20,0.1); color: #ff6b6b; font-weight: 700; font-size: 13px; text-align: center; transition: 0.2s; }
+    .logout-btn:hover { background: rgba(229,9,20,0.2); }
 
-    /* Layout d'authentification centré */
-    .auth-layout{display:flex;align-items:center;justify-content:center;flex:1;padding:10px 0 40px}
-    .auth-card{background:var(--surface);border:1px solid #e9edf3;border-radius:22px;box-shadow:var(--shadow);padding:40px;width:100%;max-width:480px;transition:transform 0.3s ease}
+    /* Main Content Area */
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); position: relative; }
     
-    .auth-heading{margin-bottom:28px;text-align:center}
-    .auth-heading h2{font-size:26px;letter-spacing:-.025em;margin:0 0 8px;color:var(--navy)}
-    .auth-heading p{font-size:14px;color:var(--muted);margin:0}
+    /* Mobile Header */
+    .mobile-header { display: none; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+    .hamburger { font-size: 24px; color: var(--navy); cursor: pointer; }
     
-    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;background:#f1f4f8;border-radius:12px;margin-bottom:28px}
-    .tab{border:0;border-radius:9px;padding:12px;background:transparent;color:#657184;font-size:13px;font-weight:700;transition:.2s}
-    .tab.active{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(16,24,39,.08)}
+    /* Views */
+    .view { display: none; padding: 30px 40px 60px; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
+    .view.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Page Headers */
+    .page-header { margin-bottom: 28px; }
+    .page-header .eyebrow { color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .page-header .eyebrow::before { content: ""; width: 20px; height: 2px; background: var(--red); }
+    .page-header h1 { font-size: 32px; color: var(--navy); letter-spacing: -.03em; margin-bottom: 6px; }
+    .page-header p { color: var(--muted); font-size: 14px; }
+
+    /* Dashboard Grid Layout */
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
     
-    .form-view{display:none}.form-view.active{display:block}
-    .field{margin:0 0 18px}
-    .field label{display:block;color:#344054;font-size:12px;font-weight:700;margin:0 0 8px}
-    .field input,.field textarea,.field select{width:100%;border:1px solid #dce2ea;background:#fff;border-radius:10px;padding:12px 14px;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
-    .field input,.field select{height:48px}
-    .field textarea{resize:vertical;min-height:92px}
-    .field input::placeholder,.field textarea::placeholder{color:#a1aab7}
-    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,122,255,.1)}
-    
-    .primary-btn,.secondary-btn{min-height:48px;border-radius:10px;padding:12px 18px;font-size:14px;font-weight:750;transition:transform .15s,filter .15s,opacity .15s}
-    .primary-btn{border:0;background:var(--red);color:#fff;box-shadow:0 7px 15px rgba(229,9,20,.16);width:100%;margin-top:8px}
-    .primary-btn:hover:not(:disabled){filter:brightness(.96);transform:translateY(-1px)}
-    .primary-btn:disabled,.secondary-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;filter:none}
-    .secondary-btn{border:1px solid #dce2ea;background:#fff;color:#263247}
-    .secondary-btn:hover:not(:disabled){background:#f7f9fc}
-    
-    .status{min-height:20px;margin:12px 0 0;font-size:12px;text-align:center;color:#667386}
-    .status.error{color:#c42b35}.status.ok{color:var(--green)}
-    .hidden{display:none!important}
-    
-    /* Modales */
-    .modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(10,18,32,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:18px}
-    .modal-box{background:#fff;width:min(100%,440px);border-radius:22px;padding:30px;box-shadow:0 25px 90px #08101b60;text-align:center;position:relative}
-    .modal-box h2{font-size:23px;margin:13px 0 8px;color:var(--navy)}
-    .modal-box p{color:var(--muted);font-size:14px;margin:0 0 18px;overflow-wrap:anywhere}
-    .modal-symbol{height:62px;width:62px;border-radius:18px;background:#eaf2ff;color:#1f7aff;display:grid;place-items:center;font-size:29px;margin:auto;font-weight:800}
-    .modal-symbol.error{background:#fff0f0;color:#dc2635}
-    .modal-symbol.success{background:#eaf8f1;color:#13865c}
-    .spin{width:31px;height:31px;border:3px solid #dce9ff;border-top-color:#1f7aff;border-radius:50%;animation:rotate .75s linear infinite}
-    @keyframes rotate{to{transform:rotate(360deg)}}
-    .modal-actions{display:grid;gap:10px;margin-top:16px}
-    .modal-actions button:disabled{opacity:.55;cursor:not-allowed}
-    
-    /* Dashboard (espace connecté) */
-    .dashboard-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:36px 0 22px}
-    .eyebrow{display:inline-flex;align-items:center;gap:9px;color:#778397;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
-    .eyebrow:before{content:"";height:2px;width:24px;background:var(--red);border-radius:2px}
-    .dashboard-head h1{font-size:32px;line-height:1.2;letter-spacing:-.035em;color:var(--navy);margin:10px 0 4px}
-    .dashboard-head p{margin:0;color:var(--muted);font-size:14px}
-    .team-members{margin-top:18px;padding-top:16px;border-top:1px solid #e8e8e8}
-    .team-members-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-    .team-members-head h3{font-size:14px;margin:0}
-    .team-list{display:grid;gap:8px}
-    .team-member{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid #e8e8e8;border-radius:11px;background:rgba(127,127,127,.04)}
-    .team-avatar{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:rgba(31,122,255,.12);color:#1f7aff;font-weight:700;flex:none}
-    .team-member-name{font-size:13px;font-weight:650}
-    .team-member-date{font-size:11px;color:#777;margin-top:2px}
-    .empty-team{font-size:12px;color:#777;margin:4px 0}
-    .wallet-warning{padding:13px 14px;margin:0 0 16px;border:1px solid #f0d28b;background:#fff9e9;color:#76530b;border-radius:11px;font-size:12px;line-height:1.5}
-    .wallet-warning strong{display:block;margin-bottom:3px;color:#6b4700}
-    .profile-strip{display:flex;align-items:center;gap:13px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;min-width:210px}
-    .avatar{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;color:#fff;font-weight:800;background:linear-gradient(140deg,var(--blue),#17428f)}
-    .profile-strip strong{display:block;font-size:13px;color:var(--navy)}.profile-strip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
-    .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-    .panel{background:var(--surface);border:1px solid #e9edf3;border-radius:22px;box-shadow:var(--shadow);padding:25px}
-    .panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:19px}
-    .panel-title h2{font-size:17px;margin:0;color:var(--navy);letter-spacing:-.015em}
-    .panel-sub{font-size:12px;color:var(--muted);margin:-12px 0 18px}
-    .badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:99px;background:#edf4ff;color:#2458a6;font-size:11px;font-weight:700}
-    .profile-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-    .meta-box{padding:12px;background:#f7f9fc;border:1px solid #edf0f5;border-radius:11px}
-    .meta-box small{display:block;color:#8390a1;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:750;margin-bottom:4px}
-    .meta-box strong{font-size:13px;color:#263247}
-    .history-panel{margin-top:18px}
-    .request-list{display:grid;gap:10px}
-    .request-item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:14px;border:1px solid #edf0f5;border-radius:12px;background:#fff}
-    .request-item strong{display:block;color:#253148;font-size:13px;text-transform:none}
-    .request-item small{display:block;color:#7c8797;font-size:11px;margin-top:4px}
-    .request-amount{white-space:nowrap;color:#263247;font-size:12px;font-weight:750}
-    .empty-state{padding:24px 12px;text-align:center;color:#8994a4;font-size:13px;background:#f8f9fb;border:1px dashed #dce2ea;border-radius:12px}
-    .dashboard-actions{display:flex;gap:10px;align-items:center}
-    .info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
-    .info-tile{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px}
-    .info-tile b{display:block;font-size:13px;color:var(--navy);margin-bottom:5px}
-    .info-tile span{font-size:12px;color:var(--muted)}
-    .step-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-    .step{background:#f8faff;border:1px solid #e6ebf5;padding:14px;border-radius:12px;font-size:12px;color:#697586}
-    .step b{display:block;color:var(--navy);margin:4px 0}
-    .step-number{color:#1f7aff;font-weight:800}
-    .foot{display:flex;justify-content:space-between;gap:12px;color:#929baa;font-size:11px;margin:28px 2px 0}
+    /* Balance Card */
+    .balance-card { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); border-radius: var(--radius); padding: 32px; color: #fff; box-shadow: 0 15px 35px rgba(16,24,39,0.15); position: relative; overflow: hidden; }
+    .balance-card::before { content: ""; position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(31,122,255,0.4), transparent 70%); border-radius: 50%; }
+    .balance-label { color: #a5b1c2; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .balance-amount { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 24px; display: flex; align-items: baseline; gap: 8px; }
+    .balance-amount span { font-size: 20px; color: #a5b1c2; font-weight: 500; }
+    .balance-actions { display: flex; gap: 14px; }
+    .btn-deposit { background: var(--green); color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; flex: 1; text-align: center; transition: 0.2s; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+    .btn-deposit:hover { filter: brightness(1.1); }
+    .btn-withdraw { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; flex: 1; text-align: center; transition: 0.2s; }
+    .btn-withdraw:hover { background: rgba(255,255,255,0.2); }
+
+    /* Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+    .stat-card { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid var(--line); text-align: center; }
+    .stat-icon { font-size: 24px; margin-bottom: 10px; }
+    .stat-value { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+    /* Info Cards */
+    .info-card { background: #fff; border-radius: var(--radius); padding: 24px; border: 1px solid var(--line); margin-top: 24px; }
+    .info-card h3 { font-size: 18px; color: var(--navy); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .info-card p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .info-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .feature-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--navy); font-weight: 600; }
+    .feature-item::before { content: "✓"; color: var(--green); font-weight: 800; }
+
+    /* History List (Recent & Full) */
+    .op-list { display: flex; flex-direction: column; gap: 12px; }
+    .op-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 18px; border-radius: 14px; border: 1px solid var(--line); }
+    .op-info { display: flex; align-items: center; gap: 14px; }
+    .op-icon { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 18px; }
+    .op-icon.deposit { background: #eaf8f1; color: var(--green); }
+    .op-icon.withdraw { background: #fff0f0; color: var(--red); }
+    .op-icon.request { background: #edf4ff; color: var(--blue); }
+    .op-details strong { display: block; font-size: 14px; color: var(--navy); }
+    .op-details small { font-size: 12px; color: var(--muted); }
+    .op-amount { font-weight: 800; font-size: 15px; }
+    .op-amount.pos { color: var(--green); }
+    .op-amount.neg { color: var(--red); }
+
+    /* Forms (Profile) */
+    .form-card { background: #fff; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); max-width: 600px; }
+    .field { margin-bottom: 20px; }
+    .field label { display: block; color: #344054; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .field input, .field select { width: 100%; border: 1px solid #dce2ea; border-radius: 12px; padding: 14px; color: var(--ink); outline: none; transition: 0.2s; }
+    .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(31,122,255,0.1); }
+    .primary-btn { background: var(--blue); color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 700; width: 100%; transition: 0.2s; }
+    .primary-btn:hover { filter: brightness(1.1); }
+    .wallet-warning { padding: 16px; border: 1px solid #f0d28b; background: #fff9e9; color: #76530b; border-radius: 12px; font-size: 13px; line-height: 1.5; margin-bottom: 20px; }
+
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(10,18,32,0.7); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal-box { background: #fff; width: min(100%, 440px); border-radius: 24px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; }
+    .modal-overlay.active .modal-box { transform: scale(1); }
+    .modal-title { font-size: 22px; color: var(--navy); margin-bottom: 20px; text-align: center; }
+
+    /* Team / Referral */
+    .team-member { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; }
+    .team-avatar { width: 36px; height: 36px; border-radius: 50%; background: #edf4ff; color: var(--blue); display: grid; place-items: center; font-weight: 700; }
 
     /* Responsive */
-    @media(max-width:900px){
-      .dashboard-grid{grid-template-columns:1fr}
-      .info-grid,.step-list{grid-template-columns:1fr}
+    @media (max-width: 1024px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .sidebar { position: fixed; height: 100vh; transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-header { display: flex; }
+      .view { padding: 20px 20px 80px; }
+      .stats-grid { grid-template-columns: 1fr; }
     }
-    @media(max-width:600px){
-      .topbar{height:80px}
-      .brand img{max-width:160px;height:45px}
-      .auth-card{padding:30px 22px;border-radius:18px}
-      .dashboard-head{align-items:flex-start;flex-direction:column;margin-top:26px}
-      .profile-strip{width:100%}
-      .foot{flex-direction:column;align-items:center;text-align:center}
-      .request-item{flex-direction:column;gap:5px}
-      .modal-box{padding:24px}
+    @media (max-width: 600px) {
+      .balance-amount { font-size: 38px; }
+      .balance-actions { flex-direction: column; }
+      .info-features { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-<div class="page">
-  <!-- HEADER ÉPURÉ AVEC LOGO CENTRÉ -->
-  <header class="topbar" id="mainHeader">
-    <div class="brand">
-      <img id="brandLogo" src="logo-xenary.png" alt="Xynera Club">
-      <span id="brandFallback" class="brand-fallback" aria-hidden="true">X</span>
-      <div id="brandCopy" class="brand-copy hidden">
+
+<div class="app-layout">
+  <!-- SIDEBAR MENU -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img id="brandLogo" src="logo-xenary.png" alt="Xynera" onerror="this.style.display='none'; document.getElementById('brandFallback').style.display='block';">
+      <div id="brandFallback" style="display:none;">
         <strong>XYNERA CLUB</strong>
-        <small>Build. Learn. Analyze. Innovate.</small>
+        <small>Build. Learn. Analyze.</small>
       </div>
     </div>
-  </header>
-
-  <main style="display:flex; flex-direction:column; flex:1;">
-    <!-- ZONE D'AUTHENTIFICATION (CENTRÉE) -->
-    <section id="authArea" class="auth-layout">
-      <div class="auth-card">
-        <div class="auth-heading">
-          <h2 id="authTitle">Heureux de vous revoir</h2>
-          <p id="authSubtitle">Connectez-vous à votre espace personnel.</p>
-        </div>
-        
-        <div class="tabs" role="tablist" aria-label="Accès au compte">
-          <button type="button" class="tab active" id="loginTab" role="tab" aria-selected="true">Connexion</button>
-          <button type="button" class="tab" id="signupTab" role="tab" aria-selected="false">Créer un compte</button>
-        </div>
-        
-        <!-- Formulaire Connexion -->
-        <form id="loginForm" class="form-view active">
-          <div class="field">
-            <label for="liEmail">Adresse e-mail</label>
-            <input id="liEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com">
-          </div>
-          <div class="field">
-            <label for="liPassword">Mot de passe</label>
-            <input id="liPassword" type="password" required autocomplete="current-password" placeholder="Votre mot de passe">
-          </div>
-          <button class="primary-btn" type="submit">Se connecter</button>
-          <div id="loginStatus" class="status" aria-live="polite"></div>
-        </form>
-        
-        <!-- Formulaire Inscription -->
-        <form id="signupForm" class="form-view">
-          <div class="field">
-            <label for="suName">Nom complet</label>
-            <input id="suName" required autocomplete="name" placeholder="Votre nom complet">
-          </div>
-          <div class="field">
-            <label for="suEmail">Adresse e-mail</label>
-            <input id="suEmail" type="email" required autocomplete="email" placeholder="nom@exemple.com">
-          </div>
-          <div class="field">
-            <label for="suPassword">Mot de passe</label>
-            <input id="suPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8 caractères minimum">
-          </div>
-          <div class="field">
-            <label for="suReferral">Code de parrainage (facultatif)</label>
-            <input id="suReferral" type="text" maxlength="12" autocomplete="off" placeholder="Ex. XYNERA8F2K">
-          </div>
-          <button class="primary-btn" type="submit">Créer mon compte</button>
-          <div id="signupStatus" class="status" aria-live="polite"></div>
-        </form>
+    
+    <nav class="nav-menu">
+      <div class="nav-item active" onclick="switchView('dashboard', this)">
+        <span class="nav-icon">📊</span> Tableau de bord
       </div>
-    </section>
+      <div class="nav-item" onclick="switchView('history', this)">
+        <span class="nav-icon">📜</span> Historique
+      </div>
+      <div class="nav-item" onclick="switchView('team', this)">
+        <span class="nav-icon">🤝</span> Mon Équipe
+      </div>
+      <div class="nav-item" onclick="switchView('profile', this)">
+        <span class="nav-icon">👤</span> Mon Profil
+      </div>
+    </nav>
 
-    <!-- ZONE APPLICATION (DASHBOARD CONNECTÉ) -->
-    <section id="appArea" class="hidden">
-      <div class="dashboard-head">
-        <div>
-          <span class="eyebrow">ESPACE PERSONNEL</span>
-          <h1>Bonjour, <span id="welcomeName">membre</span></h1>
-          <p>Gérez vos coordonnées et retrouvez le suivi de vos demandes.</p>
-        </div>
-        <div class="dashboard-actions">
-          <button id="logoutBtn" class="secondary-btn" type="button">Déconnexion</button>
+    <div class="sidebar-footer">
+      <div class="user-badge">
+        <div class="user-avatar" id="sideAvatar">X</div>
+        <div class="user-info">
+          <strong id="sideName">Membre</strong>
+          <small id="sideEmail">email@exemple.com</small>
         </div>
       </div>
+      <button class="logout-btn" id="logoutBtn">Déconnexion</button>
+    </div>
+  </aside>
 
-      <div class="profile-strip" style="margin-bottom:18px">
-        <div class="avatar" id="avatarInitial">X</div>
-        <div><strong id="userEmail"></strong><small id="roleValue">Membre</small></div>
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+      <div class="hamburger" onclick="toggleSidebar()">☰</div>
+      <strong style="color:var(--navy);">Xynera Club</strong>
+      <div style="width:24px;"></div> <!-- Spacer -->
+    </header>
+
+    <!-- VUE : DASHBOARD -->
+    <section id="view-dashboard" class="view active">
+      <div class="page-header">
+        <div class="eyebrow">ESPACE PERSONNEL</div>
+        <h1>Bonjour, <span id="userNameDisplay">membre</span></h1>
+        <p>Voici un résumé de votre activité sur la plateforme.</p>
       </div>
-
-      <section class="panel" style="margin-bottom:18px">
-        <div class="panel-title"><h2>Mon équipe</h2><span class="badge">Programme Xynera</span></div>
-        <p class="panel-sub">Partagez votre code personnel. Les inscriptions réalisées avec ce code seront associées à votre compte.</p>
-        <div class="profile-meta">
-          <div class="meta-box"><small>Votre code</small><strong id="myReferralCode">—</strong></div>
-          <div class="meta-box"><small>Membres parrainés</small><strong id="myReferralCount">0</strong></div>
-        </div>
-        <button id="copyReferralBtn" class="secondary-btn" type="button">Copier mon code</button>
-        <div class="team-members">
-          <div class="team-members-head"><h3>Personnes que vous avez parrainées</h3><span id="teamCountLabel">0 membre</span></div>
-          <div id="myTeamList" class="team-list"><p class="empty-team">Chargement de votre équipe...</p></div>
-        </div>
-        <div id="referralStatus" class="status" aria-live="polite" style="text-align:left"></div>
-      </section>
 
       <div class="dashboard-grid">
-        <section class="panel">
-          <div class="panel-title"><h2>Mon profil</h2><span class="badge" id="profileStatus">En attente</span></div>
-          <div class="profile-meta">
-            <div class="meta-box"><small>Type de compte</small><strong id="roleMeta">Investisseur</strong></div>
-            <div class="meta-box"><small>Demandes envoyées</small><strong id="requestCount">0</strong></div>
+        <!-- Colonne Principale -->
+        <div>
+          <div class="balance-card">
+            <div class="balance-label">Solde Total Disponible</div>
+            <div class="balance-amount">0.00 <span>USD</span></div>
+            <div class="balance-actions">
+              <button class="btn-deposit" onclick="openModal('depositModal')">Faire un Dépôt</button>
+              <button class="btn-withdraw" onclick="openModal('withdrawModal')">Retirer</button>
+            </div>
           </div>
-          <form id="profileForm">
-            <div class="field"><label for="profileName">Nom complet</label><input id="profileName" required autocomplete="name"></div>
-            <div class="field"><label for="profilePhone">Téléphone</label><input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243..."></div>
-            <div class="field"><label for="profileWallet">Adresse du portefeuille de retrait *</label><input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse de portefeuille"></div>
-            <div class="wallet-warning"><strong>Important — vérifiez votre adresse</strong><br>Les bénéfices éventuels seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est correcte et compatible avec le réseau utilisé.</div>
-            <button class="primary-btn" type="submit">Enregistrer les modifications</button>
-          </form>
-          <div id="profileStatusMsg" class="status" aria-live="polite" style="text-align:left"></div>
-        </section>
 
-        <section class="panel">
-          <div class="panel-title"><h2>Nouvelle demande</h2></div>
-          <p class="panel-sub">Indiquez le sujet sur lequel vous souhaitez être contacté.</p>
-          <form id="interestForm">
-            <div class="field"><label for="interestAmount">Montant envisagé (USD)</label><input id="interestAmount" type="number" min="1" step="1" placeholder="Ex. 500"></div>
-            <div class="field"><label for="interestMarket">Marché concerné</label><select id="interestMarket"><option value="forex">Forex</option><option value="crypto_review">Crypto</option><option value="both_review">Forex et crypto</option></select></div>
-            <div class="field"><label for="interestMessage">Votre message</label><textarea id="interestMessage" rows="3" placeholder="Écrivez votre message..."></textarea></div>
-            <button class="primary-btn" type="submit">Envoyer la demande</button>
-          </form>
-          <div id="interestStatus" class="status" aria-live="polite" style="text-align:left"></div>
-        </section>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">📈</div>
+              <div class="stat-value">+ 0.00 $</div>
+              <div class="stat-label">Bénéfice du jour</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🌍</div>
+              <div class="stat-value">12,540</div>
+              <div class="stat-label">Investisseurs actifs</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🏳️</div>
+              <div class="stat-value">45</div>
+              <div class="stat-label">Pays couverts</div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>🚀 La première plateforme d'opportunités</h3>
+            <p>Xynera Club vous connecte aux meilleurs marchés financiers mondiaux. Profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements optimisés et une sécurité maximale pour votre capital.</p>
+            <div class="info-features">
+              <div class="feature-item">Retraits rapides</div>
+              <div class="feature-item">Support 24/7</div>
+              <div class="feature-item">Analyses exclusives</div>
+              <div class="feature-item">Sécurité bancaire</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne de droite -->
+        <div>
+          <div class="info-card" style="margin-top:0;">
+            <h3>💼 Mon Portefeuille</h3>
+            <p style="font-size:13px; margin-bottom:8px; color:var(--muted);">Adresse de retrait enregistrée :</p>
+            <div style="background:#f4f6fa; padding:12px; border-radius:8px; font-family:monospace; font-size:13px; word-break:break-all;" id="dashWalletDisplay">
+              Non configuré
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Activités récentes</h3>
+            <div class="op-list" id="recentActivityList">
+              <div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité récente.</div>
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <section class="panel history-panel">
-        <div class="panel-title"><h2>Historique de mes demandes</h2><span class="badge" id="historyBadge">0 demande</span></div>
-        <div id="requestsList" class="request-list"><div class="empty-state">Vos demandes apparaîtront ici.</div></div>
-      </section>
+    <!-- VUE : HISTORIQUE -->
+    <section id="view-history" class="view">
+      <div class="page-header">
+        <div class="eyebrow">TRANSACTIONS</div>
+        <h1>Historique des opérations</h1>
+        <p>Suivez l'état de toutes vos demandes et transactions.</p>
+      </div>
+      <div class="op-list" id="fullHistoryList">
+        <div style="text-align:center; color:var(--muted); padding:40px;">Chargement...</div>
+      </div>
+    </section>
+
+    <!-- VUE : MON PROFIL -->
+    <section id="view-profile" class="view">
+      <div class="page-header">
+        <div class="eyebrow">PARAMÈTRES</div>
+        <h1>Mon Profil</h1>
+        <p>Gérez vos informations personnelles et vos coordonnées de paiement.</p>
+      </div>
+      
+      <div class="form-card">
+        <form id="profileForm">
+          <div class="field">
+            <label for="profileName">Nom complet</label>
+            <input id="profileName" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="profilePhone">Téléphone</label>
+            <input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243...">
+          </div>
+          <div class="field">
+            <label for="profileWallet">Adresse du portefeuille de retrait (USDT / Crypto) *</label>
+            <input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse de portefeuille">
+          </div>
+          <div class="wallet-warning">
+            <strong>⚠️ Attention — Vérifiez bien votre adresse</strong><br>
+            Les bénéfices et retraits seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est correcte et compatible avec le réseau utilisé (BEP20, ERC20, etc.).
+          </div>
+          <button class="primary-btn" type="submit">Enregistrer les modifications</button>
+          <div id="profileStatusMsg" style="text-align:center; margin-top:16px; font-size:13px; font-weight:600;"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- VUE : MON ÉQUIPE -->
+    <section id="view-team" class="view">
+      <div class="page-header">
+        <div class="eyebrow">PARRAINAGE</div>
+        <h1>Mon Équipe</h1>
+        <p>Développez votre réseau et gagnez des commissions.</p>
+      </div>
+      
+      <div class="dashboard-grid">
+        <div>
+          <div class="info-card" style="margin-top:0;">
+            <h3>Mon Code de Parrainage</h3>
+            <p style="margin-bottom:16px;">Partagez ce code pour inviter de nouveaux membres. Vous recevrez une commission sur leurs frais.</p>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px;">
+              <div style="background:#f4f6fa; padding:16px; border-radius:12px; font-size:20px; font-weight:800; letter-spacing:2px; flex:1; text-align:center; border:1px dashed #ccc;" id="myReferralCode">—</div>
+              <button class="primary-btn" style="width:auto; padding:16px;" onclick="copyCode()">Copier</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="info-card" style="margin-top:0;">
+            <h3>Membres parrainés (<span id="myReferralCount">0</span>)</h3>
+            <div id="myTeamList">
+              <p style="font-size:13px; color:var(--muted);">Chargement...</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
-
-  <!-- MODALE D'ACTION -->
-  <div id="actionModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-box">
-      <div id="modalSymbol" class="modal-symbol"><span class="spin" aria-hidden="true"></span></div>
-      <h2 id="modalTitle">Traitement en cours</h2>
-      <p id="modalDescription">Veuillez patienter quelques instants.</p>
-      <div id="modalActions" class="modal-actions hidden">
-        <button id="modalClose" type="button" class="primary-btn">Fermer</button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="foot">
-    <span>© <span id="year"></span> Xynera Club</span>
-    <span>Build. Learn. Analyze. Innovate.</span>
-  </footer>
 </div>
+
+<!-- MODALES DÉPÔT / RETRAIT -->
+<div id="depositModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">Faire un Dépôt</div>
+    <div class="field">
+      <label>Montant à déposer (USD)</label>
+      <input type="number" placeholder="Ex: 500" min="10">
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin-bottom:16px; text-align:center;">Un e-mail avec les instructions de paiement vous sera envoyé.</p>
+    <button class="primary-btn" style="background:var(--green);" onclick="closeModal('depositModal')">Continuer vers le paiement</button>
+    <button style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:13px;" onclick="closeModal('depositModal')">Annuler</button>
+  </div>
+</div>
+
+<div id="withdrawModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">Demande de Retrait</div>
+    <div class="field">
+      <label>Montant à retirer (USD)</label>
+      <input type="number" placeholder="Ex: 100" min="20">
+    </div>
+    <div class="field">
+      <label>Réseau (Optionnel)</label>
+      <select>
+        <option>Par défaut (selon profil)</option>
+        <option>BEP20 (BSC)</option>
+        <option>ERC20 (Ethereum)</option>
+        <option>TRC20 (Tron)</option>
+      </select>
+    </div>
+    <button class="primary-btn" style="background:var(--red);" onclick="closeModal('withdrawModal')">Demander le retrait</button>
+    <button style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:13px;" onclick="closeModal('withdrawModal')">Annuler</button>
+  </div>
+</div>
+
+<!-- MODALE AUTHENTIFICATION / ERREUR -->
+<div id="actionModal" class="modal-overlay">
+  <div class="modal-box" style="text-align:center;">
+    <div id="modalSymbol" style="height:62px;width:62px;border-radius:18px;background:#eaf2ff;color:#1f7aff;display:grid;place-items:center;font-size:29px;margin:auto;font-weight:800; margin-bottom:16px;">!</div>
+    <h2 id="modalTitle" style="font-size:20px; margin-bottom:8px;">Titre</h2>
+    <p id="modalDescription" style="color:var(--muted); font-size:14px; margin-bottom:20px;">Description</p>
+    <button class="primary-btn" onclick="closeModal('actionModal')">Fermer</button>
+  </div>
+</div>
+
+<!-- ZONE D'AUTHENTIFICATION (SI NON CONNECTÉ) -->
+<section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#fff; border-radius:24px; box-shadow:0 20px 50px rgba(0,0,0,0.1); padding:40px; width:100%; max-width:440px;">
+    <div style="text-align:center; margin-bottom:30px;">
+      <img src="logo-xenary.png" style="height:50px; margin:0 auto 16px;" alt="Xynera" onerror="this.style.display='none'">
+      <h2 id="authTitle" style="font-size:24px; color:var(--navy); margin-bottom:8px;">Heureux de vous revoir</h2>
+      <p id="authSubtitle" style="color:var(--muted); font-size:14px;">Connectez-vous à votre espace.</p>
+    </div>
+    
+    <div style="display:flex; background:#f4f6fa; border-radius:12px; margin-bottom:24px; padding:4px;">
+      <button id="loginTab" class="active" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.05);" onclick="switchAuthTab('login')">Connexion</button>
+      <button id="signupTab" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; color:var(--muted);" onclick="switchAuthTab('signup')">Créer un compte</button>
+    </div>
+
+    <form id="loginForm">
+      <div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div>
+      <div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div>
+      <button type="submit" class="primary-btn">Se connecter</button>
+      <div id="loginStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
+    </form>
+
+    <form id="signupForm" style="display:none;">
+      <div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div>
+      <div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div>
+      <div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div>
+      <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" placeholder="Ex: XYNERA..."></div>
+      <button type="submit" class="primary-btn">Créer mon compte</button>
+      <div id="signupStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
+    </form>
+  </div>
+</section>
 
 <script>
 (() => {
@@ -300,386 +419,286 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhbmRyaG52bGNzZHR2ZW1qaGliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5NDU5OTYsImV4cCI6MjExMDUyMTk5Nn0.DJiPt_PsE5JnhjdyCHnzhFc3NmiOXHDlTMbjCr1JehQ";
   const $ = (id) => document.getElementById(id);
   let currentUser = null;
-  let supabaseClient;
+  let supabaseClient = null;
 
-  $("year").textContent = new Date().getFullYear();
-  $("brandLogo").addEventListener("error", () => {
-    $("brandLogo").classList.add("hidden");
-    $("brandFallback").style.display = "flex";
-    $("brandCopy").classList.remove("hidden");
-  });
-
-  function setMessage(id, text, type = "") {
-    const el = $(id);
-    if (!el) return;
-    el.textContent = text;
-    el.className = "status" + (type ? " " + type : "");
+  // Initialisation Supabase
+  if (window.supabase && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } else {
+    console.error("Supabase JS non chargé.");
   }
 
-  function showModal(title, description, kind = "loading") {
-    $("actionModal").classList.remove("hidden");
+  // --- UI NAVIGATION ---
+  window.toggleSidebar = () => {
+    $("sidebar").classList.toggle("open");
+  };
+
+  window.switchView = (viewName, element) => {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    $(`view-${viewName}`).classList.add('active');
+    
+    if(element) {
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      element.classList.add('active');
+    }
+    
+    if(window.innerWidth <= 1024) {
+      $("sidebar").classList.remove("open");
+    }
+  };
+
+  window.openModal = (id) => $(id).classList.add('active');
+  window.closeModal = (id) => $(id).classList.remove('active');
+
+  window.switchAuthTab = (mode) => {
+    const isLogin = mode === 'login';
+    $("loginForm").style.display = isLogin ? "block" : "none";
+    $("signupForm").style.display = isLogin ? "none" : "block";
+    
+    $("loginTab").style.background = isLogin ? "#fff" : "transparent";
+    $("loginTab").style.boxShadow = isLogin ? "0 2px 5px rgba(0,0,0,0.05)" : "none";
+    $("loginTab").style.color = isLogin ? "var(--navy)" : "var(--muted)";
+    
+    $("signupTab").style.background = !isLogin ? "#fff" : "transparent";
+    $("signupTab").style.boxShadow = !isLogin ? "0 2px 5px rgba(0,0,0,0.05)" : "none";
+    $("signupTab").style.color = !isLogin ? "var(--navy)" : "var(--muted)";
+    
+    $("authTitle").textContent = isLogin ? "Heureux de vous revoir" : "Créer votre espace";
+    $("authSubtitle").textContent = isLogin ? "Connectez-vous à votre espace." : "Renseignez vos informations pour commencer.";
+  };
+
+  // Modale de statut
+  function showStatus(title, desc, type="success") {
     $("modalTitle").textContent = title;
-    $("modalDescription").textContent = description;
-    $("modalSymbol").className = "modal-symbol" + (kind === "error" ? " error" : kind === "success" ? " success" : "");
-    $("modalSymbol").innerHTML = kind === "loading" ? '<span class="spin" aria-hidden="true"></span>' : "";
-    if (kind !== "loading") $("modalSymbol").textContent = kind === "success" ? "✓" : "!";
-    $("modalActions").classList.toggle("hidden", kind === "loading");
+    $("modalDescription").textContent = desc;
+    const sym = $("modalSymbol");
+    if(type === "success") {
+      sym.style.background = "#eaf8f1"; sym.style.color = "var(--green)"; sym.textContent = "✓";
+    } else {
+      sym.style.background = "#fff0f0"; sym.style.color = "var(--red)"; sym.textContent = "!";
+    }
+    window.openModal("actionModal");
   }
-  
-  function closeModal() {
-    $("actionModal").classList.add("hidden");
-  }
-  $("modalClose").addEventListener("click", closeModal);
 
+  // --- SUPABASE AUTH & DATA ---
   function errorText(error) {
-    const raw = error?.message || "Une erreur est survenue. Réessayez.";
-    if (/user already registered|already been registered|already exists/i.test(raw)) return "Cette adresse e-mail possède déjà un compte. Connectez-vous.";
+    const raw = error?.message || "Erreur inconnue.";
+    if (/user already registered/i.test(raw)) return "Cette adresse e-mail possède déjà un compte.";
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
     if (/password should be at least/i.test(raw)) return "Le mot de passe doit contenir au moins 8 caractères.";
-    if (/unable to validate email|invalid email|invalid format/i.test(raw)) return "Adresse e-mail invalide.";
-    if (raw.toLowerCase().includes("fetch") || raw.toLowerCase().includes("network")) return "Connexion impossible. Vérifiez votre connexion Internet.";
     return raw;
-  }
-
-  function switchAuth(mode) {
-    const login = mode === "login";
-    $("loginForm").classList.toggle("active", login);
-    $("signupForm").classList.toggle("active", !login);
-    $("loginTab").classList.toggle("active", login);
-    $("signupTab").classList.toggle("active", !login);
-    $("loginTab").setAttribute("aria-selected", String(login));
-    $("signupTab").setAttribute("aria-selected", String(!login));
-    $("authTitle").textContent = login ? "Heureux de vous revoir" : "Créer votre espace";
-    $("authSubtitle").textContent = login ? "Connectez-vous à votre espace personnel." : "Renseignez vos informations pour commencer.";
-    setMessage("loginStatus", "");
-    setMessage("signupStatus", "");
-  }
-  $("loginTab").addEventListener("click", () => switchAuth("login"));
-  $("signupTab").addEventListener("click", () => switchAuth("signup"));
-
-  function roleLabel(role) {
-    return ({ investor: "Investisseur", trader: "Trader", admin: "Administrateur", compliance: "Conformité", accountant: "Comptabilité" })[role] || "Membre";
-  }
-  function statusLabel(status) {
-    return ({ pending: "En cours de vérification", active: "Actif", restricted: "Restreint" })[status] || "En cours de vérification";
-  }
-  function marketLabel(market) {
-    return ({ forex: "Forex", crypto_review: "Crypto", both_review: "Forex et crypto" })[market] || market;
-  }
-  function dateLabel(value) {
-    return new Date(value).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" });
   }
 
   async function loadProfile() {
     const { data, error } = await supabaseClient.from("profiles")
-      .select("full_name, phone, wallet_address, role, account_status, referral_code").eq("id", currentUser.id).maybeSingle();
+      .select("full_name, phone, wallet_address, referral_code").eq("id", currentUser.id).maybeSingle();
+    
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || currentUser.email || "membre";
-    $("welcomeName").textContent = name.split(" ")[0];
-    $("userEmail").textContent = currentUser.email || "";
-    $("roleValue").textContent = roleLabel(profile.role || "investor");
-    $("roleMeta").textContent = roleLabel(profile.role || "investor");
-    $("profileStatus").textContent = statusLabel(profile.account_status || "pending");
+    
+    // Mise à jour UI
+    $("userNameDisplay").textContent = name.split(" ")[0];
+    $("sideName").textContent = name;
+    $("sideEmail").textContent = currentUser.email;
+    $("sideAvatar").textContent = (name.trim()[0] || "X").toUpperCase();
+    
     $("profileName").value = profile.full_name || "";
     $("profilePhone").value = profile.phone || "";
     $("profileWallet").value = profile.wallet_address || "";
-    $("avatarInitial").textContent = (name.trim()[0] || "X").toUpperCase();
-    $("myReferralCode").textContent = profile.referral_code || "En préparation";
-    await loadReferralCount();
+    
+    $("dashWalletDisplay").textContent = profile.wallet_address || "Non configuré";
+    $("myReferralCode").textContent = profile.referral_code || "En attente";
+    
+    loadReferralCount();
   }
 
   async function loadReferralCount() {
     const { data, error } = await supabaseClient.rpc("xynera_my_team");
-    if (error) {
-      $("myReferralCount").textContent = "—";
-      $("teamCountLabel").textContent = "Indisponible";
-      $("myTeamList").innerHTML = '<p class="empty-team">Impossible de charger votre équipe. Vérifiez que la migration SQL a été exécutée.</p>';
-      return;
+    if (!error) {
+      const members = Array.isArray(data) ? data : [];
+      $("myReferralCount").textContent = members.length;
+      const list = $("myTeamList");
+      list.innerHTML = "";
+      if(members.length === 0) {
+        list.innerHTML = '<p style="font-size:13px; color:var(--muted);">Vous n\'avez pas encore parrainé de membre.</p>';
+      } else {
+        members.forEach(m => {
+          list.innerHTML += `
+            <div class="team-member">
+              <div class="team-avatar">${(m.full_name || "M")[0].toUpperCase()}</div>
+              <div>
+                <strong style="display:block; font-size:13px;">${m.full_name || "Inconnu"}</strong>
+                <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
+              </div>
+            </div>
+          `;
+        });
+      }
     }
-    const members = Array.isArray(data) ? data : [];
-    $("myReferralCount").textContent = String(members.length);
-    $("teamCountLabel").textContent = members.length + (members.length > 1 ? " membres" : " membre");
-    const list = $("myTeamList");
-    list.replaceChildren();
-    if (!members.length) {
-      const empty = document.createElement("p");
-      empty.className = "empty-team";
-      empty.textContent = "Vous n'avez pas encore parrainé de membre.";
-      list.appendChild(empty);
-      return;
-    }
-    members.forEach(member => {
-      const item = document.createElement("div");
-      item.className = "team-member";
-      const avatar = document.createElement("div");
-      avatar.className = "team-avatar";
-      avatar.textContent = (member.full_name || "M").trim().charAt(0).toUpperCase();
-      const info = document.createElement("div");
-      const name = document.createElement("div");
-      name.className = "team-member-name";
-      name.textContent = member.full_name || "Nom non renseigné";
-      const date = document.createElement("div");
-      date.className = "team-member-date";
-      date.textContent = member.joined_at ? "Inscrit(e) le " + new Date(member.joined_at).toLocaleDateString("fr-FR") : "Membre parrainé";
-      info.append(name, date);
-      item.append(avatar, info);
-      list.appendChild(item);
-    });
   }
-
-  $("copyReferralBtn").addEventListener("click", async () => {
-    const code = $("myReferralCode").textContent.trim();
-    if (!code || code === "—" || code === "En préparation") {
-      setMessage("referralStatus", "Votre code de parrainage n'est pas encore disponible.", "error");
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(code);
-      setMessage("referralStatus", "Code copié. Vous pouvez le partager.", "success");
-    } catch (_) {
-      setMessage("referralStatus", "Votre code : " + code);
-    }
-  });
 
   async function loadRequests() {
     const { data, error } = await supabaseClient.from("investment_interest_requests")
-      .select("id, indicative_amount_usd, market_interest, message, status, created_at")
-      .order("created_at", { ascending: false }).limit(20);
+      .select("*").order("created_at", { ascending: false });
+      
     if (error) throw error;
     const rows = data || [];
-    $("requestCount").textContent = String(rows.length);
-    $("historyBadge").textContent = rows.length + (rows.length > 1 ? " demandes" : " demande");
-    const list = $("requestsList");
-    list.replaceChildren();
-    if (!rows.length) {
-      const empty = document.createElement("div"); empty.className = "empty-state";
-      empty.textContent = "Vous n'avez pas encore envoyé de demande."; list.appendChild(empty); return;
+    
+    const recentList = $("recentActivityList");
+    const fullList = $("fullHistoryList");
+    recentList.innerHTML = "";
+    fullList.innerHTML = "";
+    
+    if(rows.length === 0) {
+      const emptyMsg = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune opération enregistrée.</div>';
+      recentList.innerHTML = emptyMsg;
+      fullList.innerHTML = emptyMsg;
+      return;
     }
-    rows.forEach((item) => {
-      const card = document.createElement("div"); card.className = "request-item";
-      const left = document.createElement("div");
-      const title = document.createElement("strong"); title.textContent = marketLabel(item.market_interest);
-      const details = document.createElement("small");
-      const state = ({ pending: "En attente", reviewed: "Consultée", contacted: "Contact établi", closed: "Clôturée" })[item.status] || item.status;
-      details.textContent = state + " · " + dateLabel(item.created_at);
-      left.append(title, details);
-      if (item.message) { const note = document.createElement("small"); note.textContent = item.message; left.appendChild(note); }
-      const amount = document.createElement("span"); amount.className = "request-amount";
-      amount.textContent = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString("fr-FR") + " USD" : "—";
-      card.append(left, amount); list.appendChild(card);
+
+    rows.forEach((item, index) => {
+      const isRecent = index < 3;
+      const amount = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString() + " $" : "—";
+      const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+      
+      const html = `
+        <div class="op-item">
+          <div class="op-info">
+            <div class="op-icon request">📩</div>
+            <div class="op-details">
+              <strong>Demande d'investissement</strong>
+              <small>${date}</small>
+            </div>
+          </div>
+          <div class="op-amount">${amount}</div>
+        </div>
+      `;
+      
+      if(isRecent) recentList.innerHTML += html;
+      fullList.innerHTML += html;
     });
   }
 
-  async function showApp(user) {
+  async function initApp(user) {
     currentUser = user;
     $("authArea").classList.add("hidden");
-    $("appArea").classList.remove("hidden");
-    
-    // Header mode connecté
-    $("mainHeader").style.justifyContent = "space-between";
-    if(!$("topLabelConnected")) {
-      $("mainHeader").insertAdjacentHTML('beforeend', '<div class="top-label" id="topLabelConnected"><span class="top-dot"></span><span>Mon espace</span></div>');
+    try {
+      await loadProfile();
+      await loadRequests();
+    } catch(e) {
+      console.error(e);
+      showStatus("Erreur", "Impossible de charger les données de votre profil.", "error");
     }
-    
-    try { await loadProfile(); await loadRequests(); }
-    catch (error) { console.error(error); }
   }
 
-  if (!window.supabase || !window.supabase.createClient) {
-    setMessage("loginStatus", "Le service de connexion n'a pas pu être chargé. Actualisez la page.", "error");
-    return;
-  }
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // --- EVENT LISTENERS ---
 
-  /* ------- INSCRIPTION ------- */
-  $("signupForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const button = $("signupForm").querySelector('button[type="submit"]');
-    if (button.disabled) return;
+  // Inscription
+  $("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $("signupForm").querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = "Création...";
+    $("signupStatus").textContent = "";
 
     const name = $("suName").value.trim();
     const email = $("suEmail").value.trim();
-    const password = $("suPassword").value;
-    const referralCode = $("suReferral").value.trim().toUpperCase();
+    const pwd = $("suPassword").value;
+    const ref = $("suReferral").value.trim().toUpperCase();
 
-    if (!name) {
-      showModal("Nom requis", "Veuillez saisir votre nom complet.", "error");
+    const { data, error } = await supabaseClient.auth.signUp({
+      email, password: pwd,
+      options: { data: { full_name: name, referral_code: ref || null } }
+    });
+
+    if(error) {
+      $("signupStatus").textContent = errorText(error);
+      btn.disabled = false; btn.textContent = "Créer mon compte";
       return;
     }
-    if (password.length < 8) {
-      showModal("Mot de passe trop court", "Choisissez un mot de passe d'au moins 8 caractères.", "error");
+
+    if(data.session) {
+      showStatus("Bienvenue !", "Votre compte est prêt. Connexion à votre espace...");
+      setTimeout(() => { closeModal('actionModal'); initApp(data.user); }, 1500);
+    } else {
+      showStatus("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé.", "error");
+      btn.disabled = false; btn.textContent = "Créer mon compte";
+    }
+  });
+
+  // Connexion
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $("loginForm").querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = "Connexion...";
+    $("loginStatus").textContent = "";
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: $("liEmail").value.trim(),
+      password: $("liPassword").value
+    });
+
+    if(error) {
+      $("loginStatus").textContent = errorText(error);
+      btn.disabled = false; btn.textContent = "Se connecter";
+      return;
+    }
+    
+    await initApp(data.user);
+    btn.disabled = false; btn.textContent = "Se connecter";
+  });
+
+  // Profil
+  $("profileForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const wallet = $("profileWallet").value.trim();
+    if(wallet && (wallet.length < 20 || /\s/.test(wallet))) {
+      $("profileStatusMsg").textContent = "Format d'adresse invalide (sans espaces).";
+      $("profileStatusMsg").style.color = "var(--red)";
       return;
     }
 
-    const originalText = button.textContent;
-    button.disabled = true;
-    button.textContent = "Création en cours…";
+    $("profileStatusMsg").textContent = "Enregistrement...";
+    $("profileStatusMsg").style.color = "var(--muted)";
 
-    try {
-      if (referralCode) {
-        try {
-          const { data: validCode, error: validationError } = await supabaseClient.rpc(
-            "xynera_validate_referral_code", { p_code: referralCode }
-          );
-          if (validationError) {
-            console.warn("Validation parrainage indisponible :", validationError.message);
-          } else if (!validCode) {
-            showModal("Code invalide", "Ce code de parrainage n'existe pas. Vérifiez-le ou laissez le champ vide.", "error");
-            return;
-          }
-        } catch (err) {
-          console.warn("Erreur validation parrainage :", err);
-        }
-      }
-
-      showModal("Création du compte", "Nous préparons votre espace personnel.");
-
-      const { data, error } = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: name, referral_code: referralCode || null } }
-      });
-
-      if (error) {
-        showModal("Inscription non finalisée", errorText(error), "error");
-        return;
-      }
-
-      // CONNEXION AUTOMATIQUE : Si l'option "Confirm email" est désactivée dans Supabase
-      if (data.session && data.user) {
-        // Envoi de l'e-mail de bienvenue en arrière-plan
-        try {
-          await supabaseClient.functions.invoke("send-welcome-email", { body: { fullName: name } });
-        } catch (_) {}
-
-        showModal("Inscription réussie", "Bienvenue sur Xynera Club ! Connexion à votre espace...", "success");
-        
-        // On laisse 1,5 seconde pour lire le message, puis on affiche le tableau de bord
-        setTimeout(() => {
-          closeModal();
-          showApp(data.user);
-          $("signupForm").reset();
-        }, 1500);
-        return;
-      }
-
-      // Sécurité : Si Supabase renvoie null (confirmation par email toujours active)
-      showModal(
-        "Veuillez vérifier vos e-mails", 
-        "Votre compte a été créé. Veuillez confirmer votre adresse e-mail pour vous connecter.", 
-        "error"
-      );
-      
-    } catch (error) {
-      showModal("Connexion indisponible", errorText(error), "error");
-    } finally {
-      button.disabled = false;
-      button.textContent = originalText;
-    }
-  });
-
-  /* ------- CONNEXION ------- */
-  $("loginForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const button = $("loginForm").querySelector('button[type="submit"]');
-    if (button.disabled) return;
-
-    const originalText = button.textContent;
-    button.disabled = true;
-    button.textContent = "Connexion…";
-    setMessage("loginStatus", "");
-
-    try {
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email: $("liEmail").value.trim(),
-        password: $("liPassword").value
-      });
-      if (error) {
-        setMessage("loginStatus", errorText(error), "error");
-        return;
-      }
-      await showApp(data.user);
-    } catch (e) {
-      setMessage("loginStatus", errorText(e), "error");
-    } finally {
-      button.disabled = false;
-      button.textContent = originalText;
-    }
-  });
-
-  /* ------- DÉCONNEXION ------- */
-  $("logoutBtn").addEventListener("click", async () => {
-    const { error } = await supabaseClient.auth.signOut();
-    if (error) return window.alert(errorText(error));
-    currentUser = null;
-    $("appArea").classList.add("hidden");
-    $("authArea").classList.remove("hidden");
-    
-    // Remet le header en mode déconnecté
-    const topLabelConnected = $("topLabelConnected");
-    if (topLabelConnected) topLabelConnected.remove();
-    $("mainHeader").style.justifyContent = "center";
-    
-    switchAuth("login");
-  });
-
-  /* ------- PROFIL ------- */
-  $("profileForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (!currentUser) return;
-    const walletAddress = $("profileWallet").value.trim();
-    if (!walletAddress) return setMessage("profileStatusMsg", "Veuillez enregistrer votre adresse de portefeuille de retrait.", "error");
-    if (walletAddress.length < 20 || walletAddress.length > 150 || /\s/.test(walletAddress)) {
-      return setMessage("profileStatusMsg", "Vérifiez le format de votre adresse de portefeuille (sans espace).", "error");
-    }
-    setMessage("profileStatusMsg", "Enregistrement...");
     const { error } = await supabaseClient.from("profiles").update({
       full_name: $("profileName").value.trim(),
       phone: $("profilePhone").value.trim() || null,
-      wallet_address: walletAddress,
+      wallet_address: wallet || null,
       updated_at: new Date().toISOString()
     }).eq("id", currentUser.id);
-    if (error) return setMessage("profileStatusMsg", errorText(error), "error");
-    setMessage("profileStatusMsg", "Vos informations ont été mises à jour.", "ok");
-    await loadProfile();
+
+    if(error) {
+      $("profileStatusMsg").textContent = errorText(error);
+      $("profileStatusMsg").style.color = "var(--red)";
+    } else {
+      $("profileStatusMsg").textContent = "Profil mis à jour avec succès !";
+      $("profileStatusMsg").style.color = "var(--green)";
+      loadProfile(); // Recharger pour mettre à jour le dashboard
+    }
   });
 
-  /* ------- NOUVELLE DEMANDE ------- */
-  $("interestForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (!currentUser) return;
-    if (!$("profileWallet").value.trim()) {
-      setMessage("interestStatus", "Enregistrez d'abord votre adresse de portefeuille dans la section « Mon profil ».", "error");
-      $("profileWallet").focus();
-      return;
+  // Copier code parrain
+  window.copyCode = () => {
+    const code = $("myReferralCode").textContent;
+    if(code && code !== "En attente") {
+      navigator.clipboard.writeText(code);
+      alert("Code copié : " + code);
     }
-    setMessage("interestStatus", "Envoi en cours...");
-    const rawAmount = $("interestAmount").value;
-    const amount = rawAmount ? Number(rawAmount) : null;
-    if (amount !== null && (!Number.isFinite(amount) || amount <= 0)) {
-      return setMessage("interestStatus", "Veuillez saisir un montant valide.", "error");
-    }
-    const { error } = await supabaseClient.from("investment_interest_requests").insert({
-      user_id: currentUser.id,
-      indicative_amount_usd: amount,
-      market_interest: $("interestMarket").value,
-      message: $("interestMessage").value.trim() || null
-    });
-    if (error) return setMessage("interestStatus", errorText(error), "error");
-    $("interestForm").reset();
-    setMessage("interestStatus", "Votre demande a bien été envoyée.", "ok");
-    await loadRequests();
+  };
+
+  // Déconnexion
+  $("logoutBtn").addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    window.location.reload();
   });
 
-  /* ------- SESSION INITIALE ------- */
-  supabaseClient.auth.getSession().then(({ data, error }) => {
-    if (error) console.error(error);
-    if (data?.session?.user) showApp(data.session.user);
+  // Check Session
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    if (session) initApp(session.user);
+    else $("authArea").classList.remove("hidden"); // Affiche l'auth si pas de session
   });
-  supabaseClient.auth.onAuthStateChange((_event, session) => {
-    if (session?.user && !currentUser) showApp(session.user);
-  });
+
 })();
 </script>
 </body>
