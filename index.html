@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#101827">
-  <title>Xynera Club | Espace Investisseur</title>
+  <title>xynary-club | Espace Investisseur</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -15,41 +15,31 @@
     }
     *{box-sizing:border-box; margin:0; padding:0;}
     
-    /* BLOCAGE DU SCROLL HORIZONTAL */
     html, body {
-      width: 100%;
-      max-width: 100vw;
-      overflow-x: hidden; 
-      background: var(--page); 
-      color: var(--ink); 
+      width: 100%; max-width: 100vw; overflow-x: hidden; 
+      background: var(--page); color: var(--ink); 
       font: 14px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif; 
-      min-height: 100vh; 
-      display: flex; 
-      flex-direction: column;
+      min-height: 100vh; display: flex; flex-direction: column;
     }
     
     button,input,textarea,select{font:inherit;}
     button{cursor:pointer; border:none; background:none; transition: all 0.2s;}
     .hidden{display:none!important;}
-    
     svg { width: 20px; height: 20px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     
-    /* LAYOUT PRINCIPAL */
-    .app-layout { display: flex; flex-direction: row-reverse; width: 100%; height: 100vh; height: 100dvh; overflow: hidden; }
+    .app-layout { display: flex; flex-direction: row-reverse; width: 100%; height: 100dvh; overflow: hidden; }
     
-    /* --- SIDEBAR (MENU À DROITE) --- */
+    /* --- SIDEBAR --- */
     .sidebar { width: 270px; background: var(--navy); color: #fff; display: flex; flex-direction: column; z-index: 100; flex-shrink: 0; height: 100%; }
     .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; text-align: center; flex-shrink: 0; }
-    .sidebar-header img { max-height: 45px; width: auto; object-fit: contain; margin-bottom: 8px; }
+    .sidebar-header strong { font-size: 18px; color: #fff; letter-spacing: 1px; }
     
-    /* Le menu défile, le footer reste fixe */
     .nav-menu { padding: 16px 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
     .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; color: #94a3b8; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s; flex-shrink: 0;}
     .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: #fff; }
     .nav-item.active { border-right: 4px solid var(--blue); background: rgba(37,99,235,0.1); border-radius: 10px 0 0 10px; }
     .nav-icon { display: flex; align-items: center; justify-content: center; width: 24px; flex-shrink: 0; color: inherit; }
     
-    /* FOOTER DU MENU (TOUJOURS VISIBLE EN BAS) */
     .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: var(--navy-light); flex-shrink: 0; }
     .user-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-width: 0; }
     .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); display: grid; place-items: center; font-weight: 700; font-size: 16px; flex-shrink: 0; color: #fff; }
@@ -61,14 +51,18 @@
     .logout-btn:hover { background: rgba(220,38,38,0.25); color: #fff; }
 
     /* Main Content */
-    .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; background: var(--page); position: relative; }
-    
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); position: relative; }
     .mobile-header { display: none; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; flex-direction: row-reverse; flex-shrink: 0;}
     .hamburger { color: var(--navy); cursor: pointer; padding: 4px; display: flex; align-items: center; }
     
+    /* Vues & Boutons Retour */
     .view { display: none; padding: 32px 40px 100px; max-width: 1100px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
     .view.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .back-nav { margin-bottom: 24px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; background: #fff; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--line); }
+    .back-btn:hover { color: var(--navy); background: var(--page); }
 
     .page-header { margin-bottom: 32px; }
     .page-header h1 { font-size: 26px; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 8px; font-weight: 700;}
@@ -76,78 +70,67 @@
 
     .dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
     
+    /* Cartes Solde et Contrats */
     .balance-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius); padding: 32px; color: #fff; box-shadow: 0 10px 25px -5px rgba(15,23,42,0.3); position: relative; overflow: hidden; }
     .balance-label { color: #94a3b8; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
     .balance-amount { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 32px; display: flex; align-items: baseline; gap: 8px; }
     .balance-amount span { font-size: 18px; color: #94a3b8; font-weight: 500; }
-    .balance-actions { display: flex; gap: 16px; }
-    .btn-deposit { background: var(--green); color: #fff; padding: 12px 24px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;}
+    .balance-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-deposit { background: var(--green); color: #fff; padding: 12px 20px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;}
     .btn-deposit:hover { filter: brightness(1.1); }
-    .btn-withdraw { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;}
-    .btn-withdraw:hover { background: rgba(255,255,255,0.1); }
+    .btn-withdraw { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;}
+    .btn-withdraw:hover { background: rgba(255,255,255,0.2); }
+    .btn-contract { background: var(--blue); color: #fff; padding: 12px 20px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1 1 100%; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 4px; box-shadow: 0 4px 15px rgba(37,99,235,0.4);}
+    .btn-contract:hover { filter: brightness(1.1); }
 
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
-    .stat-card { background: #fff; border-radius: var(--radius); padding: 20px; border: 1px solid var(--line); display: flex; align-items: center; gap: 16px; }
-    .stat-icon-wrapper { width: 40px; height: 40px; border-radius: 8px; background: #eff6ff; color: var(--blue); display: grid; place-items: center; flex-shrink: 0; }
-    .stat-content { display: flex; flex-direction: column; }
-    .stat-value { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
-    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-
+    /* Cartes Infos Globales */
     .info-card { background: #fff; border-radius: var(--radius); padding: 24px; border: 1px solid var(--line); margin-top: 24px; }
     .info-card h3 { font-size: 16px; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
-    .info-card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    
+    /* Tableau des contrats */
+    .contract-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+    .contract-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--line); color: var(--muted); font-weight: 600; }
+    .contract-table td { padding: 16px 12px; border-bottom: 1px solid var(--line); color: var(--navy); vertical-align: middle; }
+    .contract-table tr:last-child td { border-bottom: none; }
+    .status-badge.active { background: #ecfdf5; color: var(--green); padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 11px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px;}
+    .status-badge.active::before { content: ""; width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
 
-    .op-list { display: flex; flex-direction: column; gap: 8px; }
-    .op-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 16px 20px; border-radius: var(--radius); border: 1px solid var(--line); }
-    .op-info { display: flex; align-items: center; gap: 16px; }
-    .op-icon { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; }
-    .op-icon.deposit { background: #ecfdf5; color: var(--green); }
-    .op-icon.withdraw { background: #fef2f2; color: var(--red); }
-    .op-icon.request { background: #eff6ff; color: var(--blue); }
-    .op-details strong { display: block; font-size: 14px; color: var(--navy); font-weight: 600; }
-    .op-details small { font-size: 12px; color: var(--muted); }
-    .op-amount { font-weight: 700; font-size: 15px; }
-    .op-amount.pos { color: var(--green); }
-    .op-amount.neg { color: var(--red); }
-    .status-badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-    .status-badge.pending { background: #fef3c7; color: #92400e; }
-
-    .form-card { background: #fff; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); max-width: 600px; }
+    /* Formulaires */
+    .form-card { background: #fff; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); }
     .field { margin-bottom: 20px; }
     .field label { display: block; color: var(--navy); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
     .field input, .field select { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--ink); outline: none; transition: 0.2s; }
     .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
     .primary-btn { background: var(--navy); color: #fff; padding: 14px 24px; border-radius: 8px; font-weight: 600; width: 100%; display: flex; justify-content: center; align-items: center;}
     .primary-btn:hover { background: var(--navy-light); }
-    .wallet-warning { padding: 16px; border: 1px solid #fca5a5; background: #fef2f2; color: #991b1b; border-radius: 8px; font-size: 13px; line-height: 1.5; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start;}
+    
+    /* Page A Propos (Design Magazine) */
+    .about-hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 60px 40px; border-radius: var(--radius); color: #fff; text-align: center; margin-bottom: 30px; }
+    .about-hero h2 { font-size: 36px; margin-bottom: 20px; font-weight: 800; letter-spacing: -1px;}
+    .about-hero p { font-size: 18px; color: #cbd5e1; max-width: 800px; margin: 0 auto; line-height: 1.8; }
+    .about-section { margin-bottom: 40px; }
+    .about-section h3 { font-size: 24px; color: var(--navy); margin-bottom: 20px; font-weight: 700; border-bottom: 2px solid var(--blue); display: inline-block; padding-bottom: 8px;}
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .about-card { background: #fff; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .about-card h4 { font-size: 18px; color: var(--navy); margin-bottom: 12px; font-weight: 700; display: flex; align-items: center; gap: 10px;}
+    .about-card p { font-size: 15px; color: var(--muted); line-height: 1.7; }
+    .about-list { list-style: none; padding: 0; margin-top: 15px; }
+    .about-list li { position: relative; padding-left: 24px; margin-bottom: 12px; font-size: 15px; color: var(--muted); }
+    .about-list li::before { content: "✓"; color: var(--green); font-weight: bold; font-size: 16px; position: absolute; left: 0; top: 0; }
 
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
+    /* Modales */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
-    .modal-box { background: #fff; width: min(100%, 440px); border-radius: var(--radius); padding: 32px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto;}
+    .modal-box { background: #fff; width: min(100%, 460px); border-radius: var(--radius); padding: 32px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto;}
     .modal-overlay.active .modal-box { transform: scale(1); }
     .modal-title { font-size: 20px; color: var(--navy); margin-bottom: 24px; text-align: center; font-weight: 700; }
-
+    
     .address-box { background: #f8fafc; border: 1px solid var(--line); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; }
     .address-text { font-family: monospace; font-size: 16px; word-break: break-all; color: var(--navy); font-weight: 700; margin: 12px 0 16px; display: block; letter-spacing: 0.5px;}
     .copy-btn { background: #e2e8f0; color: var(--navy); padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
     .copy-btn:hover { background: #cbd5e1; }
 
-    .team-member { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
-    .team-avatar { width: 32px; height: 32px; border-radius: 50%; background: #eff6ff; color: var(--blue); display: grid; place-items: center; font-weight: 600; font-size: 12px;}
-
-    /* Style pour la page "À propos" */
-    .about-hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 40px 30px; border-radius: var(--radius); color: #fff; text-align: center; margin-bottom: 24px; }
-    .about-hero h2 { font-size: 28px; margin-bottom: 16px; font-weight: 700; }
-    .about-hero p { font-size: 15px; color: #cbd5e1; max-width: 700px; margin: 0 auto; line-height: 1.8; }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .about-card { background: #fff; padding: 24px; border-radius: var(--radius); border: 1px solid var(--line); }
-    .about-card h4 { font-size: 18px; color: var(--navy); margin-bottom: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
-    .about-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-    .about-list { list-style: none; padding: 0; }
-    .about-list li { position: relative; padding-left: 24px; margin-bottom: 10px; font-size: 14px; color: var(--muted); }
-    .about-list li::before { content: "•"; color: var(--blue); font-size: 24px; position: absolute; left: 0; top: -4px; }
-
-    /* TICKER (Bandeau défilant en bas) */
+    /* Ticker */
     .market-ticker-wrap { background: #fff; border-top: 1px solid var(--line); padding: 12px 0; overflow: hidden; position: fixed; bottom: 0; right: 270px; left: 0; z-index: 90; display: flex; align-items: center; }
     .market-ticker { display: flex; gap: 30px; white-space: nowrap; animation: ticker 25s linear infinite; font-size: 13px; font-weight: 600; }
     .ticker-item { display: inline-flex; align-items: center; gap: 6px; }
@@ -162,14 +145,13 @@
       .sidebar.open { transform: translateX(0); }
       .mobile-header { display: flex; }
       .view { padding: 24px 20px 100px; }
-      .stats-grid { grid-template-columns: 1fr; }
       .market-ticker-wrap { right: 0; left: 0; }
     }
     @media (max-width: 600px) {
       .balance-amount { font-size: 36px; }
       .balance-actions { flex-direction: column; }
       .modal-box { padding: 24px; }
-      .info-grid { grid-template-columns: 1fr; }
+      .contract-table { display: block; overflow-x: auto; white-space: nowrap; }
     }
   </style>
 </head>
@@ -178,8 +160,7 @@
 <section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
   <div style="background:#fff; border-radius:var(--radius); box-shadow:0 10px 25px rgba(0,0,0,0.05); padding:40px; width:100%; max-width:420px; border: 1px solid var(--line); margin: auto;">
     <div style="text-align:center; margin-bottom:32px;">
-      <img src="logo-xenary.png" style="height:60px; margin:0 auto 20px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
-      <h2 id="authTitle" style="font-size:22px; color:var(--navy); margin-bottom:8px; font-weight:700;">Connexion</h2>
+      <h2 style="font-size:26px; color:var(--navy); font-weight:800; letter-spacing:-1px; margin-bottom:8px;">xynary-club</h2>
       <p id="authSubtitle" style="color:var(--muted); font-size:14px;">Accédez à votre espace investisseur.</p>
     </div>
     
@@ -207,19 +188,20 @@
 </section>
 
 <div class="app-layout">
-  <!-- SIDEBAR (Menu à droite) -->
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <img id="brandLogo" src="logo-xenary.png" alt="Xynera" onerror="this.style.display='none'; document.getElementById('brandFallback').style.display='block';">
-      <div id="brandFallback" style="display:none;">
-        <strong style="font-size:16px; color:#fff; letter-spacing:1px;">XYNERA CLUB</strong>
-      </div>
+      <strong>xynary-club</strong>
     </div>
     
     <nav class="nav-menu">
       <div class="nav-item active" onclick="switchView('dashboard', this)">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
         <span>Tableau de bord</span>
+      </div>
+      <div class="nav-item" onclick="switchView('contracts', this)">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
+        <span>Mes Contrats</span>
       </div>
       <div class="nav-item" onclick="openDepositModal()">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
@@ -231,11 +213,7 @@
       </div>
       <div class="nav-item" onclick="switchView('history', this)">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
-        <span>Historique des opérations</span>
-      </div>
-      <div class="nav-item" onclick="switchView('investments', this)">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></span>
-        <span>Investissements</span>
+        <span>Historique</span>
       </div>
       <div class="nav-item" onclick="switchView('team', this)">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
@@ -253,16 +231,8 @@
         <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></span>
         <span>Support & Aide</span>
       </div>
-      
-      <div style="height: 1px; background: rgba(255,255,255,0.05); margin: 10px 0;"></div>
-      
-      <div class="nav-item" onclick="alert('Système de traduction bientôt disponible.')">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
-        <span>Langues (Français)</span>
-      </div>
     </nav>
 
-    <!-- Footer du menu avec le profil connecté et le bouton déconnexion -->
     <div class="sidebar-footer">
       <div class="user-badge">
         <div class="user-avatar" id="sideAvatar">-</div>
@@ -279,19 +249,18 @@
   </aside>
 
   <main class="main-content">
-    <!-- En-tête mobile avec bouton hamburger à droite -->
     <header class="mobile-header">
       <div class="hamburger" onclick="toggleSidebar()">
         <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
       </div>
-      <img src="logo-xenary.png" style="height:24px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
+      <strong style="color:var(--navy); font-size:16px;">xynary-club</strong>
     </header>
 
     <!-- VUE : DASHBOARD -->
     <section id="view-dashboard" class="view active">
       <div class="page-header">
-        <h1>Vue d'ensemble</h1>
-        <p>Gérez vos actifs et suivez vos performances.</p>
+        <h1>Tableau de bord</h1>
+        <p>Gérez vos actifs et activez vos contrats d'investissement.</p>
       </div>
 
       <div class="dashboard-grid">
@@ -300,7 +269,7 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <div>
                 <div class="balance-label">Solde Disponible</div>
-                <div class="balance-amount" style="margin-bottom: 0;">0.00 <span>USD</span></div>
+                <div class="balance-amount" style="margin-bottom: 0;"><span id="userBalanceDisplay">0.00</span> <span>USD</span></div>
               </div>
               <div style="text-align: right;">
                 <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Numéro de compte</div>
@@ -315,27 +284,16 @@
               <button class="btn-withdraw" onclick="openModal('withdrawModal')">
                 <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg> Retrait
               </button>
-            </div>
-          </div>
-
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon-wrapper"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
-              <div class="stat-content"><div class="stat-value">0.00 $</div><div class="stat-label">Bénéfice du jour</div></div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon-wrapper" style="background:#f0fdf4; color:var(--green);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div>
-              <div class="stat-content"><div class="stat-value">12,540</div><div class="stat-label">Investisseurs</div></div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon-wrapper" style="background:#fef2f2; color:var(--red);"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-              <div class="stat-content"><div class="stat-value">45</div><div class="stat-label">Pays couverts</div></div>
+              <!-- Bouton Activer un contrat -->
+              <button class="btn-contract" onclick="openContractModal()">
+                <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Activer un Contrat
+              </button>
             </div>
           </div>
 
           <div class="info-card">
             <h3>La première plateforme d'opportunités</h3>
-            <p>Xynera Club vous connecte aux meilleurs marchés financiers mondiaux. Profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements optimisés et une sécurité maximale pour votre capital.</p>
+            <p>Rejoignez <strong>xynary-club</strong> et profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements quotidiens optimisés allant de 1% à 1.5%.</p>
           </div>
         </div>
 
@@ -358,8 +316,24 @@
       </div>
     </section>
 
+    <!-- VUE : MES CONTRATS -->
+    <section id="view-contracts" class="view">
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
+      <div class="page-header">
+        <h1>Mes Contrats</h1>
+        <p>Suivez l'évolution de vos contrats d'investissement bloqués.</p>
+      </div>
+      
+      <div class="info-card" style="margin-top:0;">
+        <div id="contractsContainer">
+          <div style="text-align:center; color:var(--muted); padding:40px;">Chargement de vos contrats...</div>
+        </div>
+      </div>
+    </section>
+
     <!-- VUE : HISTORIQUE -->
     <section id="view-history" class="view">
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
       <div class="page-header">
         <h1>Historique des opérations</h1>
         <p>Suivez le statut de toutes vos opérations.</p>
@@ -369,41 +343,25 @@
       </div>
     </section>
 
-    <!-- VUE : PROFIL (Mise à jour avec les infos demandées) -->
+    <!-- VUE : PROFIL -->
     <section id="view-profile" class="view">
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
       <div class="page-header">
         <h1>Mon Profil</h1>
         <p>Gérez vos informations personnelles et vos coordonnées de paiement.</p>
       </div>
       
       <div class="dashboard-grid">
-        <!-- Résumé des infos utilisateur -->
         <div>
           <div class="info-card" style="margin-top:0;">
             <h3>Informations Personnelles</h3>
             <div style="display:flex; flex-direction:column; gap:16px;">
-              <div>
-                <div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Nom complet</div>
-                <div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayName">---</div>
-              </div>
-              <div>
-                <div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse e-mail</div>
-                <div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayEmail">---</div>
-              </div>
-              <div>
-                <div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Numéro de téléphone</div>
-                <div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayPhone">Non renseigné</div>
-              </div>
-              <div>
-                <div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse de retrait (TRC20)</div>
-                <div style="font-size:14px; color:var(--navy); font-weight:500; font-family:monospace; word-break:break-all;" id="profileDisplayWallet">Non configurée</div>
-              </div>
-              <div>
-                <div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Numéro de compte (UID)</div>
-                <div style="font-size:15px; color:var(--navy); font-weight:700; font-family:monospace;" id="profileAccountNumber">---</div>
-              </div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Nom complet</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayName">---</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse e-mail</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayEmail">---</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Téléphone</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayPhone">Non renseigné</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse de retrait</div><div style="font-size:14px; color:var(--navy); font-weight:500; font-family:monospace; word-break:break-all;" id="profileDisplayWallet">Non configurée</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Numéro de compte (UID)</div><div style="font-size:15px; color:var(--navy); font-weight:700; font-family:monospace;" id="profileAccountNumber">---</div></div>
             </div>
-            
             <button class="logout-btn" id="logoutBtnProfile" style="margin-top:24px;">
               <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
               Se déconnecter
@@ -411,18 +369,13 @@
           </div>
         </div>
 
-        <!-- Formulaire de modification -->
         <div>
           <div class="form-card" style="margin-top:0;">
-            <h3 style="font-size:16px; color:var(--navy); margin-bottom:20px; font-weight:600;">Modifier mes informations</h3>
+            <h3 style="font-size:16px; color:var(--navy); margin-bottom:20px; font-weight:600;">Modifier</h3>
             <form id="profileForm">
               <div class="field"><label>Nom complet</label><input id="profileName" required></div>
               <div class="field"><label>Téléphone</label><input id="profilePhone" type="tel" placeholder="+243..."></div>
               <div class="field"><label>Adresse de retrait (USDT TRC20) *</label><input id="profileWallet" type="text" required placeholder="Saisissez votre adresse TRC20"></div>
-              <div class="wallet-warning">
-                <svg viewBox="0 0 24 24" style="width:24px;height:24px;flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <div><strong>Attention :</strong> Les retraits seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est compatible avec le réseau TRC20.</div>
-              </div>
               <button class="primary-btn" type="submit">Enregistrer</button>
               <div id="profileStatusMsg" style="text-align:center; margin-top:16px; font-size:13px; font-weight:600;"></div>
             </form>
@@ -431,27 +384,52 @@
       </div>
     </section>
 
-    <!-- VUE : À PROPOS DU CLUB (Nouvelle page) -->
+    <!-- VUE : À PROPOS (Détaillée) -->
     <section id="view-about" class="view">
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
+      
       <div class="about-hero">
-        <h2>Xynera Club</h2>
-        <p>Un club de traders enregistré réunissant des membres partout dans le monde. Notre objectif est de vous aider à générer des bénéfices réguliers sur les marchés financiers (Forex, Cryptomonnaies et Actions de grandes entreprises).</p>
+        <h2>Bienvenue chez xynary-club</h2>
+        <p>Un club de traders enregistré réunissant des membres partout dans le monde. Depuis 2020, notre mission est de vous aider à générer des bénéfices réguliers sur les marchés financiers.</p>
       </div>
 
-      <div class="about-grid">
-        <div class="about-card">
-          <h4><svg viewBox="0 0 24 24" style="width:20px;height:20px;color:var(--blue);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Nos Rendements</h4>
-          <p>Nous offrons des opportunités d'investissement très compétitives sur le marché :</p>
-          <ul class="about-list" style="margin-top:10px;">
-            <li><strong>1% à 1.5% par jour</strong> sur des contrats à court terme (2 mois, 3 mois, 5 mois).</li>
-            <li>Possibilité de générer <strong>jusqu'à 2%+</strong> par jour sur nos stratégies avancées.</li>
-          </ul>
+      <div class="about-section">
+        <h3>Pourquoi investir chez nous ?</h3>
+        <div class="about-grid">
+          <div class="about-card">
+            <h4>Des Rendements Compétitifs</h4>
+            <p>Nous offrons des opportunités d'investissement très compétitives sur le marché :</p>
+            <ul class="about-list">
+              <li><strong>1% à 1.5% par jour</strong> sur des contrats à court terme (2 mois, 3 mois, 5 mois).</li>
+              <li>Possibilité de générer <strong>jusqu'à 2%+</strong> par jour sur nos stratégies avancées.</li>
+            </ul>
+          </div>
+          <div class="about-card">
+            <h4>Une Expertise Reconnue</h4>
+            <p>Nos traders analysent les marchés 24h/24. Nous investissons dans le Forex, les Cryptomonnaies (Bitcoin, Ethereum, etc.) et les Actions de grandes entreprises technologiques.</p>
+          </div>
         </div>
+      </div>
 
+      <div class="about-section">
+        <h3>Notre Système de Sécurité</h3>
         <div class="about-card">
-          <h4><svg viewBox="0 0 24 24" style="width:20px;height:20px;color:var(--green);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Notre Présence</h4>
-          <p>Fondé en <strong>2020</strong>, Xynera Club est un club officiellement enregistré et opérant à l'international. Nous sommes fiers de notre présence dans plusieurs pays clés :</p>
-          <ul class="about-list" style="margin-top:10px;">
+          <p>La sécurité de vos fonds est notre priorité absolue. Nous utilisons des protocoles de cryptage de niveau bancaire. Vos fonds sont isolés et ne sont jamais mélangés avec les fonds opérationnels du club. Chaque contrat que vous activez est enregistré avec une date de début et une date de fin précises, garantissant une transparence totale.</p>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <h3>Notre Système de Paiement</h3>
+        <div class="about-card">
+          <p>Nous utilisons le réseau <strong>USDT (TRC20)</strong> pour tous les dépôts et retraits. Ce réseau garantit des transactions quasi-instantanées avec des frais extrêmement bas. Vos retraits sont traités dans les plus brefs délais par notre équipe financière dès que votre contrat arrive à échéance.</p>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <h3>Plus de 6 ans de confiance</h3>
+        <div class="about-card">
+          <p>Fondé en <strong>2020</strong>, xynary-club est un club officiellement enregistré et opérant à l'international. Nous sommes fiers de notre présence dans plusieurs pays clés et de la confiance que nous accordent nos milliers de membres :</p>
+          <ul class="about-list">
             <li>La France</li>
             <li>Le Royaume-Uni</li>
             <li>Le Canada</li>
@@ -461,29 +439,11 @@
       </div>
     </section>
 
-    <!-- VUE : INVESTISSEMENTS -->
-    <section id="view-investments" class="view">
-      <div class="page-header"><h1>Mes Investissements</h1><p>Suivez vos contrats et portefeuilles actifs.</p></div>
-      <div class="info-card" style="margin-top:0;"><p style="text-align:center; padding:40px;">Aucun investissement actif pour le moment.</p></div>
-    </section>
-
-    <!-- VUE : SECURITE -->
-    <section id="view-security" class="view">
-      <div class="page-header"><h1>Sécurité</h1><p>Gérez votre mot de passe et la sécurité de votre compte.</p></div>
-      <div class="form-card">
-        <form>
-          <div class="field"><label>Ancien mot de passe</label><input type="password" placeholder="••••••••"></div>
-          <div class="field"><label>Nouveau mot de passe</label><input type="password" placeholder="••••••••"></div>
-          <button class="primary-btn" type="button">Mettre à jour le mot de passe</button>
-        </form>
-      </div>
-    </section>
-
     <!-- VUE : SUPPORT -->
     <section id="view-support" class="view">
-      <div class="page-header"><h1>Support & Aide</h1><p>Besoin d'assistance ? Notre équipe est là pour vous.</p></div>
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
+      <div class="page-header"><h1>Support & Aide</h1><p>Notre équipe est là pour vous.</p></div>
       <div class="info-card" style="margin-top:0;">
-        <h3>Contacter le support</h3>
         <p style="margin-bottom: 16px;">Envoyez-nous un e-mail à <strong>support@xynary-club.com</strong> ou utilisez le formulaire ci-dessous.</p>
         <div class="field"><label>Sujet</label><input type="text" placeholder="Objet de votre demande"></div>
         <div class="field"><label>Message</label><textarea rows="4" style="width:100%; border:1px solid var(--line); border-radius:8px; padding:12px;"></textarea></div>
@@ -507,7 +467,7 @@
   </div>
 </div>
 
-<!-- MODALES DÉPÔT, RETRAIT, INFO -->
+<!-- MODALES DÉPÔT, RETRAIT, CONTRAT, INFO -->
 <div id="depositModal" class="modal-overlay">
   <div class="modal-box">
     <div id="depositStep1">
@@ -547,7 +507,7 @@
         <svg viewBox="0 0 24 24" style="width:32px;height:32px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
       </div>
       <div class="modal-title" style="margin-bottom: 12px;">Dépôt en attente</div>
-      <p style="color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Votre demande de dépôt a été enregistrée. Un e-mail de confirmation vous a été envoyé. Votre solde sera mis à jour dès que l'administrateur aura confirmé la réception des fonds.</p>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Votre demande de dépôt a été enregistrée. Votre solde sera mis à jour dès que l'administrateur aura confirmé la réception des fonds. Vous pourrez ensuite activer un contrat.</p>
       <button class="primary-btn" onclick="closeModal('depositModal')">Retour au tableau de bord</button>
     </div>
   </div>
@@ -562,6 +522,33 @@
       <button type="submit" class="primary-btn" style="background:var(--red);">Demander le retrait</button>
       <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('withdrawModal')">Annuler</button>
     </form>
+  </div>
+</div>
+
+<!-- MODALE CONTRAT -->
+<div id="contractModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">Activer un Contrat</div>
+    <p style="text-align:center; color:var(--muted); font-size:13px; margin-bottom:20px;">
+      Solde disponible : <strong id="modalAvailableBalance" style="color:var(--green);">0.00 $</strong>
+    </p>
+    <form id="contractForm">
+      <div class="field">
+        <label>Montant à investir (USD)</label>
+        <input type="number" id="contractAmountInput" placeholder="Montant à bloquer" min="150" required>
+      </div>
+      <div class="field">
+        <label>Durée du contrat</label>
+        <select id="contractDuration" style="background:var(--page);">
+          <option value="2">2 Mois (1.5% / jour)</option>
+          <option value="3">3 Mois (1.5% / jour)</option>
+          <option value="5">5 Mois (1.5% / jour)</option>
+        </select>
+      </div>
+      <button type="submit" class="primary-btn" style="background:var(--blue);">Confirmer le blocage</button>
+      <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('contractModal')">Annuler</button>
+    </form>
+    <div id="contractError" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
   </div>
 </div>
 
@@ -584,15 +571,10 @@
   let currentUser = null;
   let supabaseClient = null;
   let currentDepositAmount = 0;
+  let userBalance = 0; // Stockage local du solde
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }
-
-  async function sendEmailNotification(to, subject, htmlContent) {
-    try {
-      await supabaseClient.functions.invoke('resend-email', { body: { to, subject, html: htmlContent } });
-    } catch (e) { console.error(e); }
   }
 
   window.toggleSidebar = () => { $("sidebar").classList.toggle("open"); };
@@ -618,8 +600,21 @@
       }, 300);
     }
     if(id === 'withdrawModal') $("withdrawForm").reset();
+    if(id === 'contractModal') { $("contractForm").reset(); $("contractError").textContent = ""; }
   };
+  
   window.openDepositModal = () => window.openModal('depositModal');
+  
+  // Ouvrir le modal de contrat (vérifie si le solde est suffisant)
+  window.openContractModal = () => {
+    if (userBalance < 150) {
+      showInfo("Solde insuffisant", "Vous devez avoir un solde minimum de 150 $ pour activer un contrat. Veuillez d'abord effectuer un dépôt.", true);
+      return;
+    }
+    $("modalAvailableBalance").textContent = userBalance.toFixed(2) + " $";
+    window.openModal('contractModal');
+  };
+
   window.copyDepositAddress = (elementId) => {
     navigator.clipboard.writeText($(elementId).textContent).then(() => alert("Adresse copiée.")).catch(() => alert("Erreur."));
   };
@@ -630,8 +625,7 @@
     $("signupForm").style.display = isLogin ? "none" : "block";
     $("loginTab").style.background = "transparent"; $("loginTab").style.borderBottomColor = isLogin ? "var(--navy)" : "transparent"; $("loginTab").style.color = isLogin ? "var(--navy)" : "var(--muted)";
     $("signupTab").style.background = "transparent"; $("signupTab").style.borderBottomColor = !isLogin ? "var(--navy)" : "transparent"; $("signupTab").style.color = !isLogin ? "var(--navy)" : "var(--muted)";
-    $("authTitle").textContent = isLogin ? "Connexion" : "Inscription";
-    $("authSubtitle").textContent = isLogin ? "Accédez à votre espace investisseur." : "Créez votre compte Xynera Club.";
+    $("authSubtitle").textContent = isLogin ? "Accédez à votre espace investisseur." : "Créez votre compte xynary-club.";
   };
 
   function showInfo(title, desc, isError = false) {
@@ -658,7 +652,8 @@
   function generateAccountNumber() { return Math.floor(1000000000 + Math.random() * 9000000000).toString(); }
 
   async function loadProfile() {
-    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number").eq("id", currentUser.id).maybeSingle();
+    // On récupère aussi le solde (balance) maintenant
+    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || "Membre";
@@ -666,6 +661,10 @@
     const phone = profile.phone || "Non renseigné";
     const wallet = profile.wallet_address || "Non configurée";
     
+    // Mise à jour du solde
+    userBalance = profile.balance || 0;
+    $("userBalanceDisplay").textContent = userBalance.toFixed(2);
+
     // Mise à jour Menu
     $("sideName").textContent = name;
     $("sideEmail").textContent = currentUser.email;
@@ -675,28 +674,121 @@
     $("dashAccountNumber").textContent = accNum;
     $("dashWalletDisplay").textContent = wallet;
 
-    // Mise à jour Page Profil (Affichage)
+    // Mise à jour Page Profil
     $("profileDisplayName").textContent = name;
     $("profileDisplayEmail").textContent = currentUser.email;
     $("profileDisplayPhone").textContent = phone;
     $("profileDisplayWallet").textContent = wallet;
     $("profileAccountNumber").textContent = accNum;
     
-    // Mise à jour Page Profil (Formulaire)
     $("profileName").value = profile.full_name || "";
     $("profilePhone").value = profile.phone || "";
     $("profileWallet").value = profile.wallet_address || "";
     
-    $("myReferralCode").textContent = profile.referral_code || "En attente";
     loadReferralCount();
+    loadContracts();
   }
 
+  // --- GESTION DES CONTRATS ---
+  async function loadContracts() {
+    const { data, error } = await supabaseClient.from("contracts").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
+    
+    if (error || !data || data.length === 0) {
+      $("contractsContainer").innerHTML = '<div style="text-align:center; color:var(--muted); padding:40px;">Vous n\'avez aucun contrat actif pour le moment.<br>Effectuez un dépôt puis cliquez sur "Activer un Contrat".</div>';
+      return;
+    }
+
+    let html = `
+      <table class="contract-table">
+        <thead>
+          <tr>
+            <th>Montant</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    data.forEach(c => {
+      const start = new Date(c.start_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+      const end = new Date(c.end_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+      html += `
+        <tr>
+          <td><strong>${Number(c.amount).toFixed(2)} $</strong></td>
+          <td>${start}</td>
+          <td>${end}</td>
+          <td><span class="status-badge active">Contrat en cours</span></td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    $("contractsContainer").innerHTML = html;
+  }
+
+  $("contractForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const amount = parseFloat($("contractAmountInput").value);
+    const duration = parseInt($("contractDuration").value);
+    const errorDiv = $("contractError");
+    
+    if (amount > userBalance) {
+      errorDiv.textContent = "Montant supérieur à votre solde disponible.";
+      return;
+    }
+    if (amount < 150) {
+      errorDiv.textContent = "Le montant minimum pour un contrat est de 150 $.";
+      return;
+    }
+
+    errorDiv.textContent = "Activation en cours...";
+    errorDiv.style.color = "var(--blue)";
+
+    // Calcul de la date de fin
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + duration);
+
+    // 1. Créer le contrat
+    const { error: contractError } = await supabaseClient.from("contracts").insert({
+      user_id: currentUser.id,
+      amount: amount,
+      duration_months: duration,
+      start_date: startDate.toISOString(),
+      end_date: endDate.toISOString(),
+      status: 'active'
+    });
+
+    if (contractError) {
+      errorDiv.textContent = "Erreur lors de l'activation : " + contractError.message;
+      return;
+    }
+
+    // 2. Déduire du solde
+    const newBalance = userBalance - amount;
+    const { error: balanceError } = await supabaseClient.from("profiles").update({ balance: newBalance }).eq("id", currentUser.id);
+
+    if (balanceError) {
+      errorDiv.textContent = "Erreur de mise à jour du solde.";
+      return;
+    }
+
+    closeModal('contractModal');
+    showInfo("Contrat Activé", "Félicitations, votre contrat est maintenant actif ! Consultez l'onglet 'Mes Contrats'.");
+    loadProfile(); // Rafraîchit les données
+  });
+
+
+  // --- CHARGEMENT DES AUTRES DONNÉES ---
   async function loadReferralCount() {
     const { data, error } = await supabaseClient.rpc("xynera_my_team");
     if (!error) {
       const members = Array.isArray(data) ? data : [];
       $("myReferralCount").textContent = members.length;
       const list = $("myTeamList");
+      if(!list) return;
       list.innerHTML = members.length === 0 ? '<p style="font-size:13px; color:var(--muted);">Aucun membre.</p>' : "";
       members.forEach(m => {
         list.innerHTML += `<div class="team-member"><div class="team-avatar">${(m.full_name || "M")[0].toUpperCase()}</div><div><strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong><small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small></div></div>`;
@@ -733,6 +825,7 @@
     try { await loadProfile(); await loadRequests(); } catch(e) { console.error(e); }
   }
 
+  // --- AUTHENTIFICATION ---
   $("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault(); const btn = $("signupForm").querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Création..."; $("signupStatus").textContent = "";
     const name = $("suName").value.trim(); const email = $("suEmail").value.trim(); const pwd = $("suPassword").value; const ref = $("suReferral").value.trim().toUpperCase(); const newAccountNumber = generateAccountNumber();
@@ -745,7 +838,6 @@
       btn.disabled = false; btn.textContent = "Créer un compte"; return;
     }
     if(data.session) {
-      sendEmailNotification(email, "Bienvenue sur Xynera Club", `<h2>Bienvenue ${name} !</h2><p>Votre compte Xynera Club a été créé avec succès.</p><p><strong>Numéro de compte (UID) :</strong> ${newAccountNumber}</p>`);
       showInfo("Bienvenue", "Votre compte est prêt. Connexion..."); setTimeout(() => { closeModal('actionModal'); initApp(data.user); }, 1500);
     } else { showInfo("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé."); btn.disabled = false; btn.textContent = "Créer un compte"; }
   });
@@ -757,6 +849,7 @@
     await initApp(data.user); btn.disabled = false; btn.textContent = "Se connecter";
   });
 
+  // --- ACTIONS FINANCIÈRES ---
   $("depositAmountForm").addEventListener("submit", (e) => {
     e.preventDefault(); const amount = parseFloat($("depositAmountInput").value);
     if (amount < 150) { alert("Le montant minimum de dépôt est de 150 $."); return; }
@@ -766,16 +859,14 @@
 
   $("confirmDepositBtn").addEventListener("click", async () => {
     $("confirmDepositBtn").textContent = "Enregistrement..."; $("confirmDepositBtn").disabled = true;
-    try { await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: "Dépôt USDT TRC20 initié par l'utilisateur." }); } catch (err) { console.error(err); }
-    sendEmailNotification(currentUser.email, "Confirmation de dépôt - Xynera Club", `<h2>Demande de dépôt reçue</h2><p>Nous avons bien reçu votre demande de dépôt de <strong>${currentDepositAmount.toFixed(2)} $</strong>.</p>`);
+    try { await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: "Dépôt USDT TRC20 initié." }); } catch (err) { console.error(err); }
     setTimeout(() => { $("depositStep2").classList.add("hidden"); $("depositStep3").classList.remove("hidden"); $("confirmDepositBtn").textContent = "J'ai effectué le dépôt"; $("confirmDepositBtn").disabled = false; loadRequests(); }, 800);
   });
 
   $("withdrawForm").addEventListener("submit", async (e) => {
     e.preventDefault(); const amount = parseFloat($("withdrawAmountInput").value);
     if (amount < 20) { alert("Le montant minimum de retrait est de 20 $."); return; }
-    sendEmailNotification(currentUser.email, "Demande de retrait - Xynera Club", `<h2>Demande de retrait reçue</h2><p>Nous avons bien reçu votre demande de retrait de <strong>${amount.toFixed(2)} $</strong>.</p>`);
-    closeModal('withdrawModal'); showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée. Un e-mail de confirmation vous a été envoyé.");
+    closeModal('withdrawModal'); showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée.");
   });
 
   $("profileForm").addEventListener("submit", async (e) => {
@@ -786,13 +877,8 @@
     if(error) { $("profileStatusMsg").textContent = errorText(error); $("profileStatusMsg").style.color = "var(--red)"; } else { $("profileStatusMsg").textContent = "Profil mis à jour."; $("profileStatusMsg").style.color = "var(--green)"; loadProfile(); }
   });
 
-  window.copyCode = () => { const code = $("myReferralCode").textContent; if(code && code !== "En attente") { navigator.clipboard.writeText(code); alert("Code copié."); } };
-  
-  // Gestion de la déconnexion (sur les 2 boutons)
-  const handleLogout = async () => { 
-    await supabaseClient.auth.signOut(); 
-    window.location.reload(); 
-  };
+  // --- DECONNEXION ---
+  const handleLogout = async () => { await supabaseClient.auth.signOut(); window.location.reload(); };
   $("logoutBtnSidebar").addEventListener("click", handleLogout);
   $("logoutBtnProfile").addEventListener("click", handleLogout);
   
