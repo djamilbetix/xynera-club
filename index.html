@@ -18,22 +18,20 @@
     button{cursor:pointer; border:none; background:none;}
     .hidden{display:none!important;}
     
-    /* Layout Global */
-    .app-layout { display: flex; width: 100%; height: 100vh; overflow: hidden; }
+    /* Layout Global - Menu à droite */
+    .app-layout { display: flex; flex-direction: row-reverse; width: 100%; height: 100vh; overflow: hidden; }
     
-    /* Sidebar (Menu) */
-    .sidebar { width: 280px; background: var(--navy); color: #fff; display: flex; flex-direction: column; transition: transform .3s ease; z-index: 100; flex-shrink: 0; }
-    .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
-    .sidebar-header img { height: 40px; width: auto; object-fit: contain; }
-    .sidebar-header strong { font-size: 16px; letter-spacing: .05em; display: block; }
-    .sidebar-header small { font-size: 10px; color: #8792a2; }
+    /* Sidebar (Menu à droite) */
+    .sidebar { width: 280px; background: var(--navy); color: #fff; display: flex; flex-direction: column; transition: transform .3s ease; z-index: 100; flex-shrink: 0; border-left: 1px solid rgba(255,255,255,0.05); }
+    .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+    .sidebar-header img { max-height: 60px; width: auto; object-fit: contain; }
     .nav-menu { padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
-    .nav-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 12px; color: #a5b1c2; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
+    .nav-item { display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-end; gap: 14px; padding: 14px 18px; border-radius: 12px; color: #a5b1c2; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
     .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: #fff; }
-    .nav-item.active { border-left: 4px solid var(--blue); border-radius: 4px 12px 12px 4px; }
+    .nav-item.active { border-right: 4px solid var(--blue); border-left: none; border-radius: 12px 4px 4px 12px; }
     .nav-icon { font-size: 18px; width: 24px; text-align: center; }
     .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-    .user-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .user-badge { display: flex; flex-direction: row-reverse; text-align: right; align-items: center; gap: 12px; margin-bottom: 16px; }
     .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); display: grid; place-items: center; font-weight: 800; font-size: 18px; }
     .user-info strong { display: block; font-size: 13px; }
     .user-info small { font-size: 11px; color: #8792a2; display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -44,8 +42,8 @@
     .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); position: relative; }
     
     /* Mobile Header */
-    .mobile-header { display: none; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-    .hamburger { font-size: 24px; color: var(--navy); cursor: pointer; }
+    .mobile-header { display: none; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; flex-direction: row-reverse; }
+    .hamburger { font-size: 24px; color: var(--navy); cursor: pointer; padding: 4px; }
     
     /* Views */
     .view { display: none; padding: 30px 40px 60px; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
@@ -113,12 +111,18 @@
     .primary-btn:hover { filter: brightness(1.1); }
     .wallet-warning { padding: 16px; border: 1px solid #f0d28b; background: #fff9e9; color: #76530b; border-radius: 12px; font-size: 13px; line-height: 1.5; margin-bottom: 20px; }
 
-    /* Modal */
+    /* Modal Global */
     .modal-overlay { position: fixed; inset: 0; background: rgba(10,18,32,0.7); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
-    .modal-box { background: #fff; width: min(100%, 440px); border-radius: 24px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; }
+    .modal-box { background: #fff; width: min(100%, 480px); border-radius: 24px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; }
     .modal-overlay.active .modal-box { transform: scale(1); }
-    .modal-title { font-size: 22px; color: var(--navy); margin-bottom: 20px; text-align: center; }
+    .modal-title { font-size: 22px; color: var(--navy); margin-bottom: 20px; text-align: center; font-weight: 800; }
+
+    /* Deposit Box */
+    .address-box { background: #f8faff; border: 1px dashed #b6c5db; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
+    .address-text { font-family: monospace; font-size: 15px; word-break: break-all; color: var(--navy); font-weight: 700; margin-bottom: 16px; display: block; }
+    .copy-btn { background: var(--blue); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; transition: 0.2s; }
+    .copy-btn:hover { background: #155ac4; }
 
     /* Team / Referral */
     .team-member { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; }
@@ -127,7 +131,7 @@
     /* Responsive */
     @media (max-width: 1024px) {
       .dashboard-grid { grid-template-columns: 1fr; }
-      .sidebar { position: fixed; height: 100vh; transform: translateX(-100%); }
+      .sidebar { position: fixed; height: 100vh; right: 0; transform: translateX(100%); }
       .sidebar.open { transform: translateX(0); }
       .mobile-header { display: flex; }
       .view { padding: 20px 20px 80px; }
@@ -142,39 +146,71 @@
 </head>
 <body>
 
+<!-- ZONE D'AUTHENTIFICATION -->
+<section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#fff; border-radius:24px; box-shadow:0 20px 50px rgba(0,0,0,0.1); padding:40px; width:100%; max-width:440px;">
+    <div style="text-align:center; margin-bottom:30px;">
+      <img src="logo-xenary.png" style="height:70px; margin:0 auto 16px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
+      <h2 id="authTitle" style="font-size:24px; color:var(--navy); margin-bottom:8px;">Heureux de vous revoir</h2>
+      <p id="authSubtitle" style="color:var(--muted); font-size:14px;">Connectez-vous à votre espace.</p>
+    </div>
+    
+    <div style="display:flex; background:#f4f6fa; border-radius:12px; margin-bottom:24px; padding:4px;">
+      <button id="loginTab" class="active" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.05);" onclick="switchAuthTab('login')">Connexion</button>
+      <button id="signupTab" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; color:var(--muted);" onclick="switchAuthTab('signup')">Créer un compte</button>
+    </div>
+
+    <form id="loginForm">
+      <div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div>
+      <div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div>
+      <button type="submit" class="primary-btn">Se connecter</button>
+      <div id="loginStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
+    </form>
+
+    <form id="signupForm" style="display:none;">
+      <div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div>
+      <div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div>
+      <div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div>
+      <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" placeholder="Ex: XYNERA..."></div>
+      <button type="submit" class="primary-btn">Créer mon compte</button>
+      <div id="signupStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
+    </form>
+  </div>
+</section>
+
 <div class="app-layout">
-  <!-- SIDEBAR MENU -->
+  <!-- SIDEBAR MENU (À droite) -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <img id="brandLogo" src="logo-xenary.png" alt="Xynera" onerror="this.style.display='none'; document.getElementById('brandFallback').style.display='block';">
       <div id="brandFallback" style="display:none;">
-        <strong>XYNERA CLUB</strong>
-        <small>Build. Learn. Analyze.</small>
+        <strong style="font-size:18px; color:#fff;">XYNERA CLUB</strong>
+        <small style="font-size:11px; color:#8792a2;">Build. Learn. Analyze.</small>
       </div>
     </div>
     
     <nav class="nav-menu">
       <div class="nav-item active" onclick="switchView('dashboard', this)">
-        <span class="nav-icon">📊</span> Tableau de bord
+        <span>Tableau de bord</span> <span class="nav-icon">📊</span>
       </div>
       <div class="nav-item" onclick="switchView('history', this)">
-        <span class="nav-icon">📜</span> Historique
+        <span>Historique</span> <span class="nav-icon">📜</span>
       </div>
       <div class="nav-item" onclick="switchView('team', this)">
-        <span class="nav-icon">🤝</span> Mon Équipe
+        <span>Mon Équipe</span> <span class="nav-icon">🤝</span>
       </div>
       <div class="nav-item" onclick="switchView('profile', this)">
-        <span class="nav-icon">👤</span> Mon Profil
+        <span>Mon Profil</span> <span class="nav-icon">👤</span>
       </div>
     </nav>
 
     <div class="sidebar-footer">
       <div class="user-badge">
-        <div class="user-avatar" id="sideAvatar">X</div>
         <div class="user-info">
           <strong id="sideName">Membre</strong>
           <small id="sideEmail">email@exemple.com</small>
         </div>
+        <div class="user-avatar" id="sideAvatar">X</div>
       </div>
       <button class="logout-btn" id="logoutBtn">Déconnexion</button>
     </div>
@@ -186,8 +222,7 @@
     <!-- Mobile Header -->
     <header class="mobile-header">
       <div class="hamburger" onclick="toggleSidebar()">☰</div>
-      <strong style="color:var(--navy);">Xynera Club</strong>
-      <div style="width:24px;"></div> <!-- Spacer -->
+      <img src="logo-xenary.png" style="height:30px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
     </header>
 
     <!-- VUE : DASHBOARD -->
@@ -291,12 +326,12 @@
             <input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243...">
           </div>
           <div class="field">
-            <label for="profileWallet">Adresse du portefeuille de retrait (USDT / Crypto) *</label>
-            <input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse de portefeuille">
+            <label for="profileWallet">Adresse du portefeuille de retrait (USDT TRC20) *</label>
+            <input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse TRC20">
           </div>
           <div class="wallet-warning">
             <strong>⚠️ Attention — Vérifiez bien votre adresse</strong><br>
-            Les bénéfices et retraits seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est correcte et compatible avec le réseau utilisé (BEP20, ERC20, etc.).
+            Les bénéfices et retraits seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est correcte et compatible avec le réseau TRC20.
           </div>
           <button class="primary-btn" type="submit">Enregistrer les modifications</button>
           <div id="profileStatusMsg" style="text-align:center; margin-top:16px; font-size:13px; font-weight:600;"></div>
@@ -336,20 +371,36 @@
   </main>
 </div>
 
-<!-- MODALES DÉPÔT / RETRAIT -->
+<!-- MODALE DÉPÔT USDT TRC20 UNIQUEMENT -->
 <div id="depositModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-title">Faire un Dépôt</div>
-    <div class="field">
-      <label>Montant à déposer (USD)</label>
-      <input type="number" placeholder="Ex: 500" min="10">
+    
+    <div style="text-align:center; margin-bottom: 20px;">
+       <span style="background: #edf4ff; color: var(--blue); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid rgba(31,122,255,0.3);">
+         USDT (TRC20 uniquement)
+       </span>
     </div>
-    <p style="font-size:12px; color:var(--muted); margin-bottom:16px; text-align:center;">Un e-mail avec les instructions de paiement vous sera envoyé.</p>
-    <button class="primary-btn" style="background:var(--green);" onclick="closeModal('depositModal')">Continuer vers le paiement</button>
-    <button style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:13px;" onclick="closeModal('depositModal')">Annuler</button>
+
+    <div class="address-box" style="border-color: #e50914; background: #fff5f5;">
+      <p style="font-size:13px; color:var(--red); font-weight:800; margin-bottom:12px;">
+        ⚠️ ATTENTION : Utilisez UNIQUEMENT le réseau TRC20 (Tron)
+      </p>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">Envoyez uniquement USDT (TRC20) à cette adresse :</p>
+      <span class="address-text" id="addr-usdt_trc">TJgfBr2eLatokAaTFNt8dnDDvkFJQ1BiCU</span>
+      <button class="copy-btn" onclick="copyDepositAddress('addr-usdt_trc')">Copier l'adresse</button>
+    </div>
+
+    <p style="font-size:12px; color:var(--red); text-align:center; margin-bottom:20px; font-weight:700; line-height: 1.4;">
+      Les autres réseaux (BEP20, ERC20, etc.) ne sont pas pris en charge.<br>
+      En cas d'erreur, les fonds seront définitivement perdus.
+    </p>
+    
+    <button style="width:100%; text-align:center; color:var(--muted); font-size:14px; font-weight:600; padding: 12px;" onclick="closeModal('depositModal')">Fermer</button>
   </div>
 </div>
 
+<!-- MODALE RETRAIT -->
 <div id="withdrawModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-title">Demande de Retrait</div>
@@ -358,11 +409,8 @@
       <input type="number" placeholder="Ex: 100" min="20">
     </div>
     <div class="field">
-      <label>Réseau (Optionnel)</label>
+      <label>Réseau</label>
       <select>
-        <option>Par défaut (selon profil)</option>
-        <option>BEP20 (BSC)</option>
-        <option>ERC20 (Ethereum)</option>
         <option>TRC20 (Tron)</option>
       </select>
     </div>
@@ -381,38 +429,6 @@
   </div>
 </div>
 
-<!-- ZONE D'AUTHENTIFICATION (SI NON CONNECTÉ) -->
-<section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;">
-  <div style="background:#fff; border-radius:24px; box-shadow:0 20px 50px rgba(0,0,0,0.1); padding:40px; width:100%; max-width:440px;">
-    <div style="text-align:center; margin-bottom:30px;">
-      <img src="logo-xenary.png" style="height:50px; margin:0 auto 16px;" alt="Xynera" onerror="this.style.display='none'">
-      <h2 id="authTitle" style="font-size:24px; color:var(--navy); margin-bottom:8px;">Heureux de vous revoir</h2>
-      <p id="authSubtitle" style="color:var(--muted); font-size:14px;">Connectez-vous à votre espace.</p>
-    </div>
-    
-    <div style="display:flex; background:#f4f6fa; border-radius:12px; margin-bottom:24px; padding:4px;">
-      <button id="loginTab" class="active" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.05);" onclick="switchAuthTab('login')">Connexion</button>
-      <button id="signupTab" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; color:var(--muted);" onclick="switchAuthTab('signup')">Créer un compte</button>
-    </div>
-
-    <form id="loginForm">
-      <div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div>
-      <div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div>
-      <button type="submit" class="primary-btn">Se connecter</button>
-      <div id="loginStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
-    </form>
-
-    <form id="signupForm" style="display:none;">
-      <div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div>
-      <div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div>
-      <div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div>
-      <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" placeholder="Ex: XYNERA..."></div>
-      <button type="submit" class="primary-btn">Créer mon compte</button>
-      <div id="signupStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
-    </form>
-  </div>
-</section>
-
 <script>
 (() => {
   const SUPABASE_URL = "https://fandrhnvlcsdtvemjhib.supabase.co";
@@ -421,11 +437,8 @@
   let currentUser = null;
   let supabaseClient = null;
 
-  // Initialisation Supabase
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  } else {
-    console.error("Supabase JS non chargé.");
   }
 
   // --- UI NAVIGATION ---
@@ -450,6 +463,16 @@
   window.openModal = (id) => $(id).classList.add('active');
   window.closeModal = (id) => $(id).classList.remove('active');
 
+  // Copier l'adresse de dépôt
+  window.copyDepositAddress = (elementId) => {
+    const address = $(elementId).textContent;
+    navigator.clipboard.writeText(address).then(() => {
+      alert("Adresse copiée avec succès ! N'oubliez pas d'utiliser le réseau TRC20.");
+    }).catch(() => {
+      alert("Erreur lors de la copie. Adresse : " + address);
+    });
+  };
+
   window.switchAuthTab = (mode) => {
     const isLogin = mode === 'login';
     $("loginForm").style.display = isLogin ? "block" : "none";
@@ -467,7 +490,6 @@
     $("authSubtitle").textContent = isLogin ? "Connectez-vous à votre espace." : "Renseignez vos informations pour commencer.";
   };
 
-  // Modale de statut
   function showStatus(title, desc, type="success") {
     $("modalTitle").textContent = title;
     $("modalDescription").textContent = desc;
@@ -485,7 +507,6 @@
     const raw = error?.message || "Erreur inconnue.";
     if (/user already registered/i.test(raw)) return "Cette adresse e-mail possède déjà un compte.";
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
-    if (/password should be at least/i.test(raw)) return "Le mot de passe doit contenir au moins 8 caractères.";
     return raw;
   }
 
@@ -497,7 +518,6 @@
     const profile = data || {};
     const name = profile.full_name || currentUser.email || "membre";
     
-    // Mise à jour UI
     $("userNameDisplay").textContent = name.split(" ")[0];
     $("sideName").textContent = name;
     $("sideEmail").textContent = currentUser.email;
@@ -594,7 +614,6 @@
 
   // --- EVENT LISTENERS ---
 
-  // Inscription
   $("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("signupForm").querySelector('button[type="submit"]');
@@ -626,7 +645,6 @@
     }
   });
 
-  // Connexion
   $("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("loginForm").querySelector('button[type="submit"]');
@@ -648,7 +666,6 @@
     btn.disabled = false; btn.textContent = "Se connecter";
   });
 
-  // Profil
   $("profileForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const wallet = $("profileWallet").value.trim();
@@ -674,11 +691,10 @@
     } else {
       $("profileStatusMsg").textContent = "Profil mis à jour avec succès !";
       $("profileStatusMsg").style.color = "var(--green)";
-      loadProfile(); // Recharger pour mettre à jour le dashboard
+      loadProfile();
     }
   });
 
-  // Copier code parrain
   window.copyCode = () => {
     const code = $("myReferralCode").textContent;
     if(code && code !== "En attente") {
@@ -687,16 +703,14 @@
     }
   };
 
-  // Déconnexion
   $("logoutBtn").addEventListener("click", async () => {
     await supabaseClient.auth.signOut();
     window.location.reload();
   });
 
-  // Check Session
   supabaseClient.auth.getSession().then(({ data: { session } }) => {
     if (session) initApp(session.user);
-    else $("authArea").classList.remove("hidden"); // Affiche l'auth si pas de session
+    else $("authArea").classList.remove("hidden");
   });
 
 })();
