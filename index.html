@@ -751,6 +751,26 @@
     hasPaidFee = profile.has_paid_fee || false; 
     userBalance = profile.balance || 0;
     userReferralCode = profile.referral_code || "";
+
+    // Générer et enregistrer un code uniquement pour le compte connecté
+    if (!userReferralCode) {
+      const randomPart = (window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase()
+        : Math.random().toString(36).slice(2, 12).toUpperCase();
+      const newReferralCode = `XYN-${randomPart}`;
+      const { data: savedProfile, error: referralSaveError } = await supabaseClient
+        .from("profiles")
+        .update({ referral_code: newReferralCode })
+        .eq("id", currentUser.id)
+        .select("referral_code")
+        .maybeSingle();
+
+      if (referralSaveError) {
+        console.error("Impossible d'enregistrer le code de parrainage :", referralSaveError);
+      } else if (savedProfile && savedProfile.referral_code) {
+        userReferralCode = savedProfile.referral_code;
+      }
+    }
     
     $("userBalanceDisplay").textContent = userBalance.toFixed(2);
 
@@ -775,7 +795,7 @@
       const link = window.location.origin + '/?ref=' + userReferralCode;
       $("myReferralLinkInput").value = link;
     } else {
-      $("myReferralLinkInput").value = "Génération du lien en cours...";
+      $("myReferralLinkInput").value = "Lien indisponible : vérifiez les droits de mise à jour de votre profil dans Supabase.";
     }
     
     loadReferralCount();
