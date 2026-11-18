@@ -309,7 +309,6 @@
         </div>
 
         <div>
-          <!-- SUPPRESSION DE LA CARTE D'ADRESSE DE RETRAIT ICI -->
           <div class="info-card" style="margin-top:0;">
             <h3>Activités récentes</h3>
             <div class="op-list" id="recentActivityList">
@@ -343,7 +342,6 @@
         </div>
       </div>
 
-      <!-- GESTION DES DÉPÔTS/RETRAITS -->
       <div class="info-card">
         <h3>Demandes de Dépôts / Retraits en attente</h3>
         <div style="overflow-x:auto;">
@@ -354,7 +352,6 @@
         </div>
       </div>
 
-      <!-- LISTE DES UTILISATEURS -->
       <div class="info-card">
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
@@ -365,7 +362,6 @@
         </div>
       </div>
 
-      <!-- SUIVI DES CONTRATS -->
       <div class="info-card">
         <h3>Contrats Actifs (Tous les utilisateurs)</h3>
         <div style="overflow-x:auto;">
@@ -501,8 +497,14 @@
     <div id="depositStep1">
       <div class="modal-title">Nouveau Dépôt</div>
       <form id="depositAmountForm">
-        <div class="field"><label>Montant à déposer (USD)</label><input type="number" id="depositAmountInput" placeholder="Min. 150" min="150" required style="font-size: 20px; font-weight: 600; padding: 16px;"></div>
-        <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Le montant minimum de dépôt est de 150 $.</p>
+        <div class="field">
+          <label>Montant à déposer (USD)</label>
+          <input type="number" id="depositAmountInput" placeholder="Min. 150" min="150" required style="font-size: 20px; font-weight: 600; padding: 16px;">
+        </div>
+        <!-- Message des frais -->
+        <div id="depositFeeNote" style="font-size:12px; color:var(--muted); margin-bottom:20px;">
+          Le montant minimum de dépôt est de 150 $.
+        </div>
         <button type="submit" class="primary-btn">Continuer</button>
         <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
       </form>
@@ -565,6 +567,10 @@
           <option value="6">6 Mois (30%)</option>
         </select>
       </div>
+      <!-- Message des frais de contrat -->
+      <div id="contractFeeDisplay" style="font-size:12px; color:var(--red); font-weight:600; margin-bottom:16px; display:none;">
+        Frais d'activation uniques : 36.00 $ (seront déduits de votre solde)
+      </div>
       <button type="submit" class="primary-btn" style="background:var(--blue);">Confirmer le blocage</button>
       <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('contractModal')">Annuler</button>
     </form>
@@ -593,6 +599,7 @@
   let currentDepositAmount = 0;
   let userBalance = 0;
   let isAdmin = false;
+  let hasPaidFee = false; // Suivi des frais d'activation
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -625,13 +632,29 @@
     if(id === 'contractModal') { $("contractForm").reset(); $("contractError").textContent = ""; }
   };
   
-  window.openDepositModal = () => window.openModal('depositModal');
+  window.openDepositModal = () => {
+    updateDepositModalUI();
+    window.openModal('depositModal');
+  };
+
   window.openContractModal = () => {
-    if (userBalance < 150) {
-      showInfo("Solde insuffisant", "Vous devez avoir un solde minimum de 150 $ pour activer un contrat.", true);
+    // Minimum requis: 150$ pour le contrat + 36$ de frais si non payés
+    const minRequired = hasPaidFee ? 150 : 186; 
+    
+    if (userBalance < minRequired) {
+      showInfo("Solde insuffisant", `Vous devez avoir un solde minimum de ${minRequired} $ pour activer votre premier contrat.`, true);
       return;
     }
+    
     $("modalAvailableBalance").textContent = userBalance.toFixed(2) + " $";
+    
+    // Affichage ou non des frais de 36$
+    if (!hasPaidFee) {
+      $("contractFeeDisplay").style.display = "block";
+    } else {
+      $("contractFeeDisplay").style.display = "none";
+    }
+    
     window.openModal('contractModal');
   };
 
@@ -671,21 +694,29 @@
 
   function generateAccountNumber() { return Math.floor(1000000000 + Math.random() * 9000000000).toString(); }
 
+  function updateDepositModalUI() {
+    if (!hasPaidFee) {
+      $("depositAmountInput").min = "186";
+      $("depositAmountInput").placeholder = "Min. 186";
+      $("depositFeeNote").innerHTML = "<strong style='color:var(--red);'>Premier dépôt :</strong> 150 $ + 36 $ (frais d'activation unique) = <strong>186 $ minimum.</strong>";
+    } else {
+      $("depositAmountInput").min = "150";
+      $("depositAmountInput").placeholder = "Min. 150";
+      $("depositFeeNote").innerHTML = "Le montant minimum de dépôt est de 150 $.";
+    }
+  }
+
   // --- CHARGEMENT PROFIL UTILISATEUR ---
   async function loadProfile() {
-    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance, role").eq("id", currentUser.id).maybeSingle();
+    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance, role, has_paid_fee").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || "Membre";
     
-    // Gestion Admin
     isAdmin = profile.role === 'admin';
-    if (isAdmin) {
-      $("adminNavBtn").classList.remove("hidden");
-    } else {
-      $("adminNavBtn").classList.add("hidden");
-    }
+    if (isAdmin) $("adminNavBtn").classList.remove("hidden");
     
+    hasPaidFee = profile.has_paid_fee || false; // Récupération du statut des frais
     userBalance = profile.balance || 0;
     $("userBalanceDisplay").textContent = userBalance.toFixed(2);
 
@@ -734,14 +765,25 @@
     const duration = parseInt($("contractDuration").value);
     const errorDiv = $("contractError");
     
-    if (amount > userBalance) { errorDiv.textContent = "Montant supérieur à votre solde disponible."; return; }
-    if (amount < 150) { errorDiv.textContent = "Le montant minimum est de 150 $."; return; }
+    // Ajout des frais de 36$ si c'est le premier contrat
+    const fee = hasPaidFee ? 0 : 36;
+    const totalToDeduct = amount + fee;
+
+    if (totalToDeduct > userBalance) { 
+      errorDiv.textContent = `Solde insuffisant. Il vous faut ${totalToDeduct.toFixed(2)} $ (Contrat + Frais).`; 
+      return; 
+    }
+    if (amount < 150) { 
+      errorDiv.textContent = "Le montant minimum du contrat est de 150 $."; 
+      return; 
+    }
 
     errorDiv.textContent = "Activation...";
     const startDate = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + duration);
 
+    // 1. Créer le contrat
     const { error: contractError } = await supabaseClient.from("contracts").insert({
       user_id: currentUser.id, amount: amount, duration_months: duration,
       start_date: startDate.toISOString(), end_date: endDate.toISOString(), status: 'active'
@@ -749,11 +791,19 @@
 
     if (contractError) { errorDiv.textContent = "Erreur : " + contractError.message; return; }
 
-    const newBalance = userBalance - amount;
-    await supabaseClient.from("profiles").update({ balance: newBalance }).eq("id", currentUser.id);
+    // 2. Mettre à jour le solde et marquer les frais comme payés
+    const newBalance = userBalance - totalToDeduct;
+    const updateData = { balance: newBalance };
+    
+    if (!hasPaidFee) {
+      updateData.has_paid_fee = true;
+      hasPaidFee = true; // mise à jour locale
+    }
+
+    await supabaseClient.from("profiles").update(updateData).eq("id", currentUser.id);
 
     closeModal('contractModal');
-    showInfo("Contrat Activé", "Félicitations, votre contrat est actif !");
+    showInfo("Contrat Activé", `Félicitations, votre contrat est actif ! ${!hasPaidFee ? 'Les frais de 36$ ont été déduits.' : ''}`);
     loadProfile();
   });
 
@@ -761,13 +811,11 @@
   async function loadAdminData() {
     if(!isAdmin) return;
 
-    // 1. Total Fonds Plateforme
     const { data: profiles } = await supabaseClient.from("profiles").select("balance");
     const totalFunds = profiles.reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
     $("adminTotalFunds").textContent = totalFunds.toFixed(2) + " $";
     $("adminTotalUsers").textContent = profiles.length;
 
-    // 2. Demandes de Dépôts/Retraits en attente
     const { data: deposits } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
     const { data: withdrawals } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
     
@@ -800,8 +848,7 @@
     }
     $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-    // 3. Liste Utilisateurs
-    const { data: allUsers } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role");
+    const { data: allUsers } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee");
     let usersHtml = "";
     (allUsers || []).forEach(u => {
       usersHtml += `
@@ -815,7 +862,6 @@
     });
     $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml;
 
-    // 4. Suivi des Contrats
     const { data: allContracts } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
     let contractsHtml = "";
     if(!allContracts || allContracts.length === 0) {
@@ -836,12 +882,10 @@
     $("adminContractsTable").querySelector('tbody').innerHTML = contractsHtml;
   }
 
-  // Actions Admin
   window.approveRequest = async (id, type, amount, userId) => {
     if(!confirm(`Confirmez-vous ce ${type} de ${amount} $ ?`)) return;
 
     if (type === 'Dépôt') {
-      // On valide le dépôt et on ajoute au solde
       const { data: userProfile } = await supabaseClient.from("profiles").select("balance").eq("id", userId).single();
       const newBal = (Number(userProfile?.balance) || 0) + Number(amount);
       
@@ -849,7 +893,6 @@
       await supabaseClient.from("investment_interest_requests").update({ status: "approved" }).eq("id", id);
     
     } else if (type === 'Retrait') {
-      // Le retrait est validé (l'argent a été envoyé hors plateforme)
       await supabaseClient.from("withdrawals").update({ status: "approved" }).eq("id", id);
     }
     
@@ -863,8 +906,6 @@
     loadAdminData();
   };
 
-
-  // --- FONCTIONS GLOBALES ---
   async function loadReferralCount() {
     const { data, error } = await supabaseClient.rpc("xynera_my_team");
     if (!error) {
@@ -932,10 +973,21 @@
 
   // --- ACTIONS FINANCIÈRES ---
   $("depositAmountForm").addEventListener("submit", (e) => {
-    e.preventDefault(); const amount = parseFloat($("depositAmountInput").value);
-    if (amount < 150) { alert("Le montant minimum de dépôt est de 150 $."); return; }
-    currentDepositAmount = amount; $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
-    $("depositStep1").classList.add("hidden"); $("depositStep2").classList.remove("hidden");
+    e.preventDefault(); 
+    const amount = parseFloat($("depositAmountInput").value);
+    
+    // Vérification du minimum selon si les frais ont été payés ou non
+    const minDeposit = hasPaidFee ? 150 : 186;
+    
+    if (amount < minDeposit) { 
+      alert(`Le montant minimum de dépôt est de ${minDeposit} $.`); 
+      return; 
+    }
+    
+    currentDepositAmount = amount; 
+    $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
+    $("depositStep1").classList.add("hidden"); 
+    $("depositStep2").classList.remove("hidden");
   });
 
   $("confirmDepositBtn").addEventListener("click", async () => {
@@ -948,7 +1000,6 @@
     e.preventDefault(); const amount = parseFloat($("withdrawAmountInput").value);
     if (amount < 20) { alert("Le montant minimum de retrait est de 20 $."); return; }
     
-    // Créer la demande de retrait
     try { await supabaseClient.from("withdrawals").insert({ user_id: currentUser.id, amount: amount, status: "pending" }); } catch (err) { console.error(err); }
     closeModal('withdrawModal'); showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée.");
   });
