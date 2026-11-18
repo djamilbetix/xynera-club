@@ -20,17 +20,18 @@
     .page{max-width:1200px;margin:0 auto;padding:0 20px 44px;width:100%;display:flex;flex-direction:column;flex:1}
     
     /* Header centré pour la page de connexion */
-    .topbar{height:100px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+    .topbar{height:100px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:all 0.3s ease}
     .brand{display:flex;align-items:center;gap:12px;min-width:0;justify-content:center;text-align:center}
     .brand img{display:block;width:auto;max-width:200px;height:55px;object-fit:contain}
     .brand-fallback{display:none;width:42px;height:42px;align-items:center;justify-content:center;border-radius:12px;background:var(--navy);color:#fff;font-size:21px;font-weight:800}
     .brand-copy{display:flex;flex-direction:column;line-height:1.2}
     .brand-copy strong{font-size:18px;letter-spacing:.09em;color:var(--navy)}
     .brand-copy small{font-size:11px;color:#8792a2;letter-spacing:.04em;margin-top:4px}
+    .top-label{display:flex;align-items:center;gap:9px;color:#5d6878;font-size:13px;font-weight:600}
+    .top-dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 0 4px #e4f4ed}
 
     /* Layout d'authentification centré */
     .auth-layout{display:flex;align-items:center;justify-content:center;flex:1;padding:10px 0 40px}
-    
     .auth-card{background:var(--surface);border:1px solid #e9edf3;border-radius:22px;box-shadow:var(--shadow);padding:40px;width:100%;max-width:480px;transition:transform 0.3s ease}
     
     .auth-heading{margin-bottom:28px;text-align:center}
@@ -142,7 +143,7 @@
 <body>
 <div class="page">
   <!-- HEADER ÉPURÉ AVEC LOGO CENTRÉ -->
-  <header class="topbar">
+  <header class="topbar" id="mainHeader">
     <div class="brand">
       <img id="brandLogo" src="logo-xenary.png" alt="Xynera Club">
       <span id="brandFallback" class="brand-fallback" aria-hidden="true">X</span>
@@ -282,7 +283,6 @@
       <h2 id="modalTitle">Traitement en cours</h2>
       <p id="modalDescription">Veuillez patienter quelques instants.</p>
       <div id="modalActions" class="modal-actions hidden">
-        <button id="resendButton" type="button" class="secondary-btn hidden">Renvoyer l'e-mail</button>
         <button id="modalClose" type="button" class="primary-btn">Fermer</button>
       </div>
     </div>
@@ -315,11 +315,8 @@
     el.textContent = text;
     el.className = "status" + (type ? " " + type : "");
   }
-  let confirmationEmail = "";
-  let cooldownUntil = 0;
-  let cooldownTimer = null;
 
-  function showModal(title, description, kind = "loading", canResend = false) {
+  function showModal(title, description, kind = "loading") {
     $("actionModal").classList.remove("hidden");
     $("modalTitle").textContent = title;
     $("modalDescription").textContent = description;
@@ -327,55 +324,19 @@
     $("modalSymbol").innerHTML = kind === "loading" ? '<span class="spin" aria-hidden="true"></span>' : "";
     if (kind !== "loading") $("modalSymbol").textContent = kind === "success" ? "✓" : "!";
     $("modalActions").classList.toggle("hidden", kind === "loading");
-    $("resendButton").classList.add("hidden");
-    updateCooldown();
   }
+  
   function closeModal() {
     $("actionModal").classList.add("hidden");
-    $("modalClose").textContent = "Fermer";
-    if ($("loginForm").classList.contains("active")) $("liEmail").focus();
   }
   $("modalClose").addEventListener("click", closeModal);
-  function updateCooldown() {
-    const remaining = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
-    const button = $("resendButton");
-    button.disabled = remaining > 0;
-    button.textContent = remaining ? `Réessayer dans ${remaining} s` : "Renvoyer l'e-mail de confirmation";
-    if (cooldownTimer) clearTimeout(cooldownTimer);
-    if (remaining) cooldownTimer = setTimeout(updateCooldown, 1000);
-  }
-  function beginCooldown(seconds = 60) { cooldownUntil = Date.now() + seconds * 1000; updateCooldown(); }
-  function isRateLimit(error) { return /security purposes|only request this after|after \d+ seconds|rate limit|too many requests/i.test(error?.message || ""); }
-  function secondsFromError(error) {
-    const m = (error?.message || "").match(/after (\d+) seconds/i);
-    return m ? Number(m[1]) : 60;
-  }
-  $("resendButton").addEventListener("click", async () => {
-    if (!confirmationEmail || Date.now() < cooldownUntil) return;
-    showModal("Renvoi en cours", "Nous transmettons votre demande de nouvel e-mail.");
-    try {
-      const { error } = await supabaseClient.auth.resend({ type: "signup", email: confirmationEmail });
-      if (error) {
-        if (isRateLimit(error)) beginCooldown(secondsFromError(error));
-        showModal("Renvoi non effectué", errorText(error), "error", true);
-      } else {
-        beginCooldown(60);
-        showModal("Demande de renvoi enregistrée",
-          "Vérifiez la boîte de réception et les courriers indésirables de " + confirmationEmail + ".",
-          "success", true);
-      }
-    } catch (e) { showModal("Connexion indisponible", errorText(e), "error", true); }
-  });
 
   function errorText(error) {
     const raw = error?.message || "Une erreur est survenue. Réessayez.";
-    if (isRateLimit(error)) return "Trop de tentatives rapprochées. Attendez quelques minutes avant de réessayer.";
-    if (/user already registered|already been registered|already exists/i.test(raw)) return "Cette adresse e-mail possède déjà un compte. Connectez-vous plutôt que de créer un nouveau compte.";
+    if (/user already registered|already been registered|already exists/i.test(raw)) return "Cette adresse e-mail possède déjà un compte. Connectez-vous.";
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
-    if (raw.toLowerCase().includes("email not confirmed")) return "Veuillez confirmer votre adresse e-mail avant de vous connecter.";
     if (/password should be at least/i.test(raw)) return "Le mot de passe doit contenir au moins 8 caractères.";
     if (/unable to validate email|invalid email|invalid format/i.test(raw)) return "Adresse e-mail invalide.";
-    if (/signup (is )?disabled|signups? not allowed/i.test(raw)) return "Les inscriptions sont momentanément désactivées. Réessayez plus tard.";
     if (raw.toLowerCase().includes("fetch") || raw.toLowerCase().includes("network")) return "Connexion impossible. Vérifiez votre connexion Internet.";
     return raw;
   }
@@ -433,7 +394,7 @@
     if (error) {
       $("myReferralCount").textContent = "—";
       $("teamCountLabel").textContent = "Indisponible";
-      $("myTeamList").innerHTML = '<p class="empty-team">Impossible de charger votre équipe. Vérifiez que la migration SQL 005 a été exécutée.</p>';
+      $("myTeamList").innerHTML = '<p class="empty-team">Impossible de charger votre équipe. Vérifiez que la migration SQL a été exécutée.</p>';
       return;
     }
     const members = Array.isArray(data) ? data : [];
@@ -514,9 +475,12 @@
     currentUser = user;
     $("authArea").classList.add("hidden");
     $("appArea").classList.remove("hidden");
-    // Change le header en mode "connecté"
-    document.querySelector(".topbar").style.justifyContent = "space-between";
-    document.querySelector(".topbar").insertAdjacentHTML('beforeend', '<div class="top-label" id="topLabelConnected"><span class="top-dot"></span><span>Mon espace</span></div>');
+    
+    // Header mode connecté
+    $("mainHeader").style.justifyContent = "space-between";
+    if(!$("topLabelConnected")) {
+      $("mainHeader").insertAdjacentHTML('beforeend', '<div class="top-label" id="topLabelConnected"><span class="top-dot"></span><span>Mon espace</span></div>');
+    }
     
     try { await loadProfile(); await loadRequests(); }
     catch (error) { console.error(error); }
@@ -582,49 +546,31 @@
         return;
       }
 
-      if (!data.session || !data.user) {
-        confirmationEmail = email;
-        $("liEmail").value = email;
-        $("liPassword").value = "";
-        $("suReferral").value = "";
-        switchAuth("login");
-        $("modalClose").textContent = "Aller à la connexion";
-        showModal(
-          "Vérifiez votre e-mail",
-          "Votre compte a été créé. Un e-mail de confirmation a été envoyé à " + email +
-          ". Cliquez sur le lien qu'il contient pour activer votre compte, puis connectez-vous.",
-          "success"
-        );
+      // CONNEXION AUTOMATIQUE : Si l'option "Confirm email" est désactivée dans Supabase
+      if (data.session && data.user) {
+        // Envoi de l'e-mail de bienvenue en arrière-plan
+        try {
+          await supabaseClient.functions.invoke("send-welcome-email", { body: { fullName: name } });
+        } catch (_) {}
+
+        showModal("Inscription réussie", "Bienvenue sur Xynera Club ! Connexion à votre espace...", "success");
+        
+        // On laisse 1,5 seconde pour lire le message, puis on affiche le tableau de bord
+        setTimeout(() => {
+          closeModal();
+          showApp(data.user);
+          $("signupForm").reset();
+        }, 1500);
         return;
       }
 
-      $("liEmail").value = email;
-      $("liPassword").value = "";
-      $("suReferral").value = "";
-      switchAuth("login");
-      $("modalClose").textContent = "Aller à la connexion";
-
-      let welcomeSent = false;
-      try {
-        const { error: mailError } = await supabaseClient.functions.invoke("send-welcome-email", {
-          body: { fullName: name }
-        });
-        welcomeSent = !mailError;
-      } catch (_) { welcomeSent = false; }
-
-      if (welcomeSent) {
-        showModal(
-          "Inscription réussie",
-          "Votre compte Xynera Club a été créé. Un message de bienvenue vient d'être envoyé à " + email + ". Vous pouvez maintenant vous connecter.",
-          "success"
-        );
-      } else {
-        showModal(
-          "Inscription réussie",
-          "Votre compte a bien été créé. Vous pouvez maintenant vous connecter.",
-          "success"
-        );
-      }
+      // Sécurité : Si Supabase renvoie null (confirmation par email toujours active)
+      showModal(
+        "Veuillez vérifier vos e-mails", 
+        "Votre compte a été créé. Veuillez confirmer votre adresse e-mail pour vous connecter.", 
+        "error"
+      );
+      
     } catch (error) {
       showModal("Connexion indisponible", errorText(error), "error");
     } finally {
@@ -673,7 +619,7 @@
     // Remet le header en mode déconnecté
     const topLabelConnected = $("topLabelConnected");
     if (topLabelConnected) topLabelConnected.remove();
-    document.querySelector(".topbar").style.justifyContent = "center";
+    $("mainHeader").style.justifyContent = "center";
     
     switchAuth("login");
   });
