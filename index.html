@@ -66,6 +66,26 @@
     .status{min-height:20px;margin:12px 0 0;font-size:12px;color:#667386}
     .status.error{color:#c42b35}.status.ok{color:var(--green)}
     .hidden{display:none!important}
+    .modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(10,18,32,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:18px}
+    .modal-box{background:#fff;width:min(100%,440px);border-radius:22px;padding:30px;box-shadow:0 25px 90px #08101b60;text-align:center;position:relative}
+    .modal-box h2{font-size:23px;margin:13px 0 8px;color:var(--navy)}
+    .modal-box p{color:var(--muted);font-size:14px;margin:0 0 18px;overflow-wrap:anywhere}
+    .modal-symbol{height:62px;width:62px;border-radius:18px;background:#eaf2ff;color:#1f7aff;display:grid;place-items:center;font-size:29px;margin:auto;font-weight:800}
+    .modal-symbol.error{background:#fff0f0;color:#dc2635}
+    .modal-symbol.success{background:#eaf8f1;color:#13865c}
+    .spin{width:31px;height:31px;border:3px solid #dce9ff;border-top-color:#1f7aff;border-radius:50%;animation:rotate .75s linear infinite}
+    @keyframes rotate{to{transform:rotate(360deg)}}
+    .modal-actions{display:grid;gap:10px;margin-top:16px}
+    .modal-actions button:disabled{opacity:.55;cursor:not-allowed}
+    .info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
+    .info-tile{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px}
+    .info-tile b{display:block;font-size:13px;color:var(--navy);margin-bottom:5px}
+    .info-tile span{font-size:12px;color:var(--muted)}
+    .step-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .step{background:#f8faff;border:1px solid #e6ebf5;padding:14px;border-radius:12px;font-size:12px;color:#697586}
+    .step b{display:block;color:var(--navy);margin:4px 0}
+    .step-number{color:#1f7aff;font-weight:800}
+    @media(max-width:600px){.info-grid,.step-list{grid-template-columns:1fr}.modal-box{padding:24px}}
     .dashboard-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:36px 0 22px}
     .dashboard-head .eyebrow{color:#778397}
     .dashboard-head h1{font-size:32px;line-height:1.2;letter-spacing:-.035em;color:var(--navy);margin:10px 0 4px}
@@ -191,12 +211,36 @@
         </section>
       </div>
 
+      <div class="info-grid">
+        <div class="info-tile"><b>Gestion des demandes</b><span>Consultation de votre historique et de l'état de chaque dossier.</span></div>
+        <div class="info-tile"><b>Suivi du profil</b><span>Coordonnées, statut du compte et informations personnelles.</span></div>
+        <div class="info-tile"><b>Marchés suivis</b><span>Forex et crypto, selon les services et autorisations applicables.</span></div>
+      </div>
+      <section class="panel" style="margin-bottom:18px">
+        <div class="panel-title"><h2>Parcours de votre dossier</h2><span class="badge">Suivi des étapes</span></div>
+        <div class="step-list">
+          <div class="step"><span class="step-number">01</span><b>Création du compte</b>Inscription et confirmation de l'adresse e-mail.</div>
+          <div class="step"><span class="step-number">02</span><b>Informations personnelles</b>Renseignement du profil et transmission d'une demande.</div>
+          <div class="step"><span class="step-number">03</span><b>Étude du dossier</b>Examen et retour de l'équipe selon la situation du dossier.</div>
+        </div>
+      </section>
       <section class="panel history-panel">
         <div class="panel-title"><h2>Historique de mes demandes</h2><span class="badge" id="historyBadge">0 demande</span></div>
         <div id="requestsList" class="request-list"><div class="empty-state">Vos demandes apparaîtront ici.</div></div>
       </section>
     </section>
   </main>
+  <div id="actionModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div id="modalSymbol" class="modal-symbol"><span class="spin" aria-hidden="true"></span></div>
+      <h2 id="modalTitle">Traitement en cours</h2>
+      <p id="modalDescription">Veuillez patienter quelques instants.</p>
+      <div id="modalActions" class="modal-actions hidden">
+        <button id="resendButton" type="button" class="secondary-btn hidden">Renvoyer l'e-mail de confirmation</button>
+        <button id="modalClose" type="button" class="primary-btn">Fermer</button>
+      </div>
+    </div>
+  </div>
   <footer class="foot"><span>© <span id="year"></span> Xynera Club</span><span>Build. Learn. Analyze. Innovate.</span></footer>
 </div>
 
@@ -220,8 +264,59 @@
     el.textContent = text;
     el.className = "status" + (type ? " " + type : "");
   }
+  let confirmationEmail = "";
+  let cooldownUntil = 0;
+  let cooldownTimer = null;
+  function showModal(title, description, kind="loading", canResend=false) {
+    $("actionModal").classList.remove("hidden");
+    $("modalTitle").textContent = title;
+    $("modalDescription").textContent = description;
+    $("modalSymbol").className = "modal-symbol" + (kind === "error" ? " error" : kind === "success" ? " success" : "");
+    $("modalSymbol").innerHTML = kind === "loading" ? '<span class="spin" aria-hidden="true"></span>' : "";
+    if (kind !== "loading") $("modalSymbol").textContent = kind === "success" ? "✓" : "!";
+    $("modalActions").classList.toggle("hidden",kind==="loading");
+    $("resendButton").classList.add("hidden");
+    updateCooldown();
+  }
+  function closeModal(){
+    $("actionModal").classList.add("hidden");
+    $("modalClose").textContent = "Fermer";
+    if ($("loginForm").classList.contains("active")) $("liEmail").focus();
+  }
+  $("modalClose").addEventListener("click",closeModal);
+  function updateCooldown(){
+    const remaining = Math.max(0,Math.ceil((cooldownUntil-Date.now())/1000));
+    const button = $("resendButton");
+    button.disabled = remaining > 0;
+    button.textContent = remaining ? `Réessayer dans ${remaining} s` : "Renvoyer l'e-mail de confirmation";
+    if(cooldownTimer) clearTimeout(cooldownTimer);
+    if(remaining) cooldownTimer = setTimeout(updateCooldown,1000);
+  }
+  function beginCooldown(seconds=60){cooldownUntil=Date.now()+seconds*1000;updateCooldown();}
+  function isRateLimit(error){return /security purposes|after \d+ seconds|rate limit|too many requests/i.test(error?.message||"");}
+  function secondsFromError(error){
+    const m=(error?.message||"").match(/after (\d+) seconds/i);
+    return m ? Number(m[1]) : 60;
+  }
+  $("resendButton").addEventListener("click",async()=>{
+    if(!confirmationEmail || Date.now()<cooldownUntil)return;
+    showModal("Renvoi en cours","Nous transmettons votre demande de nouvel e-mail.");
+    try{
+      const {error}=await supabaseClient.auth.resend({type:"signup",email:confirmationEmail});
+      if(error){
+        if(isRateLimit(error))beginCooldown(secondsFromError(error));
+        showModal("Renvoi non effectué",errorText(error),"error",true);
+      }else{
+        beginCooldown(60);
+        showModal("Demande de renvoi enregistrée",
+          "Vérifiez la boîte de réception et les courriers indésirables de "+confirmationEmail+". La réception dépend du service e-mail configuré dans Supabase.",
+          "success",true);
+      }
+    }catch(e){showModal("Connexion indisponible",errorText(e),"error",true);}
+  });
   function errorText(error) {
     const raw = error?.message || "Une erreur est survenue. Réessayez.";
+    if (isRateLimit(error)) return "Veuillez patienter avant une nouvelle tentative. Supabase limite temporairement les demandes répétées.";
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
     if (raw.toLowerCase().includes("email not confirmed")) return "Veuillez confirmer votre adresse e-mail avant de vous connecter.";
     if (raw.toLowerCase().includes("fetch")) return "Connexion impossible. Vérifiez votre connexion Internet.";
@@ -320,14 +415,54 @@
     const name = $("suName").value.trim();
     const email = $("suEmail").value.trim();
     const password = $("suPassword").value;
-    setMessage("signupStatus", "Création de votre compte...");
-    const {data, error} = await supabaseClient.auth.signUp({email,password,options:{data:{full_name:name}}});
-    if (error) return setMessage("signupStatus", errorText(error), "error");
-    if (data.session && data.user) {
-      setMessage("signupStatus", "Votre compte a été créé.", "ok");
-      await showApp(data.user);
-    } else {
-      setMessage("signupStatus", "Un e-mail de confirmation vient de vous être envoyé.", "ok");
+    if (!name) { showModal("Nom requis", "Veuillez saisir votre nom complet.", "error"); return; }
+
+    const button = $("signupForm").querySelector('button[type="submit"]');
+    button.disabled = true;
+    showModal("Création du compte", "Nous préparons votre espace personnel.");
+    try {
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name } }
+      });
+      if (error) {
+        showModal("Inscription non finalisée", errorText(error), "error");
+        return;
+      }
+
+      // With Supabase Email Confirmations disabled, a session is returned immediately.
+      if (!data.session || !data.user) {
+        showModal("Configuration à terminer", "Le compte a été créé, mais Supabase attend encore une confirmation. Désactivez « Confirm email » dans les paramètres du fournisseur Email pour activer le parcours sans lien.", "error");
+        return;
+      }
+
+      // Prepare the login screen behind the success modal.
+      $("liEmail").value = email;
+      $("liPassword").value = "";
+      switchAuth("login");
+      $("modalClose").textContent = "Aller à la connexion";
+
+      // Welcome email is sent by a Supabase Edge Function; never expose the Resend API key in this HTML.
+      let welcomeSent = false;
+      try {
+        const { error: mailError } = await supabaseClient.functions.invoke("send-welcome-email", {
+          body: { fullName: name }
+        });
+        welcomeSent = !mailError;
+      } catch (_) {
+        welcomeSent = false;
+      }
+
+      if (welcomeSent) {
+        showModal("Inscription réussie", "Votre compte Xynera Club a été créé. Un message de bienvenue vient d'être envoyé à " + email + ". Vous pouvez maintenant vous connecter.", "success");
+      } else {
+        showModal("Inscription réussie", "Votre compte a bien été créé. Vous pouvez maintenant vous connecter. L'envoi du message de bienvenue sera disponible après la configuration du service e-mail.", "success");
+      }
+    } catch (error) {
+      showModal("Connexion indisponible", errorText(error), "error");
+    } finally {
+      button.disabled = false;
     }
   });
 
