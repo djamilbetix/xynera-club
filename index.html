@@ -8,139 +8,138 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --navy: #101827; --navy-light: #17243a; --red: #e50914; --blue: #1f7aff; --green: #10b981;
-      --ink: #172033; --muted: #697586; --line: #e6eaf0; --surface: #fff; --page: #f4f6fa;
-      --shadow: 0 10px 30px rgba(16,24,39,.06); --radius: 20px;
+      --navy: #0f172a; --navy-light: #1e293b; --red: #dc2626; --blue: #2563eb; --green: #059669;
+      --ink: #0f172a; --muted: #64748b; --line: #e2e8f0; --surface: #fff; --page: #f8fafc;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
+      --radius: 12px;
     }
     *{box-sizing:border-box; margin:0; padding:0;}
-    body{background:var(--page); color:var(--ink); font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif; min-height:100vh; display:flex; overflow-x:hidden;}
+    body{background:var(--page); color:var(--ink); font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif; min-height:100vh; display:flex; overflow-x:hidden;}
     button,input,textarea,select{font:inherit;}
-    button{cursor:pointer; border:none; background:none;}
+    button{cursor:pointer; border:none; background:none; transition: all 0.2s;}
     .hidden{display:none!important;}
     
-    /* Layout Global - Menu à droite */
+    svg { width: 20px; height: 20px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    
     .app-layout { display: flex; flex-direction: row-reverse; width: 100%; height: 100vh; overflow: hidden; }
     
     /* Sidebar (Menu à droite) */
-    .sidebar { width: 280px; background: var(--navy); color: #fff; display: flex; flex-direction: column; transition: transform .3s ease; z-index: 100; flex-shrink: 0; border-left: 1px solid rgba(255,255,255,0.05); }
-    .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
-    .sidebar-header img { max-height: 60px; width: auto; object-fit: contain; }
-    .nav-menu { padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
-    .nav-item { display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-end; gap: 14px; padding: 14px 18px; border-radius: 12px; color: #a5b1c2; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
-    .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: #fff; }
-    .nav-item.active { border-right: 4px solid var(--blue); border-left: none; border-radius: 12px 4px 4px 12px; }
-    .nav-icon { font-size: 18px; width: 24px; text-align: center; }
-    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .sidebar { width: 260px; background: var(--navy); color: #fff; display: flex; flex-direction: column; z-index: 100; flex-shrink: 0; }
+    .sidebar-header { padding: 30px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .sidebar-header img { max-height: 50px; width: auto; object-fit: contain; margin-bottom: 12px; }
+    .nav-menu { padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+    .nav-item { display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start; gap: 12px; padding: 12px 16px; border-radius: var(--radius); color: #94a3b8; font-weight: 500; font-size: 14px; cursor: pointer; }
+    .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: #fff; }
+    .nav-item.active { border-right: 3px solid var(--blue); border-radius: var(--radius) 0 0 var(--radius); }
+    .nav-icon { display: flex; align-items: center; justify-content: center; }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
     .user-badge { display: flex; flex-direction: row-reverse; text-align: right; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); display: grid; place-items: center; font-weight: 800; font-size: 18px; }
-    .user-info strong { display: block; font-size: 13px; }
-    .user-info small { font-size: 11px; color: #8792a2; display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .logout-btn { width: 100%; padding: 12px; border-radius: 10px; background: rgba(229,9,20,0.1); color: #ff6b6b; font-weight: 700; font-size: 13px; text-align: center; transition: 0.2s; }
-    .logout-btn:hover { background: rgba(229,9,20,0.2); }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); display: grid; place-items: center; font-weight: 600; font-size: 14px; }
+    .user-info strong { display: block; font-size: 13px; color: #fff; font-weight: 600;}
+    .user-info small { font-size: 11px; color: #94a3b8; display: block; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn { width: 100%; padding: 10px; border-radius: var(--radius); background: rgba(220,38,38,0.1); color: #f87171; font-weight: 600; font-size: 13px; text-align: center; }
+    .logout-btn:hover { background: rgba(220,38,38,0.2); }
 
     /* Main Content Area */
     .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); position: relative; }
     
     /* Mobile Header */
     .mobile-header { display: none; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; flex-direction: row-reverse; }
-    .hamburger { font-size: 24px; color: var(--navy); cursor: pointer; padding: 4px; }
+    .hamburger { color: var(--navy); cursor: pointer; padding: 4px; display: flex; align-items: center; }
     
     /* Views */
-    .view { display: none; padding: 30px 40px 60px; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
+    .view { display: none; padding: 32px 40px 60px; max-width: 1100px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
     .view.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Page Headers */
-    .page-header { margin-bottom: 28px; }
-    .page-header .eyebrow { color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-    .page-header .eyebrow::before { content: ""; width: 20px; height: 2px; background: var(--red); }
-    .page-header h1 { font-size: 32px; color: var(--navy); letter-spacing: -.03em; margin-bottom: 6px; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 26px; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 8px; font-weight: 700;}
     .page-header p { color: var(--muted); font-size: 14px; }
 
     /* Dashboard Grid Layout */
     .dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
     
     /* Balance Card */
-    .balance-card { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); border-radius: var(--radius); padding: 32px; color: #fff; box-shadow: 0 15px 35px rgba(16,24,39,0.15); position: relative; overflow: hidden; }
-    .balance-card::before { content: ""; position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(31,122,255,0.4), transparent 70%); border-radius: 50%; }
-    .balance-label { color: #a5b1c2; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
-    .balance-amount { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 24px; display: flex; align-items: baseline; gap: 8px; }
-    .balance-amount span { font-size: 20px; color: #a5b1c2; font-weight: 500; }
-    .balance-actions { display: flex; gap: 14px; }
-    .btn-deposit { background: var(--green); color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; flex: 1; text-align: center; transition: 0.2s; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+    .balance-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius); padding: 32px; color: #fff; box-shadow: 0 10px 25px -5px rgba(15,23,42,0.3); position: relative; overflow: hidden; }
+    .balance-label { color: #94a3b8; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+    .balance-amount { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 32px; display: flex; align-items: baseline; gap: 8px; }
+    .balance-amount span { font-size: 18px; color: #94a3b8; font-weight: 500; }
+    .balance-actions { display: flex; gap: 16px; }
+    .btn-deposit { background: var(--green); color: #fff; padding: 12px 24px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;}
     .btn-deposit:hover { filter: brightness(1.1); }
-    .btn-withdraw { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; flex: 1; text-align: center; transition: 0.2s; }
-    .btn-withdraw:hover { background: rgba(255,255,255,0.2); }
+    .btn-withdraw { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: var(--radius); font-weight: 600; font-size: 14px; flex: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;}
+    .btn-withdraw:hover { background: rgba(255,255,255,0.1); }
 
     /* Stats Grid */
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
-    .stat-card { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid var(--line); text-align: center; }
-    .stat-icon { font-size: 24px; margin-bottom: 10px; }
-    .stat-value { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+    .stat-card { background: #fff; border-radius: var(--radius); padding: 20px; border: 1px solid var(--line); display: flex; align-items: center; gap: 16px; }
+    .stat-icon-wrapper { width: 40px; height: 40px; border-radius: 8px; background: #eff6ff; color: var(--blue); display: grid; place-items: center; flex-shrink: 0; }
+    .stat-content { display: flex; flex-direction: column; }
+    .stat-value { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
     .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
 
     /* Info Cards */
     .info-card { background: #fff; border-radius: var(--radius); padding: 24px; border: 1px solid var(--line); margin-top: 24px; }
-    .info-card h3 { font-size: 18px; color: var(--navy); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-    .info-card p { color: var(--muted); font-size: 14px; line-height: 1.6; }
-    .info-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-    .feature-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--navy); font-weight: 600; }
-    .feature-item::before { content: "✓"; color: var(--green); font-weight: 800; }
+    .info-card h3 { font-size: 16px; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .info-card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
 
-    /* History List (Recent & Full) */
-    .op-list { display: flex; flex-direction: column; gap: 12px; }
-    .op-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 18px; border-radius: 14px; border: 1px solid var(--line); }
-    .op-info { display: flex; align-items: center; gap: 14px; }
-    .op-icon { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 18px; }
-    .op-icon.deposit { background: #eaf8f1; color: var(--green); }
-    .op-icon.withdraw { background: #fff0f0; color: var(--red); }
-    .op-icon.request { background: #edf4ff; color: var(--blue); }
-    .op-details strong { display: block; font-size: 14px; color: var(--navy); }
+    /* History List */
+    .op-list { display: flex; flex-direction: column; gap: 8px; }
+    .op-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 16px 20px; border-radius: var(--radius); border: 1px solid var(--line); }
+    .op-info { display: flex; align-items: center; gap: 16px; }
+    .op-icon { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; }
+    .op-icon.deposit { background: #ecfdf5; color: var(--green); }
+    .op-icon.withdraw { background: #fef2f2; color: var(--red); }
+    .op-icon.request { background: #eff6ff; color: var(--blue); }
+    .op-details strong { display: block; font-size: 14px; color: var(--navy); font-weight: 600; }
     .op-details small { font-size: 12px; color: var(--muted); }
-    .op-amount { font-weight: 800; font-size: 15px; }
+    .op-amount { font-weight: 700; font-size: 15px; }
     .op-amount.pos { color: var(--green); }
     .op-amount.neg { color: var(--red); }
+    .status-badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .status-badge.pending { background: #fef3c7; color: #92400e; }
 
     /* Forms (Profile) */
     .form-card { background: #fff; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); max-width: 600px; }
     .field { margin-bottom: 20px; }
-    .field label { display: block; color: #344054; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    .field input, .field select { width: 100%; border: 1px solid #dce2ea; border-radius: 12px; padding: 14px; color: var(--ink); outline: none; transition: 0.2s; }
-    .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(31,122,255,0.1); }
-    .primary-btn { background: var(--blue); color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 700; width: 100%; transition: 0.2s; }
-    .primary-btn:hover { filter: brightness(1.1); }
-    .wallet-warning { padding: 16px; border: 1px solid #f0d28b; background: #fff9e9; color: #76530b; border-radius: 12px; font-size: 13px; line-height: 1.5; margin-bottom: 20px; }
+    .field label { display: block; color: var(--navy); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .field input, .field select { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--ink); outline: none; transition: 0.2s; }
+    .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .primary-btn { background: var(--navy); color: #fff; padding: 14px 24px; border-radius: 8px; font-weight: 600; width: 100%; display: flex; justify-content: center; align-items: center;}
+    .primary-btn:hover { background: var(--navy-light); }
+    .wallet-warning { padding: 16px; border: 1px solid #fca5a5; background: #fef2f2; color: #991b1b; border-radius: 8px; font-size: 13px; line-height: 1.5; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start;}
 
     /* Modal Global */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(10,18,32,0.7); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
-    .modal-box { background: #fff; width: min(100%, 480px); border-radius: 24px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; }
+    .modal-box { background: #fff; width: min(100%, 440px); border-radius: var(--radius); padding: 32px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto;}
     .modal-overlay.active .modal-box { transform: scale(1); }
-    .modal-title { font-size: 22px; color: var(--navy); margin-bottom: 20px; text-align: center; font-weight: 800; }
+    .modal-title { font-size: 20px; color: var(--navy); margin-bottom: 24px; text-align: center; font-weight: 700; }
 
     /* Deposit Box */
-    .address-box { background: #f8faff; border: 1px dashed #b6c5db; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
-    .address-text { font-family: monospace; font-size: 15px; word-break: break-all; color: var(--navy); font-weight: 700; margin-bottom: 16px; display: block; }
-    .copy-btn { background: var(--blue); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; transition: 0.2s; }
-    .copy-btn:hover { background: #155ac4; }
+    .address-box { background: #f8fafc; border: 1px solid var(--line); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; }
+    .address-text { font-family: monospace; font-size: 16px; word-break: break-all; color: var(--navy); font-weight: 700; margin: 12px 0 16px; display: block; letter-spacing: 0.5px;}
+    .copy-btn { background: #e2e8f0; color: var(--navy); padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
+    .copy-btn:hover { background: #cbd5e1; }
 
     /* Team / Referral */
-    .team-member { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; }
-    .team-avatar { width: 36px; height: 36px; border-radius: 50%; background: #edf4ff; color: var(--blue); display: grid; place-items: center; font-weight: 700; }
+    .team-member { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
+    .team-avatar { width: 32px; height: 32px; border-radius: 50%; background: #eff6ff; color: var(--blue); display: grid; place-items: center; font-weight: 600; font-size: 12px;}
 
     /* Responsive */
     @media (max-width: 1024px) {
       .dashboard-grid { grid-template-columns: 1fr; }
-      .sidebar { position: fixed; height: 100vh; right: 0; transform: translateX(100%); }
+      .sidebar { position: fixed; height: 100vh; right: 0; transform: translateX(100%); box-shadow: -5px 0 15px rgba(0,0,0,0.1);}
       .sidebar.open { transform: translateX(0); }
       .mobile-header { display: flex; }
-      .view { padding: 20px 20px 80px; }
+      .view { padding: 24px 20px 80px; }
       .stats-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
-      .balance-amount { font-size: 38px; }
+      .balance-amount { font-size: 36px; }
       .balance-actions { flex-direction: column; }
-      .info-features { grid-template-columns: 1fr; }
+      .modal-box { padding: 24px; }
     }
   </style>
 </head>
@@ -148,32 +147,32 @@
 
 <!-- ZONE D'AUTHENTIFICATION -->
 <section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;">
-  <div style="background:#fff; border-radius:24px; box-shadow:0 20px 50px rgba(0,0,0,0.1); padding:40px; width:100%; max-width:440px;">
-    <div style="text-align:center; margin-bottom:30px;">
-      <img src="logo-xenary.png" style="height:70px; margin:0 auto 16px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
-      <h2 id="authTitle" style="font-size:24px; color:var(--navy); margin-bottom:8px;">Heureux de vous revoir</h2>
-      <p id="authSubtitle" style="color:var(--muted); font-size:14px;">Connectez-vous à votre espace.</p>
+  <div style="background:#fff; border-radius:var(--radius); box-shadow:0 10px 25px rgba(0,0,0,0.05); padding:40px; width:100%; max-width:420px; border: 1px solid var(--line);">
+    <div style="text-align:center; margin-bottom:32px;">
+      <img src="logo-xenary.png" style="height:60px; margin:0 auto 20px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
+      <h2 id="authTitle" style="font-size:22px; color:var(--navy); margin-bottom:8px; font-weight:700;">Connexion</h2>
+      <p id="authSubtitle" style="color:var(--muted); font-size:14px;">Accédez à votre espace investisseur.</p>
     </div>
     
-    <div style="display:flex; background:#f4f6fa; border-radius:12px; margin-bottom:24px; padding:4px;">
-      <button id="loginTab" class="active" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.05);" onclick="switchAuthTab('login')">Connexion</button>
-      <button id="signupTab" style="flex:1; padding:10px; border-radius:8px; font-weight:700; font-size:13px; color:var(--muted);" onclick="switchAuthTab('signup')">Créer un compte</button>
+    <div style="display:flex; border-bottom: 1px solid var(--line); margin-bottom:24px;">
+      <button id="loginTab" class="active" style="flex:1; padding:12px; font-weight:600; font-size:14px; color:var(--navy); border-bottom: 2px solid var(--navy); background:transparent;" onclick="switchAuthTab('login')">Connexion</button>
+      <button id="signupTab" style="flex:1; padding:12px; font-weight:600; font-size:14px; color:var(--muted); border-bottom: 2px solid transparent; background:transparent;" onclick="switchAuthTab('signup')">Inscription</button>
     </div>
 
     <form id="loginForm">
       <div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div>
       <div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div>
       <button type="submit" class="primary-btn">Se connecter</button>
-      <div id="loginStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
+      <div id="loginStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div>
     </form>
 
     <form id="signupForm" style="display:none;">
       <div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div>
       <div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div>
       <div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div>
-      <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" placeholder="Ex: XYNERA..."></div>
-      <button type="submit" class="primary-btn">Créer mon compte</button>
-      <div id="signupStatus" style="text-align:center; margin-top:12px; font-size:13px; color:var(--red);"></div>
+      <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" placeholder="Code"></div>
+      <button type="submit" class="primary-btn">Créer un compte</button>
+      <div id="signupStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div>
     </form>
   </div>
 </section>
@@ -184,23 +183,22 @@
     <div class="sidebar-header">
       <img id="brandLogo" src="logo-xenary.png" alt="Xynera" onerror="this.style.display='none'; document.getElementById('brandFallback').style.display='block';">
       <div id="brandFallback" style="display:none;">
-        <strong style="font-size:18px; color:#fff;">XYNERA CLUB</strong>
-        <small style="font-size:11px; color:#8792a2;">Build. Learn. Analyze.</small>
+        <strong style="font-size:16px; color:#fff; letter-spacing:1px;">XYNERA CLUB</strong>
       </div>
     </div>
     
     <nav class="nav-menu">
       <div class="nav-item active" onclick="switchView('dashboard', this)">
-        <span>Tableau de bord</span> <span class="nav-icon">📊</span>
+        <span>Tableau de bord</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
       </div>
       <div class="nav-item" onclick="switchView('history', this)">
-        <span>Historique</span> <span class="nav-icon">📜</span>
+        <span>Historique</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
       </div>
       <div class="nav-item" onclick="switchView('team', this)">
-        <span>Mon Équipe</span> <span class="nav-icon">🤝</span>
+        <span>Mon Équipe</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
       </div>
       <div class="nav-item" onclick="switchView('profile', this)">
-        <span>Mon Profil</span> <span class="nav-icon">👤</span>
+        <span>Mon Profil</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
       </div>
     </nav>
 
@@ -210,7 +208,7 @@
           <strong id="sideName">Membre</strong>
           <small id="sideEmail">email@exemple.com</small>
         </div>
-        <div class="user-avatar" id="sideAvatar">X</div>
+        <div class="user-avatar" id="sideAvatar">U</div>
       </div>
       <button class="logout-btn" id="logoutBtn">Déconnexion</button>
     </div>
@@ -221,66 +219,88 @@
     
     <!-- Mobile Header -->
     <header class="mobile-header">
-      <div class="hamburger" onclick="toggleSidebar()">☰</div>
-      <img src="logo-xenary.png" style="height:30px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
+      <div class="hamburger" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </div>
+      <img src="logo-xenary.png" style="height:24px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
     </header>
 
     <!-- VUE : DASHBOARD -->
     <section id="view-dashboard" class="view active">
       <div class="page-header">
-        <div class="eyebrow">ESPACE PERSONNEL</div>
-        <h1>Bonjour, <span id="userNameDisplay">membre</span></h1>
-        <p>Voici un résumé de votre activité sur la plateforme.</p>
+        <h1>Vue d'ensemble</h1>
+        <p>Gérez vos actifs et suivez vos performances.</p>
       </div>
 
       <div class="dashboard-grid">
         <!-- Colonne Principale -->
         <div>
           <div class="balance-card">
-            <div class="balance-label">Solde Total Disponible</div>
-            <div class="balance-amount">0.00 <span>USD</span></div>
-            <div class="balance-actions">
-              <button class="btn-deposit" onclick="openModal('depositModal')">Faire un Dépôt</button>
-              <button class="btn-withdraw" onclick="openModal('withdrawModal')">Retirer</button>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <div class="balance-label">Solde Disponible</div>
+                <div class="balance-amount" style="margin-bottom: 0;">0.00 <span>USD</span></div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Numéro de compte</div>
+                <div style="font-size: 16px; font-weight: 700; color: #fff; font-family: monospace;" id="dashAccountNumber">---</div>
+              </div>
+            </div>
+            
+            <div class="balance-actions" style="margin-top: 32px;">
+              <button class="btn-deposit" onclick="openDepositModal()">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Dépôt
+              </button>
+              <button class="btn-withdraw" onclick="openModal('withdrawModal')">
+                <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Retrait
+              </button>
             </div>
           </div>
 
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-icon">📈</div>
-              <div class="stat-value">+ 0.00 $</div>
-              <div class="stat-label">Bénéfice du jour</div>
+              <div class="stat-icon-wrapper">
+                <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">0.00 $</div>
+                <div class="stat-label">Bénéfice du jour</div>
+              </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">🌍</div>
-              <div class="stat-value">12,540</div>
-              <div class="stat-label">Investisseurs actifs</div>
+              <div class="stat-icon-wrapper" style="background:#f0fdf4; color:var(--green);">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">12,540</div>
+                <div class="stat-label">Investisseurs</div>
+              </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">🏳️</div>
-              <div class="stat-value">45</div>
-              <div class="stat-label">Pays couverts</div>
+              <div class="stat-icon-wrapper" style="background:#fef2f2; color:var(--red);">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">45</div>
+                <div class="stat-label">Pays couverts</div>
+              </div>
             </div>
           </div>
 
           <div class="info-card">
-            <h3>🚀 La première plateforme d'opportunités</h3>
+            <h3>La première plateforme d'opportunités</h3>
             <p>Xynera Club vous connecte aux meilleurs marchés financiers mondiaux. Profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements optimisés et une sécurité maximale pour votre capital.</p>
-            <div class="info-features">
-              <div class="feature-item">Retraits rapides</div>
-              <div class="feature-item">Support 24/7</div>
-              <div class="feature-item">Analyses exclusives</div>
-              <div class="feature-item">Sécurité bancaire</div>
-            </div>
           </div>
         </div>
 
         <!-- Colonne de droite -->
         <div>
           <div class="info-card" style="margin-top:0;">
-            <h3>💼 Mon Portefeuille</h3>
-            <p style="font-size:13px; margin-bottom:8px; color:var(--muted);">Adresse de retrait enregistrée :</p>
-            <div style="background:#f4f6fa; padding:12px; border-radius:8px; font-family:monospace; font-size:13px; word-break:break-all;" id="dashWalletDisplay">
+            <h3>Coordonnées de retrait</h3>
+            <p style="font-size:12px; margin-bottom:12px;">Adresse configurée :</p>
+            <div style="background:var(--page); padding:12px; border-radius:6px; font-family:monospace; font-size:13px; word-break:break-all; border:1px solid var(--line); color:var(--navy);" id="dashWalletDisplay">
               Non configuré
             </div>
           </div>
@@ -288,7 +308,7 @@
           <div class="info-card">
             <h3>Activités récentes</h3>
             <div class="op-list" id="recentActivityList">
-              <div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité récente.</div>
+              <div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité.</div>
             </div>
           </div>
         </div>
@@ -298,9 +318,8 @@
     <!-- VUE : HISTORIQUE -->
     <section id="view-history" class="view">
       <div class="page-header">
-        <div class="eyebrow">TRANSACTIONS</div>
-        <h1>Historique des opérations</h1>
-        <p>Suivez l'état de toutes vos demandes et transactions.</p>
+        <h1>Historique</h1>
+        <p>Suivez le statut de toutes vos opérations.</p>
       </div>
       <div class="op-list" id="fullHistoryList">
         <div style="text-align:center; color:var(--muted); padding:40px;">Chargement...</div>
@@ -310,12 +329,16 @@
     <!-- VUE : MON PROFIL -->
     <section id="view-profile" class="view">
       <div class="page-header">
-        <div class="eyebrow">PARAMÈTRES</div>
-        <h1>Mon Profil</h1>
-        <p>Gérez vos informations personnelles et vos coordonnées de paiement.</p>
+        <h1>Paramètres du compte</h1>
+        <p>Gérez vos informations personnelles.</p>
       </div>
       
       <div class="form-card">
+        <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--line);">
+          <label style="display:block; font-size:13px; color:var(--muted); margin-bottom:4px;">Numéro de compte (UID)</label>
+          <div style="font-size: 18px; font-weight: 700; font-family: monospace; color: var(--navy);" id="profileAccountNumber">---</div>
+        </div>
+
         <form id="profileForm">
           <div class="field">
             <label for="profileName">Nom complet</label>
@@ -326,12 +349,14 @@
             <input id="profilePhone" type="tel" autocomplete="tel" placeholder="+243...">
           </div>
           <div class="field">
-            <label for="profileWallet">Adresse du portefeuille de retrait (USDT TRC20) *</label>
+            <label for="profileWallet">Adresse de retrait (USDT TRC20) *</label>
             <input id="profileWallet" type="text" required autocomplete="off" spellcheck="false" placeholder="Saisissez votre adresse TRC20">
           </div>
           <div class="wallet-warning">
-            <strong>⚠️ Attention — Vérifiez bien votre adresse</strong><br>
-            Les bénéfices et retraits seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est correcte et compatible avec le réseau TRC20.
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <div>
+              <strong>Attention :</strong> Les retraits seront envoyés exclusivement à cette adresse. Vérifiez qu'elle est compatible avec le réseau TRC20.
+            </div>
           </div>
           <button class="primary-btn" type="submit">Enregistrer les modifications</button>
           <div id="profileStatusMsg" style="text-align:center; margin-top:16px; font-size:13px; font-weight:600;"></div>
@@ -342,25 +367,24 @@
     <!-- VUE : MON ÉQUIPE -->
     <section id="view-team" class="view">
       <div class="page-header">
-        <div class="eyebrow">PARRAINAGE</div>
-        <h1>Mon Équipe</h1>
-        <p>Développez votre réseau et gagnez des commissions.</p>
+        <h1>Réseau de parrainage</h1>
+        <p>Invitez de nouveaux membres et suivez votre équipe.</p>
       </div>
       
       <div class="dashboard-grid">
         <div>
           <div class="info-card" style="margin-top:0;">
-            <h3>Mon Code de Parrainage</h3>
-            <p style="margin-bottom:16px;">Partagez ce code pour inviter de nouveaux membres. Vous recevrez une commission sur leurs frais.</p>
+            <h3>Votre code unique</h3>
+            <p style="margin-bottom:16px;">Partagez ce code pour inviter de nouveaux membres.</p>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px;">
-              <div style="background:#f4f6fa; padding:16px; border-radius:12px; font-size:20px; font-weight:800; letter-spacing:2px; flex:1; text-align:center; border:1px dashed #ccc;" id="myReferralCode">—</div>
-              <button class="primary-btn" style="width:auto; padding:16px;" onclick="copyCode()">Copier</button>
+              <div style="background:var(--page); padding:14px; border-radius:6px; font-size:18px; font-weight:700; letter-spacing:1px; flex:1; text-align:center; border:1px solid var(--line); color:var(--navy);" id="myReferralCode">—</div>
+              <button class="primary-btn" style="width:auto; padding:14px;" onclick="copyCode()">Copier</button>
             </div>
           </div>
         </div>
         <div>
           <div class="info-card" style="margin-top:0;">
-            <h3>Membres parrainés (<span id="myReferralCount">0</span>)</h3>
+            <h3>Membres (<span id="myReferralCount">0</span>)</h3>
             <div id="myTeamList">
               <p style="font-size:13px; color:var(--muted);">Chargement...</p>
             </div>
@@ -371,32 +395,62 @@
   </main>
 </div>
 
-<!-- MODALE DÉPÔT USDT TRC20 UNIQUEMENT -->
+<!-- MODALE DÉPÔT -->
 <div id="depositModal" class="modal-overlay">
   <div class="modal-box">
-    <div class="modal-title">Faire un Dépôt</div>
     
-    <div style="text-align:center; margin-bottom: 20px;">
-       <span style="background: #edf4ff; color: var(--blue); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid rgba(31,122,255,0.3);">
-         USDT (TRC20 uniquement)
-       </span>
+    <div id="depositStep1">
+      <div class="modal-title">Nouveau Dépôt</div>
+      <form id="depositAmountForm">
+        <div class="field">
+          <label>Montant à déposer (USD)</label>
+          <input type="number" id="depositAmountInput" placeholder="Min. 150" min="150" required style="font-size: 20px; font-weight: 600; padding: 16px;">
+        </div>
+        <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Le montant minimum de dépôt est de 150 $.</p>
+        <button type="submit" class="primary-btn">Continuer</button>
+        <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
+      </form>
     </div>
 
-    <div class="address-box" style="border-color: #e50914; background: #fff5f5;">
-      <p style="font-size:13px; color:var(--red); font-weight:800; margin-bottom:12px;">
-        ⚠️ ATTENTION : Utilisez UNIQUEMENT le réseau TRC20 (Tron)
+    <div id="depositStep2" class="hidden">
+      <div class="modal-title">Effectuer le transfert</div>
+      
+      <div style="text-align:center; margin-bottom: 24px;">
+         <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Montant à envoyer</div>
+         <div style="font-size: 24px; font-weight: 700; color: var(--navy);" id="displayDepositAmount">0.00 $</div>
+      </div>
+
+      <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin-bottom: 20px; display:flex; gap:12px; align-items:flex-start;">
+        <svg viewBox="0 0 24 24" style="color:var(--red); width:24px; height:24px; flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <div style="font-size:13px; color:#991b1b; font-weight: 500; line-height:1.4;">
+          Utilisez <strong>UNIQUEMENT</strong> le réseau TRC20 (Tron). Les autres réseaux entraîneront une perte définitive des fonds.
+        </div>
+      </div>
+
+      <div class="address-box">
+        <p style="font-size:12px; color:var(--muted); margin-bottom:0;">Adresse USDT (TRC20)</p>
+        <span class="address-text" id="addr-usdt_trc">TJgfBr2eLatokAaTFNt8dnDDvkFJQ1BiCU</span>
+        <button class="copy-btn" onclick="copyDepositAddress('addr-usdt_trc')">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copier
+        </button>
+      </div>
+
+      <button class="primary-btn" id="confirmDepositBtn" style="background:var(--green);">J'ai effectué le dépôt</button>
+      <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
+    </div>
+
+    <div id="depositStep3" class="hidden" style="text-align: center;">
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: #fef3c7; color: #d97706; display: grid; place-items: center; margin: 0 auto 20px;">
+        <svg viewBox="0 0 24 24" style="width:32px;height:32px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <div class="modal-title" style="margin-bottom: 12px;">Dépôt en attente</div>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">
+        Votre demande de dépôt a été enregistrée. Votre solde sera mis à jour dès que l'administrateur aura confirmé la réception des fonds.
       </p>
-      <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">Envoyez uniquement USDT (TRC20) à cette adresse :</p>
-      <span class="address-text" id="addr-usdt_trc">TJgfBr2eLatokAaTFNt8dnDDvkFJQ1BiCU</span>
-      <button class="copy-btn" onclick="copyDepositAddress('addr-usdt_trc')">Copier l'adresse</button>
+      <button class="primary-btn" onclick="closeModal('depositModal')">Retour au tableau de bord</button>
     </div>
 
-    <p style="font-size:12px; color:var(--red); text-align:center; margin-bottom:20px; font-weight:700; line-height: 1.4;">
-      Les autres réseaux (BEP20, ERC20, etc.) ne sont pas pris en charge.<br>
-      En cas d'erreur, les fonds seront définitivement perdus.
-    </p>
-    
-    <button style="width:100%; text-align:center; color:var(--muted); font-size:14px; font-weight:600; padding: 12px;" onclick="closeModal('depositModal')">Fermer</button>
   </div>
 </div>
 
@@ -409,22 +463,24 @@
       <input type="number" placeholder="Ex: 100" min="20">
     </div>
     <div class="field">
-      <label>Réseau</label>
-      <select>
-        <option>TRC20 (Tron)</option>
+      <label>Réseau de réception</label>
+      <select style="background:var(--page);">
+        <option>USDT (TRC20)</option>
       </select>
     </div>
     <button class="primary-btn" style="background:var(--red);" onclick="closeModal('withdrawModal')">Demander le retrait</button>
-    <button style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:13px;" onclick="closeModal('withdrawModal')">Annuler</button>
+    <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('withdrawModal')">Annuler</button>
   </div>
 </div>
 
-<!-- MODALE AUTHENTIFICATION / ERREUR -->
+<!-- MODALE INFO -->
 <div id="actionModal" class="modal-overlay">
   <div class="modal-box" style="text-align:center;">
-    <div id="modalSymbol" style="height:62px;width:62px;border-radius:18px;background:#eaf2ff;color:#1f7aff;display:grid;place-items:center;font-size:29px;margin:auto;font-weight:800; margin-bottom:16px;">!</div>
-    <h2 id="modalTitle" style="font-size:20px; margin-bottom:8px;">Titre</h2>
-    <p id="modalDescription" style="color:var(--muted); font-size:14px; margin-bottom:20px;">Description</p>
+    <div id="modalIconWrapper" style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: var(--blue); display: grid; place-items: center; margin: 0 auto 16px;">
+       <svg viewBox="0 0 24 24" style="width:28px;height:28px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+    </div>
+    <h2 id="modalTitle" style="font-size:20px; margin-bottom:8px;">Information</h2>
+    <p id="modalDescription" style="color:var(--muted); font-size:14px; margin-bottom:24px; line-height: 1.5;">Message</p>
     <button class="primary-btn" onclick="closeModal('actionModal')">Fermer</button>
   </div>
 </div>
@@ -436,9 +492,15 @@
   const $ = (id) => document.getElementById(id);
   let currentUser = null;
   let supabaseClient = null;
+  let currentDepositAmount = 0;
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
+  // --- GÉNÉRATEUR D'UID (10 chiffres) ---
+  function generateAccountNumber() {
+    return Math.floor(1000000000 + Math.random() * 9000000000).toString();
   }
 
   // --- UI NAVIGATION ---
@@ -461,15 +523,55 @@
   };
 
   window.openModal = (id) => $(id).classList.add('active');
-  window.closeModal = (id) => $(id).classList.remove('active');
+  window.closeModal = (id) => {
+    $(id).classList.remove('active');
+    if(id === 'depositModal') {
+      setTimeout(() => {
+        $("depositStep1").classList.remove("hidden");
+        $("depositStep2").classList.add("hidden");
+        $("depositStep3").classList.add("hidden");
+        $("depositAmountForm").reset();
+      }, 300);
+    }
+  };
 
-  // Copier l'adresse de dépôt
+  window.openDepositModal = () => {
+    window.openModal('depositModal');
+  };
+
+  // Gestion du flux de dépôt
+  $("depositAmountForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const amount = parseFloat($("depositAmountInput").value);
+    if (amount < 150) {
+      alert("Le montant minimum de dépôt est de 150 $.");
+      return;
+    }
+    currentDepositAmount = amount;
+    $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
+    
+    $("depositStep1").classList.add("hidden");
+    $("depositStep2").classList.remove("hidden");
+  });
+
+  $("confirmDepositBtn").addEventListener("click", async () => {
+    $("confirmDepositBtn").textContent = "Enregistrement...";
+    $("confirmDepositBtn").disabled = true;
+
+    setTimeout(() => {
+      $("depositStep2").classList.add("hidden");
+      $("depositStep3").classList.remove("hidden");
+      $("confirmDepositBtn").textContent = "J'ai effectué le dépôt";
+      $("confirmDepositBtn").disabled = false;
+    }, 800);
+  });
+
   window.copyDepositAddress = (elementId) => {
     const address = $(elementId).textContent;
     navigator.clipboard.writeText(address).then(() => {
-      alert("Adresse copiée avec succès ! N'oubliez pas d'utiliser le réseau TRC20.");
+      alert("Adresse copiée. N'oubliez pas d'utiliser le réseau TRC20.");
     }).catch(() => {
-      alert("Erreur lors de la copie. Adresse : " + address);
+      alert("Erreur de copie.");
     });
   };
 
@@ -478,26 +580,31 @@
     $("loginForm").style.display = isLogin ? "block" : "none";
     $("signupForm").style.display = isLogin ? "none" : "block";
     
-    $("loginTab").style.background = isLogin ? "#fff" : "transparent";
-    $("loginTab").style.boxShadow = isLogin ? "0 2px 5px rgba(0,0,0,0.05)" : "none";
+    $("loginTab").style.background = "transparent";
+    $("loginTab").style.borderBottomColor = isLogin ? "var(--navy)" : "transparent";
     $("loginTab").style.color = isLogin ? "var(--navy)" : "var(--muted)";
     
-    $("signupTab").style.background = !isLogin ? "#fff" : "transparent";
-    $("signupTab").style.boxShadow = !isLogin ? "0 2px 5px rgba(0,0,0,0.05)" : "none";
+    $("signupTab").style.background = "transparent";
+    $("signupTab").style.borderBottomColor = !isLogin ? "var(--navy)" : "transparent";
     $("signupTab").style.color = !isLogin ? "var(--navy)" : "var(--muted)";
     
-    $("authTitle").textContent = isLogin ? "Heureux de vous revoir" : "Créer votre espace";
-    $("authSubtitle").textContent = isLogin ? "Connectez-vous à votre espace." : "Renseignez vos informations pour commencer.";
+    $("authTitle").textContent = isLogin ? "Connexion" : "Inscription";
+    $("authSubtitle").textContent = isLogin ? "Accédez à votre espace investisseur." : "Créez votre compte Xynera Club.";
   };
 
-  function showStatus(title, desc, type="success") {
+  function showInfo(title, desc, isError = false) {
     $("modalTitle").textContent = title;
     $("modalDescription").textContent = desc;
-    const sym = $("modalSymbol");
-    if(type === "success") {
-      sym.style.background = "#eaf8f1"; sym.style.color = "var(--green)"; sym.textContent = "✓";
+    
+    const iconWrapper = $("modalIconWrapper");
+    if(isError) {
+      iconWrapper.style.background = "#fef2f2";
+      iconWrapper.style.color = "var(--red)";
+      iconWrapper.innerHTML = '<svg viewBox="0 0 24 24" style="width:28px;height:28px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
     } else {
-      sym.style.background = "#fff0f0"; sym.style.color = "var(--red)"; sym.textContent = "!";
+      iconWrapper.style.background = "#eff6ff";
+      iconWrapper.style.color = "var(--blue)";
+      iconWrapper.innerHTML = '<svg viewBox="0 0 24 24" style="width:28px;height:28px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
     }
     window.openModal("actionModal");
   }
@@ -505,28 +612,36 @@
   // --- SUPABASE AUTH & DATA ---
   function errorText(error) {
     const raw = error?.message || "Erreur inconnue.";
-    if (/user already registered/i.test(raw)) return "Cette adresse e-mail possède déjà un compte.";
+    
+    // Gestion stricte des doublons
+    if (/user already registered/i.test(raw) || /already exists/i.test(raw) || /already in use/i.test(raw)) {
+      return "Cette adresse e-mail est déjà associée à un compte. Veuillez vous connecter.";
+    }
     if (raw.includes("Invalid login credentials")) return "Adresse e-mail ou mot de passe incorrect.";
+    if (raw.includes("Password should be at least 6 characters")) return "Le mot de passe doit contenir au moins 6 caractères.";
     return raw;
   }
 
   async function loadProfile() {
     const { data, error } = await supabaseClient.from("profiles")
-      .select("full_name, phone, wallet_address, referral_code").eq("id", currentUser.id).maybeSingle();
+      .select("full_name, phone, wallet_address, referral_code, account_number").eq("id", currentUser.id).maybeSingle();
     
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || currentUser.email || "membre";
     
-    $("userNameDisplay").textContent = name.split(" ")[0];
     $("sideName").textContent = name;
     $("sideEmail").textContent = currentUser.email;
-    $("sideAvatar").textContent = (name.trim()[0] || "X").toUpperCase();
+    $("sideAvatar").textContent = (name.trim()[0] || "U").toUpperCase();
     
     $("profileName").value = profile.full_name || "";
     $("profilePhone").value = profile.phone || "";
     $("profileWallet").value = profile.wallet_address || "";
     
+    const accNumber = profile.account_number || "---";
+    $("dashAccountNumber").textContent = accNumber;
+    $("profileAccountNumber").textContent = accNumber;
+
     $("dashWalletDisplay").textContent = profile.wallet_address || "Non configuré";
     $("myReferralCode").textContent = profile.referral_code || "En attente";
     
@@ -548,7 +663,7 @@
             <div class="team-member">
               <div class="team-avatar">${(m.full_name || "M")[0].toUpperCase()}</div>
               <div>
-                <strong style="display:block; font-size:13px;">${m.full_name || "Inconnu"}</strong>
+                <strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong>
                 <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
               </div>
             </div>
@@ -582,16 +697,23 @@
       const amount = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString() + " $" : "—";
       const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
       
+      const statusHtml = `<span class="status-badge pending">En attente</span>`;
+
       const html = `
         <div class="op-item">
           <div class="op-info">
-            <div class="op-icon request">📩</div>
+            <div class="op-icon request">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
             <div class="op-details">
-              <strong>Demande d'investissement</strong>
+              <strong>Demande de dépôt/investissement</strong>
               <small>${date}</small>
             </div>
           </div>
-          <div class="op-amount">${amount}</div>
+          <div style="text-align: right;">
+             <div class="op-amount">${amount}</div>
+             <div style="margin-top: 4px;">${statusHtml}</div>
+          </div>
         </div>
       `;
       
@@ -608,7 +730,7 @@
       await loadRequests();
     } catch(e) {
       console.error(e);
-      showStatus("Erreur", "Impossible de charger les données de votre profil.", "error");
+      showInfo("Erreur", "Impossible de charger les données de votre profil.", true);
     }
   }
 
@@ -624,24 +746,44 @@
     const email = $("suEmail").value.trim();
     const pwd = $("suPassword").value;
     const ref = $("suReferral").value.trim().toUpperCase();
+    const newAccountNumber = generateAccountNumber();
 
     const { data, error } = await supabaseClient.auth.signUp({
       email, password: pwd,
-      options: { data: { full_name: name, referral_code: ref || null } }
+      options: { 
+        data: { 
+          full_name: name, 
+          referral_code: ref || null,
+          account_number: newAccountNumber
+        } 
+      }
     });
 
     if(error) {
-      $("signupStatus").textContent = errorText(error);
-      btn.disabled = false; btn.textContent = "Créer mon compte";
+      const msg = errorText(error);
+      
+      // Si le compte existe déjà, on affiche la modale et on bascule sur "Connexion"
+      if (msg.includes("déjà associée")) {
+        showInfo("Compte déjà existant", msg, true);
+        
+        // Pré-remplir l'email pour la connexion
+        $("liEmail").value = email;
+        $("liPassword").value = "";
+        switchAuthTab('login');
+      } else {
+        $("signupStatus").textContent = msg;
+      }
+      
+      btn.disabled = false; btn.textContent = "Créer un compte";
       return;
     }
 
     if(data.session) {
-      showStatus("Bienvenue !", "Votre compte est prêt. Connexion à votre espace...");
+      showInfo("Bienvenue", "Votre compte est prêt. Connexion à votre espace...");
       setTimeout(() => { closeModal('actionModal'); initApp(data.user); }, 1500);
     } else {
-      showStatus("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé.", "error");
-      btn.disabled = false; btn.textContent = "Créer mon compte";
+      showInfo("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé.");
+      btn.disabled = false; btn.textContent = "Créer un compte";
     }
   });
 
@@ -689,7 +831,7 @@
       $("profileStatusMsg").textContent = errorText(error);
       $("profileStatusMsg").style.color = "var(--red)";
     } else {
-      $("profileStatusMsg").textContent = "Profil mis à jour avec succès !";
+      $("profileStatusMsg").textContent = "Profil mis à jour avec succès.";
       $("profileStatusMsg").style.color = "var(--green)";
       loadProfile();
     }
