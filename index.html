@@ -39,6 +39,8 @@
     .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: #fff; }
     .nav-item.active { border-right: 4px solid var(--blue); background: rgba(37,99,235,0.1); border-radius: 10px 0 0 10px; }
     .nav-icon { display: flex; align-items: center; justify-content: center; width: 24px; flex-shrink: 0; color: inherit; }
+    .nav-item.admin-item { border: 1px dashed #f59e0b; margin-top: 10px; color: #f59e0b; }
+    .nav-item.admin-item:hover { background: rgba(245,158,11,0.1); }
     
     .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: var(--navy-light); flex-shrink: 0; }
     .user-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-width: 0; }
@@ -87,13 +89,21 @@
     .info-card { background: #fff; border-radius: var(--radius); padding: 24px; border: 1px solid var(--line); margin-top: 24px; }
     .info-card h3 { font-size: 16px; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
     
-    /* Tableau des contrats */
-    .contract-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
-    .contract-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--line); color: var(--muted); font-weight: 600; }
-    .contract-table td { padding: 16px 12px; border-bottom: 1px solid var(--line); color: var(--navy); vertical-align: middle; }
-    .contract-table tr:last-child td { border-bottom: none; }
-    .status-badge.active { background: #ecfdf5; color: var(--green); padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 11px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px;}
-    .status-badge.active::before { content: ""; width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+    /* Tableaux */
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+    .data-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--line); color: var(--muted); font-weight: 600; }
+    .data-table td { padding: 16px 12px; border-bottom: 1px solid var(--line); color: var(--navy); vertical-align: middle; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 11px; text-transform: uppercase; display: inline-block;}
+    .status-badge.active { background: #ecfdf5; color: var(--green); }
+    .status-badge.pending { background: #fef3c7; color: #92400e; }
+    .status-badge.admin { background: #eff6ff; color: var(--blue); }
+
+    .action-btn { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-right: 4px; }
+    .btn-approve { background: #dcfce7; color: var(--green); }
+    .btn-approve:hover { background: var(--green); color: #fff; }
+    .btn-reject { background: #fee2e2; color: var(--red); }
+    .btn-reject:hover { background: var(--red); color: #fff; }
 
     /* Formulaires */
     .form-card { background: #fff; padding: 30px; border-radius: var(--radius); border: 1px solid var(--line); }
@@ -104,7 +114,7 @@
     .primary-btn { background: var(--navy); color: #fff; padding: 14px 24px; border-radius: 8px; font-weight: 600; width: 100%; display: flex; justify-content: center; align-items: center;}
     .primary-btn:hover { background: var(--navy-light); }
     
-    /* Page A Propos (Design Magazine) */
+    /* Page A Propos */
     .about-hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 60px 40px; border-radius: var(--radius); color: #fff; text-align: center; margin-bottom: 30px; }
     .about-hero h2 { font-size: 36px; margin-bottom: 20px; font-weight: 800; letter-spacing: -1px;}
     .about-hero p { font-size: 18px; color: #cbd5e1; max-width: 800px; margin: 0 auto; line-height: 1.8; }
@@ -151,7 +161,7 @@
       .balance-amount { font-size: 36px; }
       .balance-actions { flex-direction: column; }
       .modal-box { padding: 24px; }
-      .contract-table { display: block; overflow-x: auto; white-space: nowrap; }
+      .data-table { display: block; overflow-x: auto; white-space: nowrap; }
     }
   </style>
 </head>
@@ -225,11 +235,13 @@
       </div>
       <div class="nav-item" onclick="switchView('about', this)">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></span>
-        <span>À propos du Club</span>
+        <span>À propos</span>
       </div>
-      <div class="nav-item" onclick="switchView('support', this)">
-        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></span>
-        <span>Support & Aide</span>
+      
+      <!-- BOUTON ADMIN (Caché par défaut) -->
+      <div class="nav-item admin-item hidden" id="adminNavBtn" onclick="switchView('admin', this)">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+        <span>Administration</span>
       </div>
     </nav>
 
@@ -284,7 +296,6 @@
               <button class="btn-withdraw" onclick="openModal('withdrawModal')">
                 <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg> Retrait
               </button>
-              <!-- Bouton Activer un contrat -->
               <button class="btn-contract" onclick="openContractModal()">
                 <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Activer un Contrat
               </button>
@@ -293,20 +304,13 @@
 
           <div class="info-card">
             <h3>La première plateforme d'opportunités</h3>
-            <p>Rejoignez <strong>xynary-club</strong> et profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements quotidiens optimisés allant de 1% à 1.5%.</p>
+            <p>Rejoignez <strong>xynary-club</strong> et profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements optimisés allant de 15% à 30% selon vos contrats.</p>
           </div>
         </div>
 
         <div>
+          <!-- SUPPRESSION DE LA CARTE D'ADRESSE DE RETRAIT ICI -->
           <div class="info-card" style="margin-top:0;">
-            <h3>Coordonnées de retrait</h3>
-            <p style="font-size:12px; margin-bottom:12px;">Adresse configurée :</p>
-            <div style="background:var(--page); padding:12px; border-radius:6px; font-family:monospace; font-size:13px; word-break:break-all; border:1px solid var(--line); color:var(--navy);" id="dashWalletDisplay">
-              Non configuré
-            </div>
-          </div>
-
-          <div class="info-card">
             <h3>Activités récentes</h3>
             <div class="op-list" id="recentActivityList">
               <div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité.</div>
@@ -316,40 +320,85 @@
       </div>
     </section>
 
+    <!-- VUE : ADMINISTRATION -->
+    <section id="view-admin" class="view">
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
+      <div class="page-header">
+        <h1>Administration</h1>
+        <p>Gestion complète de la plateforme xynary-club.</p>
+      </div>
+
+      <div class="stats-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:24px;">
+        <div class="info-card" style="margin-top:0;">
+          <h3>Fonds Totaux Plateforme</h3>
+          <div style="font-size:24px; font-weight:700; color:var(--green);" id="adminTotalFunds">0.00 $</div>
+        </div>
+        <div class="info-card" style="margin-top:0;">
+          <h3>Total Utilisateurs</h3>
+          <div style="font-size:24px; font-weight:700; color:var(--blue);" id="adminTotalUsers">0</div>
+        </div>
+        <div class="info-card" style="margin-top:0;">
+          <h3>Demandes en attente</h3>
+          <div style="font-size:24px; font-weight:700; color:var(--red);" id="adminPendingRequests">0</div>
+        </div>
+      </div>
+
+      <!-- GESTION DES DÉPÔTS/RETRAITS -->
+      <div class="info-card">
+        <h3>Demandes de Dépôts / Retraits en attente</h3>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="adminPendingTable">
+            <thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Action</th></tr></thead>
+            <tbody><tr><td colspan="4" style="text-align:center;">Aucune demande.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LISTE DES UTILISATEURS -->
+      <div class="info-card">
+        <h3>Liste des Utilisateurs</h3>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="adminUsersTable">
+            <thead><tr><th>Nom</th><th>Email / UID</th><th>Solde</th><th>Rôle</th></tr></thead>
+            <tbody><tr><td colspan="4" style="text-align:center;">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SUIVI DES CONTRATS -->
+      <div class="info-card">
+        <h3>Contrats Actifs (Tous les utilisateurs)</h3>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="adminContractsTable">
+            <thead><tr><th>Utilisateur</th><th>Montant</th><th>Fin du contrat</th><th>Statut</th></tr></thead>
+            <tbody><tr><td colspan="4" style="text-align:center;">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- VUE : MES CONTRATS -->
     <section id="view-contracts" class="view">
-      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
-      <div class="page-header">
-        <h1>Mes Contrats</h1>
-        <p>Suivez l'évolution de vos contrats d'investissement bloqués.</p>
-      </div>
-      
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
+      <div class="page-header"><h1>Mes Contrats</h1><p>Suivez l'évolution de vos contrats d'investissement.</p></div>
       <div class="info-card" style="margin-top:0;">
-        <div id="contractsContainer">
-          <div style="text-align:center; color:var(--muted); padding:40px;">Chargement de vos contrats...</div>
+        <div id="contractsContainer" style="overflow-x:auto;">
+          <div style="text-align:center; color:var(--muted); padding:40px;">Chargement...</div>
         </div>
       </div>
     </section>
 
     <!-- VUE : HISTORIQUE -->
     <section id="view-history" class="view">
-      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
-      <div class="page-header">
-        <h1>Historique des opérations</h1>
-        <p>Suivez le statut de toutes vos opérations.</p>
-      </div>
-      <div class="op-list" id="fullHistoryList">
-        <div style="text-align:center; color:var(--muted); padding:40px;">Chargement...</div>
-      </div>
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
+      <div class="page-header"><h1>Historique</h1><p>Suivez le statut de toutes vos opérations.</p></div>
+      <div class="op-list" id="fullHistoryList"><div style="text-align:center; color:var(--muted); padding:40px;">Chargement...</div></div>
     </section>
 
     <!-- VUE : PROFIL -->
     <section id="view-profile" class="view">
-      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
-      <div class="page-header">
-        <h1>Mon Profil</h1>
-        <p>Gérez vos informations personnelles et vos coordonnées de paiement.</p>
-      </div>
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
+      <div class="page-header"><h1>Mon Profil</h1><p>Gérez vos informations personnelles.</p></div>
       
       <div class="dashboard-grid">
         <div>
@@ -362,10 +411,7 @@
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse de retrait</div><div style="font-size:14px; color:var(--navy); font-weight:500; font-family:monospace; word-break:break-all;" id="profileDisplayWallet">Non configurée</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Numéro de compte (UID)</div><div style="font-size:15px; color:var(--navy); font-weight:700; font-family:monospace;" id="profileAccountNumber">---</div></div>
             </div>
-            <button class="logout-btn" id="logoutBtnProfile" style="margin-top:24px;">
-              <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-              Se déconnecter
-            </button>
+            <button class="logout-btn" id="logoutBtnProfile" style="margin-top:24px;">Se déconnecter</button>
           </div>
         </div>
 
@@ -384,10 +430,9 @@
       </div>
     </section>
 
-    <!-- VUE : À PROPOS (Détaillée) -->
+    <!-- VUE : À PROPOS -->
     <section id="view-about" class="view">
-      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
-      
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
       <div class="about-hero">
         <h2>Bienvenue chez xynary-club</h2>
         <p>Un club de traders enregistré réunissant des membres partout dans le monde. Depuis 2020, notre mission est de vous aider à générer des bénéfices réguliers sur les marchés financiers.</p>
@@ -400,13 +445,15 @@
             <h4>Des Rendements Compétitifs</h4>
             <p>Nous offrons des opportunités d'investissement très compétitives sur le marché :</p>
             <ul class="about-list">
-              <li><strong>1% à 1.5% par jour</strong> sur des contrats à court terme (2 mois, 3 mois, 5 mois).</li>
-              <li>Possibilité de générer <strong>jusqu'à 2%+</strong> par jour sur nos stratégies avancées.</li>
+              <li><strong>15%</strong> pour un contrat de 1 Mois.</li>
+              <li><strong>20%</strong> pour un contrat de 2 Mois.</li>
+              <li><strong>25%</strong> pour un contrat de 4 Mois.</li>
+              <li><strong>30%</strong> pour un contrat de 6 Mois.</li>
             </ul>
           </div>
           <div class="about-card">
             <h4>Une Expertise Reconnue</h4>
-            <p>Nos traders analysent les marchés 24h/24. Nous investissons dans le Forex, les Cryptomonnaies (Bitcoin, Ethereum, etc.) et les Actions de grandes entreprises technologiques.</p>
+            <p>Nos traders analysent les marchés 24h/24. Nous investissons dans le Forex, les Cryptomonnaies et les Actions de grandes entreprises technologiques.</p>
           </div>
         </div>
       </div>
@@ -414,40 +461,23 @@
       <div class="about-section">
         <h3>Notre Système de Sécurité</h3>
         <div class="about-card">
-          <p>La sécurité de vos fonds est notre priorité absolue. Nous utilisons des protocoles de cryptage de niveau bancaire. Vos fonds sont isolés et ne sont jamais mélangés avec les fonds opérationnels du club. Chaque contrat que vous activez est enregistré avec une date de début et une date de fin précises, garantissant une transparence totale.</p>
+          <p>La sécurité de vos fonds est notre priorité absolue. Nous utilisons des protocoles de cryptage de niveau bancaire. Vos fonds sont isolés et chaque contrat que vous activez est enregistré avec une date de début et une date de fin précises, garantissant une transparence totale.</p>
         </div>
       </div>
 
       <div class="about-section">
         <h3>Notre Système de Paiement</h3>
         <div class="about-card">
-          <p>Nous utilisons le réseau <strong>USDT (TRC20)</strong> pour tous les dépôts et retraits. Ce réseau garantit des transactions quasi-instantanées avec des frais extrêmement bas. Vos retraits sont traités dans les plus brefs délais par notre équipe financière dès que votre contrat arrive à échéance.</p>
+          <p>Nous utilisons le réseau <strong>USDT (TRC20)</strong> pour tous les dépôts et retraits. Ce réseau garantit des transactions quasi-instantanées avec des frais extrêmement bas.</p>
         </div>
       </div>
 
       <div class="about-section">
         <h3>Plus de 6 ans de confiance</h3>
         <div class="about-card">
-          <p>Fondé en <strong>2020</strong>, xynary-club est un club officiellement enregistré et opérant à l'international. Nous sommes fiers de notre présence dans plusieurs pays clés et de la confiance que nous accordent nos milliers de membres :</p>
-          <ul class="about-list">
-            <li>La France</li>
-            <li>Le Royaume-Uni</li>
-            <li>Le Canada</li>
-            <li>L'Algérie</li>
-          </ul>
+          <p>Fondé en <strong>2020</strong>, xynary-club est un club officiellement enregistré et opérant à l'international. Nous sommes fiers de notre présence dans plusieurs pays clés :</p>
+          <ul class="about-list"><li>La France</li><li>Le Royaume-Uni</li><li>Le Canada</li><li>L'Algérie</li></ul>
         </div>
-      </div>
-    </section>
-
-    <!-- VUE : SUPPORT -->
-    <section id="view-support" class="view">
-      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour</button></div>
-      <div class="page-header"><h1>Support & Aide</h1><p>Notre équipe est là pour vous.</p></div>
-      <div class="info-card" style="margin-top:0;">
-        <p style="margin-bottom: 16px;">Envoyez-nous un e-mail à <strong>support@xynary-club.com</strong> ou utilisez le formulaire ci-dessous.</p>
-        <div class="field"><label>Sujet</label><input type="text" placeholder="Objet de votre demande"></div>
-        <div class="field"><label>Message</label><textarea rows="4" style="width:100%; border:1px solid var(--line); border-radius:8px; padding:12px;"></textarea></div>
-        <button class="primary-btn" type="button">Envoyer le message</button>
       </div>
     </section>
 
@@ -462,21 +492,16 @@
     <div class="ticker-item pos">ETH/USD 3,450 $ ▲</div>
     <div class="ticker-item neg">GBP/USD 1.2630 ▼</div>
     <div class="ticker-item pos">XAU/USD 2,340 $ ▲</div>
-    <div class="ticker-item pos">USD/JPY 154.20 ▲</div>
-    <div class="ticker-item neg">SOL/USD 145 $ ▼</div>
   </div>
 </div>
 
-<!-- MODALES DÉPÔT, RETRAIT, CONTRAT, INFO -->
+<!-- MODALES -->
 <div id="depositModal" class="modal-overlay">
   <div class="modal-box">
     <div id="depositStep1">
       <div class="modal-title">Nouveau Dépôt</div>
       <form id="depositAmountForm">
-        <div class="field">
-          <label>Montant à déposer (USD)</label>
-          <input type="number" id="depositAmountInput" placeholder="Min. 150" min="150" required style="font-size: 20px; font-weight: 600; padding: 16px;">
-        </div>
+        <div class="field"><label>Montant à déposer (USD)</label><input type="number" id="depositAmountInput" placeholder="Min. 150" min="150" required style="font-size: 20px; font-weight: 600; padding: 16px;"></div>
         <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Le montant minimum de dépôt est de 150 $.</p>
         <button type="submit" class="primary-btn">Continuer</button>
         <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
@@ -489,25 +514,19 @@
          <div style="font-size: 24px; font-weight: 700; color: var(--navy);" id="displayDepositAmount">0.00 $</div>
       </div>
       <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin-bottom: 20px; display:flex; gap:12px; align-items:flex-start;">
-        <svg viewBox="0 0 24 24" style="color:var(--red); width:24px; height:24px; flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         <div style="font-size:13px; color:#991b1b; font-weight: 500; line-height:1.4;">Utilisez <strong>UNIQUEMENT</strong> le réseau TRC20 (Tron). Les autres réseaux entraîneront une perte définitive des fonds.</div>
       </div>
       <div class="address-box">
         <p style="font-size:12px; color:var(--muted); margin-bottom:0;">Adresse USDT (TRC20)</p>
         <span class="address-text" id="addr-usdt_trc">TJgfBr2eLatokAaTFNt8dnDDvkFJQ1BiCU</span>
-        <button class="copy-btn" onclick="copyDepositAddress('addr-usdt_trc')">
-          <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copier
-        </button>
+        <button class="copy-btn" onclick="copyDepositAddress('addr-usdt_trc')">Copier</button>
       </div>
       <button class="primary-btn" id="confirmDepositBtn" style="background:var(--green);">J'ai effectué le dépôt</button>
       <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
     </div>
     <div id="depositStep3" class="hidden" style="text-align: center;">
-      <div style="width: 64px; height: 64px; border-radius: 50%; background: #fef3c7; color: #d97706; display: grid; place-items: center; margin: 0 auto 20px;">
-        <svg viewBox="0 0 24 24" style="width:32px;height:32px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      </div>
       <div class="modal-title" style="margin-bottom: 12px;">Dépôt en attente</div>
-      <p style="color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Votre demande de dépôt a été enregistrée. Votre solde sera mis à jour dès que l'administrateur aura confirmé la réception des fonds. Vous pourrez ensuite activer un contrat.</p>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Votre demande a été enregistrée. Votre solde sera mis à jour dès confirmation par l'administrateur.</p>
       <button class="primary-btn" onclick="closeModal('depositModal')">Retour au tableau de bord</button>
     </div>
   </div>
@@ -538,11 +557,12 @@
         <input type="number" id="contractAmountInput" placeholder="Montant à bloquer" min="150" required>
       </div>
       <div class="field">
-        <label>Durée du contrat</label>
+        <label>Durée du contrat (et bénéfice)</label>
         <select id="contractDuration" style="background:var(--page);">
-          <option value="2">2 Mois (1.5% / jour)</option>
-          <option value="3">3 Mois (1.5% / jour)</option>
-          <option value="5">5 Mois (1.5% / jour)</option>
+          <option value="1">1 Mois (15%)</option>
+          <option value="2">2 Mois (20%)</option>
+          <option value="4">4 Mois (25%)</option>
+          <option value="6">6 Mois (30%)</option>
         </select>
       </div>
       <button type="submit" class="primary-btn" style="background:var(--blue);">Confirmer le blocage</button>
@@ -571,7 +591,8 @@
   let currentUser = null;
   let supabaseClient = null;
   let currentDepositAmount = 0;
-  let userBalance = 0; // Stockage local du solde
+  let userBalance = 0;
+  let isAdmin = false;
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -585,6 +606,7 @@
       document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
       element.classList.add('active');
     }
+    if(viewName === 'admin') loadAdminData();
     if(window.innerWidth <= 1024) $("sidebar").classList.remove("open");
   };
   
@@ -604,11 +626,9 @@
   };
   
   window.openDepositModal = () => window.openModal('depositModal');
-  
-  // Ouvrir le modal de contrat (vérifie si le solde est suffisant)
   window.openContractModal = () => {
     if (userBalance < 150) {
-      showInfo("Solde insuffisant", "Vous devez avoir un solde minimum de 150 $ pour activer un contrat. Veuillez d'abord effectuer un dépôt.", true);
+      showInfo("Solde insuffisant", "Vous devez avoir un solde minimum de 150 $ pour activer un contrat.", true);
       return;
     }
     $("modalAvailableBalance").textContent = userBalance.toFixed(2) + " $";
@@ -651,35 +671,35 @@
 
   function generateAccountNumber() { return Math.floor(1000000000 + Math.random() * 9000000000).toString(); }
 
+  // --- CHARGEMENT PROFIL UTILISATEUR ---
   async function loadProfile() {
-    // On récupère aussi le solde (balance) maintenant
-    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance").eq("id", currentUser.id).maybeSingle();
+    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance, role").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || "Membre";
-    const accNum = profile.account_number || "---";
-    const phone = profile.phone || "Non renseigné";
-    const wallet = profile.wallet_address || "Non configurée";
     
-    // Mise à jour du solde
+    // Gestion Admin
+    isAdmin = profile.role === 'admin';
+    if (isAdmin) {
+      $("adminNavBtn").classList.remove("hidden");
+    } else {
+      $("adminNavBtn").classList.add("hidden");
+    }
+    
     userBalance = profile.balance || 0;
     $("userBalanceDisplay").textContent = userBalance.toFixed(2);
 
-    // Mise à jour Menu
     $("sideName").textContent = name;
     $("sideEmail").textContent = currentUser.email;
     $("sideAvatar").textContent = (name.trim()[0] || "U").toUpperCase();
     
-    // Mise à jour Dashboard
-    $("dashAccountNumber").textContent = accNum;
-    $("dashWalletDisplay").textContent = wallet;
-
-    // Mise à jour Page Profil
+    $("dashAccountNumber").textContent = profile.account_number || "---";
+    
     $("profileDisplayName").textContent = name;
     $("profileDisplayEmail").textContent = currentUser.email;
-    $("profileDisplayPhone").textContent = phone;
-    $("profileDisplayWallet").textContent = wallet;
-    $("profileAccountNumber").textContent = accNum;
+    $("profileDisplayPhone").textContent = profile.phone || "Non renseigné";
+    $("profileDisplayWallet").textContent = profile.wallet_address || "Non configurée";
+    $("profileAccountNumber").textContent = profile.account_number || "---";
     
     $("profileName").value = profile.full_name || "";
     $("profilePhone").value = profile.phone || "";
@@ -689,41 +709,21 @@
     loadContracts();
   }
 
-  // --- GESTION DES CONTRATS ---
+  // --- GESTION DES CONTRATS UTILISATEUR ---
   async function loadContracts() {
     const { data, error } = await supabaseClient.from("contracts").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
     
     if (error || !data || data.length === 0) {
-      $("contractsContainer").innerHTML = '<div style="text-align:center; color:var(--muted); padding:40px;">Vous n\'avez aucun contrat actif pour le moment.<br>Effectuez un dépôt puis cliquez sur "Activer un Contrat".</div>';
+      $("contractsContainer").innerHTML = '<div style="text-align:center; color:var(--muted); padding:40px;">Aucun contrat actif.</div>';
       return;
     }
 
-    let html = `
-      <table class="contract-table">
-        <thead>
-          <tr>
-            <th>Montant</th>
-            <th>Début</th>
-            <th>Fin</th>
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
+    let html = `<table class="data-table"><thead><tr><th>Montant</th><th>Début</th><th>Fin</th><th>Statut</th></tr></thead><tbody>`;
     data.forEach(c => {
-      const start = new Date(c.start_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-      const end = new Date(c.end_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-      html += `
-        <tr>
-          <td><strong>${Number(c.amount).toFixed(2)} $</strong></td>
-          <td>${start}</td>
-          <td>${end}</td>
-          <td><span class="status-badge active">Contrat en cours</span></td>
-        </tr>
-      `;
+      const start = new Date(c.start_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
+      const end = new Date(c.end_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
+      html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${start}</td><td>${end}</td><td><span class="status-badge active">Contrat en cours</span></td></tr>`;
     });
-
     html += `</tbody></table>`;
     $("contractsContainer").innerHTML = html;
   }
@@ -734,65 +734,142 @@
     const duration = parseInt($("contractDuration").value);
     const errorDiv = $("contractError");
     
-    if (amount > userBalance) {
-      errorDiv.textContent = "Montant supérieur à votre solde disponible.";
-      return;
-    }
-    if (amount < 150) {
-      errorDiv.textContent = "Le montant minimum pour un contrat est de 150 $.";
-      return;
-    }
+    if (amount > userBalance) { errorDiv.textContent = "Montant supérieur à votre solde disponible."; return; }
+    if (amount < 150) { errorDiv.textContent = "Le montant minimum est de 150 $."; return; }
 
-    errorDiv.textContent = "Activation en cours...";
-    errorDiv.style.color = "var(--blue)";
-
-    // Calcul de la date de fin
+    errorDiv.textContent = "Activation...";
     const startDate = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + duration);
 
-    // 1. Créer le contrat
     const { error: contractError } = await supabaseClient.from("contracts").insert({
-      user_id: currentUser.id,
-      amount: amount,
-      duration_months: duration,
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
-      status: 'active'
+      user_id: currentUser.id, amount: amount, duration_months: duration,
+      start_date: startDate.toISOString(), end_date: endDate.toISOString(), status: 'active'
     });
 
-    if (contractError) {
-      errorDiv.textContent = "Erreur lors de l'activation : " + contractError.message;
-      return;
-    }
+    if (contractError) { errorDiv.textContent = "Erreur : " + contractError.message; return; }
 
-    // 2. Déduire du solde
     const newBalance = userBalance - amount;
-    const { error: balanceError } = await supabaseClient.from("profiles").update({ balance: newBalance }).eq("id", currentUser.id);
-
-    if (balanceError) {
-      errorDiv.textContent = "Erreur de mise à jour du solde.";
-      return;
-    }
+    await supabaseClient.from("profiles").update({ balance: newBalance }).eq("id", currentUser.id);
 
     closeModal('contractModal');
-    showInfo("Contrat Activé", "Félicitations, votre contrat est maintenant actif ! Consultez l'onglet 'Mes Contrats'.");
-    loadProfile(); // Rafraîchit les données
+    showInfo("Contrat Activé", "Félicitations, votre contrat est actif !");
+    loadProfile();
   });
 
+  // --- LOGIQUE ADMINISTRATEUR ---
+  async function loadAdminData() {
+    if(!isAdmin) return;
 
-  // --- CHARGEMENT DES AUTRES DONNÉES ---
+    // 1. Total Fonds Plateforme
+    const { data: profiles } = await supabaseClient.from("profiles").select("balance");
+    const totalFunds = profiles.reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
+    $("adminTotalFunds").textContent = totalFunds.toFixed(2) + " $";
+    $("adminTotalUsers").textContent = profiles.length;
+
+    // 2. Demandes de Dépôts/Retraits en attente
+    const { data: deposits } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
+    const { data: withdrawals } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
+    
+    const allPending = [
+      ...(deposits || []).map(d => ({ ...d, type: 'Dépôt' })),
+      ...(withdrawals || []).map(w => ({ ...w, type: 'Retrait' }))
+    ].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+    $("adminPendingRequests").textContent = allPending.length;
+
+    let pendingHtml = "";
+    if(allPending.length === 0) {
+      pendingHtml = "<tr><td colspan='4' style='text-align:center;'>Aucune demande en attente.</td></tr>";
+    } else {
+      allPending.forEach(item => {
+        const date = new Date(item.created_at).toLocaleDateString('fr-FR');
+        const amount = item.type === 'Dépôt' ? item.indicative_amount_usd : item.amount;
+        pendingHtml += `
+          <tr>
+            <td>${date}</td>
+            <td><strong>${item.type}</strong></td>
+            <td>${Number(amount).toFixed(2)} $</td>
+            <td>
+              <button class="action-btn btn-approve" onclick="approveRequest('${item.id}', '${item.type}', ${amount}, '${item.user_id}')">Approuver</button>
+              <button class="action-btn btn-reject" onclick="rejectRequest('${item.id}', '${item.type}')">Refuser</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+    $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
+
+    // 3. Liste Utilisateurs
+    const { data: allUsers } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role");
+    let usersHtml = "";
+    (allUsers || []).forEach(u => {
+      usersHtml += `
+        <tr>
+          <td>${u.full_name || 'Inconnu'}</td>
+          <td><span style="font-family:monospace;">${u.account_number || '---'}</span></td>
+          <td><strong>${Number(u.balance || 0).toFixed(2)} $</strong></td>
+          <td><span class="status-badge ${u.role === 'admin' ? 'admin' : 'active'}">${u.role || 'user'}</span></td>
+        </tr>
+      `;
+    });
+    $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml;
+
+    // 4. Suivi des Contrats
+    const { data: allContracts } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
+    let contractsHtml = "";
+    if(!allContracts || allContracts.length === 0) {
+      contractsHtml = "<tr><td colspan='4' style='text-align:center;'>Aucun contrat.</td></tr>";
+    } else {
+      allContracts.forEach(c => {
+        const end = new Date(c.end_date).toLocaleDateString('fr-FR');
+        contractsHtml += `
+          <tr>
+            <td>${c.profiles?.full_name || 'Inconnu'}</td>
+            <td><strong>${Number(c.amount).toFixed(2)} $</strong></td>
+            <td>${end}</td>
+            <td><span class="status-badge active">${c.status}</span></td>
+          </tr>
+        `;
+      });
+    }
+    $("adminContractsTable").querySelector('tbody').innerHTML = contractsHtml;
+  }
+
+  // Actions Admin
+  window.approveRequest = async (id, type, amount, userId) => {
+    if(!confirm(`Confirmez-vous ce ${type} de ${amount} $ ?`)) return;
+
+    if (type === 'Dépôt') {
+      // On valide le dépôt et on ajoute au solde
+      const { data: userProfile } = await supabaseClient.from("profiles").select("balance").eq("id", userId).single();
+      const newBal = (Number(userProfile?.balance) || 0) + Number(amount);
+      
+      await supabaseClient.from("profiles").update({ balance: newBal }).eq("id", userId);
+      await supabaseClient.from("investment_interest_requests").update({ status: "approved" }).eq("id", id);
+    
+    } else if (type === 'Retrait') {
+      // Le retrait est validé (l'argent a été envoyé hors plateforme)
+      await supabaseClient.from("withdrawals").update({ status: "approved" }).eq("id", id);
+    }
+    
+    loadAdminData();
+  };
+
+  window.rejectRequest = async (id, type) => {
+    if(!confirm(`Refuser cette demande de ${type} ?`)) return;
+    if (type === 'Dépôt') await supabaseClient.from("investment_interest_requests").update({ status: "rejected" }).eq("id", id);
+    else if (type === 'Retrait') await supabaseClient.from("withdrawals").update({ status: "rejected" }).eq("id", id);
+    loadAdminData();
+  };
+
+
+  // --- FONCTIONS GLOBALES ---
   async function loadReferralCount() {
     const { data, error } = await supabaseClient.rpc("xynera_my_team");
     if (!error) {
       const members = Array.isArray(data) ? data : [];
-      $("myReferralCount").textContent = members.length;
-      const list = $("myTeamList");
-      if(!list) return;
-      list.innerHTML = members.length === 0 ? '<p style="font-size:13px; color:var(--muted);">Aucun membre.</p>' : "";
-      members.forEach(m => {
-        list.innerHTML += `<div class="team-member"><div class="team-avatar">${(m.full_name || "M")[0].toUpperCase()}</div><div><strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong><small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small></div></div>`;
-      });
+      if($("myReferralCount")) $("myReferralCount").textContent = members.length;
     }
   }
 
@@ -802,17 +879,21 @@
       if (error) return;
       const rows = data || [];
       const recentList = $("recentActivityList"); const fullList = $("fullHistoryList");
+      if(!recentList || !fullList) return;
+      
       recentList.innerHTML = ""; fullList.innerHTML = "";
       if(rows.length === 0) {
-        const emptyMsg = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune opération.</div>';
-        recentList.innerHTML = emptyMsg; fullList.innerHTML = emptyMsg; return;
+        recentList.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité.</div>';
+        return;
       }
       rows.forEach((item, index) => {
         const isRecent = index < 3;
         const amount = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString() + " $" : "—";
-        const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-        const statusHtml = `<span class="status-badge pending">En attente</span>`;
-        const html = `<div class="op-item"><div class="op-info"><div class="op-icon request"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div><div class="op-details"><strong>Demande d'opération</strong><small>${date}</small></div></div><div style="text-align: right;"><div class="op-amount">${amount}</div><div style="margin-top: 4px;">${statusHtml}</div></div></div>`;
+        const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
+        const statusClass = item.status === 'approved' ? 'active' : 'pending';
+        const statusText = item.status === 'approved' ? 'Approuvé' : 'En attente';
+        
+        const html = `<div class="op-item" style="padding:12px; margin-bottom:8px;"><div class="op-info"><div class="op-details"><strong>Demande d'opération</strong><small>${date}</small></div></div><div style="text-align: right;"><div class="op-amount">${amount}</div><div style="margin-top: 4px;"><span class="status-badge ${statusClass}">${statusText}</span></div></div></div>`;
         if(isRecent) recentList.innerHTML += html;
         fullList.innerHTML += html;
       });
@@ -859,13 +940,16 @@
 
   $("confirmDepositBtn").addEventListener("click", async () => {
     $("confirmDepositBtn").textContent = "Enregistrement..."; $("confirmDepositBtn").disabled = true;
-    try { await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: "Dépôt USDT TRC20 initié." }); } catch (err) { console.error(err); }
+    try { await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: "Dépôt USDT TRC20 initié.", status: "pending" }); } catch (err) { console.error(err); }
     setTimeout(() => { $("depositStep2").classList.add("hidden"); $("depositStep3").classList.remove("hidden"); $("confirmDepositBtn").textContent = "J'ai effectué le dépôt"; $("confirmDepositBtn").disabled = false; loadRequests(); }, 800);
   });
 
   $("withdrawForm").addEventListener("submit", async (e) => {
     e.preventDefault(); const amount = parseFloat($("withdrawAmountInput").value);
     if (amount < 20) { alert("Le montant minimum de retrait est de 20 $."); return; }
+    
+    // Créer la demande de retrait
+    try { await supabaseClient.from("withdrawals").insert({ user_id: currentUser.id, amount: amount, status: "pending" }); } catch (err) { console.error(err); }
     closeModal('withdrawModal'); showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée.");
   });
 
@@ -880,7 +964,7 @@
   // --- DECONNEXION ---
   const handleLogout = async () => { await supabaseClient.auth.signOut(); window.location.reload(); };
   $("logoutBtnSidebar").addEventListener("click", handleLogout);
-  $("logoutBtnProfile").addEventListener("click", handleLogout);
+  if($("logoutBtnProfile")) $("logoutBtnProfile").addEventListener("click", handleLogout);
   
   supabaseClient.auth.getSession().then(({ data: { session } }) => { 
     if (session) initApp(session.user); 
