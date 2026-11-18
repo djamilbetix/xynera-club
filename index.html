@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#101827">
   <title>Xynera Club | Espace Investisseur</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,7 +14,20 @@
       --radius: 12px;
     }
     *{box-sizing:border-box; margin:0; padding:0;}
-    body{background:var(--page); color:var(--ink); font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif; min-height:100vh; display:flex; overflow-x:hidden;}
+    
+    /* BLOCAGE DU SCROLL HORIZONTAL */
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden; 
+      background: var(--page); 
+      color: var(--ink); 
+      font: 14px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif; 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column;
+    }
+    
     button,input,textarea,select{font:inherit;}
     button{cursor:pointer; border:none; background:none; transition: all 0.2s;}
     .hidden{display:none!important;}
@@ -23,6 +36,7 @@
     
     .app-layout { display: flex; flex-direction: row-reverse; width: 100%; height: 100vh; overflow: hidden; }
     
+    /* Sidebar (Menu) */
     .sidebar { width: 260px; background: var(--navy); color: #fff; display: flex; flex-direction: column; z-index: 100; flex-shrink: 0; }
     .sidebar-header { padding: 30px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; text-align: center; }
     .sidebar-header img { max-height: 50px; width: auto; object-fit: contain; margin-bottom: 12px; }
@@ -39,12 +53,13 @@
     .logout-btn { width: 100%; padding: 10px; border-radius: var(--radius); background: rgba(220,38,38,0.1); color: #f87171; font-weight: 600; font-size: 13px; text-align: center; }
     .logout-btn:hover { background: rgba(220,38,38,0.2); }
 
-    .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); position: relative; }
+    /* Main Content */
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; background: var(--page); position: relative; }
     
     .mobile-header { display: none; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; flex-direction: row-reverse; }
     .hamburger { color: var(--navy); cursor: pointer; padding: 4px; display: flex; align-items: center; }
     
-    .view { display: none; padding: 32px 40px 60px; max-width: 1100px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
+    .view { display: none; padding: 32px 40px 80px; max-width: 1100px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease; }
     .view.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -113,13 +128,22 @@
     .team-member { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
     .team-avatar { width: 32px; height: 32px; border-radius: 50%; background: #eff6ff; color: var(--blue); display: grid; place-items: center; font-weight: 600; font-size: 12px;}
 
+    /* TICKER (Bandeau défilant en bas) */
+    .market-ticker-wrap { background: #fff; border-top: 1px solid var(--line); padding: 12px 0; overflow: hidden; position: fixed; bottom: 0; right: 0; left: 260px; z-index: 90; display: flex; align-items: center; }
+    .market-ticker { display: flex; gap: 30px; white-space: nowrap; animation: ticker 25s linear infinite; font-size: 13px; font-weight: 600; }
+    .ticker-item { display: inline-flex; align-items: center; gap: 6px; }
+    .ticker-item.pos { color: var(--green); }
+    .ticker-item.neg { color: var(--red); }
+    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
     @media (max-width: 1024px) {
       .dashboard-grid { grid-template-columns: 1fr; }
       .sidebar { position: fixed; height: 100vh; right: 0; transform: translateX(100%); box-shadow: -5px 0 15px rgba(0,0,0,0.1);}
       .sidebar.open { transform: translateX(0); }
       .mobile-header { display: flex; }
-      .view { padding: 24px 20px 80px; }
+      .view { padding: 24px 20px 100px; }
       .stats-grid { grid-template-columns: 1fr; }
+      .market-ticker-wrap { left: 0; }
     }
     @media (max-width: 600px) {
       .balance-amount { font-size: 36px; }
@@ -130,8 +154,8 @@
 </head>
 <body>
 
-<section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;">
-  <div style="background:#fff; border-radius:var(--radius); box-shadow:0 10px 25px rgba(0,0,0,0.05); padding:40px; width:100%; max-width:420px; border: 1px solid var(--line);">
+<section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
+  <div style="background:#fff; border-radius:var(--radius); box-shadow:0 10px 25px rgba(0,0,0,0.05); padding:40px; width:100%; max-width:420px; border: 1px solid var(--line); margin: auto;">
     <div style="text-align:center; margin-bottom:32px;">
       <img src="logo-xenary.png" style="height:60px; margin:0 auto 20px; object-fit:contain;" alt="Xynera" onerror="this.style.display='none'">
       <h2 id="authTitle" style="font-size:22px; color:var(--navy); margin-bottom:8px; font-weight:700;">Connexion</h2>
@@ -170,18 +194,32 @@
       </div>
     </div>
     
+    <!-- MENU CLASSÉ PAR ORDRE -->
     <nav class="nav-menu">
       <div class="nav-item active" onclick="switchView('dashboard', this)">
         <span>Tableau de bord</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
       </div>
+      <div class="nav-item" onclick="openDepositModal()">
+        <span>Dépôt</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+      </div>
+      <div class="nav-item" onclick="openModal('withdrawModal')">
+        <span>Retrait</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+      </div>
       <div class="nav-item" onclick="switchView('history', this)">
-        <span>Historique</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+        <span>Historique des opérations</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
       </div>
       <div class="nav-item" onclick="switchView('team', this)">
         <span>Mon Équipe</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
       </div>
       <div class="nav-item" onclick="switchView('profile', this)">
         <span>Mon Profil</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+      </div>
+      
+      <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
+      
+      <!-- OPTION LANGUES -->
+      <div class="nav-item" onclick="alert('Système de traduction en cours de développement.')">
+        <span>Langues (Français)</span> <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
       </div>
     </nav>
 
@@ -271,6 +309,33 @@
             <h3>La première plateforme d'opportunités</h3>
             <p>Xynera Club vous connecte aux meilleurs marchés financiers mondiaux. Profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements optimisés et une sécurité maximale pour votre capital.</p>
           </div>
+
+          <!-- SECTION MARCHÉS ET ANNONCES -->
+          <div class="info-card">
+            <h3>Marchés & Annonces</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+              <div style="background: var(--page); padding: 12px; border-radius: 8px; border: 1px solid var(--line);">
+                <div style="font-size: 12px; color: var(--muted);">EUR/USD</div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--green);">1.0845 <span style="font-size:11px;">(+0.12%)</span></div>
+              </div>
+              <div style="background: var(--page); padding: 12px; border-radius: 8px; border: 1px solid var(--line);">
+                <div style="font-size: 12px; color: var(--muted);">BTC/USD</div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--red);">64,230 $ <span style="font-size:11px;">(-1.4%)</span></div>
+              </div>
+              <div style="background: var(--page); padding: 12px; border-radius: 8px; border: 1px solid var(--line);">
+                <div style="font-size: 12px; color: var(--muted);">ETH/USD</div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--green);">3,450 $ <span style="font-size:11px;">(+2.1%)</span></div>
+              </div>
+              <div style="background: var(--page); padding: 12px; border-radius: 8px; border: 1px solid var(--line);">
+                <div style="font-size: 12px; color: var(--muted);">XAU/USD (Or)</div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--green);">2,340 $ <span style="font-size:11px;">(+0.5%)</span></div>
+              </div>
+            </div>
+            <div style="background: #fef3c7; border: 1px solid #fde68a; padding: 12px; border-radius: 8px;">
+              <strong style="font-size: 13px; color: #92400e; display: block; margin-bottom: 4px;">📢 Annonce</strong>
+              <p style="font-size: 12px; color: #92400e;">Nouvelle opportunité d'investissement Forex disponible. Contactez votre gestionnaire pour plus d'informations.</p>
+            </div>
+          </div>
         </div>
 
         <div>
@@ -294,7 +359,7 @@
 
     <section id="view-history" class="view">
       <div class="page-header">
-        <h1>Historique</h1>
+        <h1>Historique des opérations</h1>
         <p>Suivez le statut de toutes vos opérations.</p>
       </div>
       <div class="op-list" id="fullHistoryList">
@@ -367,6 +432,19 @@
       </div>
     </section>
   </main>
+</div>
+
+<!-- TICKER EN BAS -->
+<div class="market-ticker-wrap">
+  <div class="market-ticker">
+    <div class="ticker-item pos">EUR/USD 1.0845 ▲</div>
+    <div class="ticker-item neg">BTC/USD 64,230 $ ▼</div>
+    <div class="ticker-item pos">ETH/USD 3,450 $ ▲</div>
+    <div class="ticker-item neg">GBP/USD 1.2630 ▼</div>
+    <div class="ticker-item pos">XAU/USD 2,340 $ ▲</div>
+    <div class="ticker-item pos">USD/JPY 154.20 ▲</div>
+    <div class="ticker-item neg">SOL/USD 145 $ ▼</div>
+  </div>
 </div>
 
 <div id="depositModal" class="modal-overlay">
@@ -465,20 +543,15 @@
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  // --- ENVOI D'EMAIL VIA RESEND (Nom de la fonction mis à jour : resend-email) ---
   async function sendEmailNotification(to, subject, htmlContent) {
     try {
       const { data, error } = await supabaseClient.functions.invoke('resend-email', {
         body: { to, subject, html: htmlContent }
       });
-      if (error) console.error("Erreur Supabase Function:", error);
-      else console.log("Email envoyé avec succès:", data);
-    } catch (e) {
-      console.error("Erreur d'envoi d'email :", e);
-    }
+      if (error) console.error("Erreur Function:", error);
+    } catch (e) { console.error("Erreur d'envoi d'email :", e); }
   }
 
-  // --- UI NAVIGATION ---
   window.toggleSidebar = () => { $("sidebar").classList.toggle("open"); };
   window.switchView = (viewName, element) => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -489,6 +562,7 @@
     }
     if(window.innerWidth <= 1024) $("sidebar").classList.remove("open");
   };
+  
   window.openModal = (id) => $(id).classList.add('active');
   window.closeModal = (id) => {
     $(id).classList.remove('active');
@@ -548,13 +622,20 @@
   }
 
   async function loadProfile() {
-    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number").eq("id", currentUser.id).maybeSingle();
-    if (error) throw error;
+    // On utilise maybeSingle() pour éviter le crash si le profil n'existe pas
+    const { data, error } = await supabaseClient.from("profiles")
+      .select("full_name, phone, wallet_address, referral_code, account_number")
+      .eq("id", currentUser.id).maybeSingle();
+    
+    if (error) { console.error("Erreur profil:", error); throw error; }
+    
     const profile = data || {};
     const name = profile.full_name || currentUser.email || "membre";
+    
     $("sideName").textContent = name;
     $("sideEmail").textContent = currentUser.email;
     $("sideAvatar").textContent = (name.trim()[0] || "U").toUpperCase();
+    
     $("profileName").value = profile.full_name || "";
     $("profilePhone").value = profile.phone || "";
     $("profileWallet").value = profile.wallet_address || "";
@@ -562,6 +643,8 @@
     $("profileAccountNumber").textContent = profile.account_number || "---";
     $("dashWalletDisplay").textContent = profile.wallet_address || "Non configuré";
     $("myReferralCode").textContent = profile.referral_code || "En attente";
+    
+    // On charge l'équipe sans bloquer si l'erreur survient
     loadReferralCount();
   }
 
@@ -579,35 +662,49 @@
   }
 
   async function loadRequests() {
-    const { data, error } = await supabaseClient.from("investment_interest_requests").select("*").order("created_at", { ascending: false });
-    if (error) throw error;
-    const rows = data || [];
-    const recentList = $("recentActivityList");
-    const fullList = $("fullHistoryList");
-    recentList.innerHTML = ""; fullList.innerHTML = "";
-    if(rows.length === 0) {
-      const emptyMsg = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune opération.</div>';
-      recentList.innerHTML = emptyMsg; fullList.innerHTML = emptyMsg; return;
+    try {
+      const { data, error } = await supabaseClient.from("investment_interest_requests")
+        .select("*").order("created_at", { ascending: false });
+        
+      if (error) { console.warn("Erreur chargement demandes:", error); return; } // On ne crash pas si la table est vide
+      
+      const rows = data || [];
+      const recentList = $("recentActivityList");
+      const fullList = $("fullHistoryList");
+      recentList.innerHTML = ""; fullList.innerHTML = "";
+      
+      if(rows.length === 0) {
+        const emptyMsg = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune opération.</div>';
+        recentList.innerHTML = emptyMsg; fullList.innerHTML = emptyMsg; return;
+      }
+      
+      rows.forEach((item, index) => {
+        const isRecent = index < 3;
+        const amount = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString() + " $" : "—";
+        const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+        const statusHtml = `<span class="status-badge pending">En attente</span>`;
+        const html = `<div class="op-item"><div class="op-info"><div class="op-icon request"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div><div class="op-details"><strong>Demande d'opération</strong><small>${date}</small></div></div><div style="text-align: right;"><div class="op-amount">${amount}</div><div style="margin-top: 4px;">${statusHtml}</div></div></div>`;
+        if(isRecent) recentList.innerHTML += html;
+        fullList.innerHTML += html;
+      });
+    } catch(e) {
+      console.error("Erreur:", e);
     }
-    rows.forEach((item, index) => {
-      const isRecent = index < 3;
-      const amount = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString() + " $" : "—";
-      const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-      const statusHtml = `<span class="status-badge pending">En attente</span>`;
-      const html = `<div class="op-item"><div class="op-info"><div class="op-icon request"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div><div class="op-details"><strong>Demande d'opération</strong><small>${date}</small></div></div><div style="text-align: right;"><div class="op-amount">${amount}</div><div style="margin-top: 4px;">${statusHtml}</div></div></div>`;
-      if(isRecent) recentList.innerHTML += html;
-      fullList.innerHTML += html;
-    });
   }
 
   async function initApp(user) {
     currentUser = user;
     $("authArea").classList.add("hidden");
-    try { await loadProfile(); await loadRequests(); }
-    catch(e) { console.error(e); showInfo("Erreur", "Impossible de charger les données.", true); }
+    try { 
+      await loadProfile(); 
+      await loadRequests(); 
+    }
+    catch(e) { 
+      console.error("Erreur chargement global:", e); 
+      showInfo("Erreur", "Certaines données n'ont pas pu être chargées. Vérifiez la console ou votre base de données.", true); 
+    }
   }
 
-  // 1. INSCRIPTION & EMAIL DE BIENVENUE
   $("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("signupForm").querySelector('button[type="submit"]');
@@ -658,7 +755,6 @@
     }
   });
 
-  // 2. CONNEXION
   $("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("loginForm").querySelector('button[type="submit"]');
@@ -672,7 +768,6 @@
     btn.disabled = false; btn.textContent = "Se connecter";
   });
 
-  // 3. DÉPÔT & EMAIL DE CONFIRMATION
   $("depositAmountForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const amount = parseFloat($("depositAmountInput").value);
@@ -687,6 +782,16 @@
     $("confirmDepositBtn").textContent = "Enregistrement...";
     $("confirmDepositBtn").disabled = true;
 
+    // On sauvegarde la demande dans Supabase
+    try {
+      await supabaseClient.from("investment_interest_requests").insert({
+        user_id: currentUser.id,
+        indicative_amount_usd: currentDepositAmount,
+        market_interest: "crypto_review",
+        message: "Dépôt USDT TRC20 initié par l'utilisateur."
+      });
+    } catch (err) { console.error(err); }
+
     const depositHtml = `
       <h2>Demande de dépôt reçue</h2>
       <p>Nous avons bien reçu votre demande de dépôt d'un montant de <strong>${currentDepositAmount.toFixed(2)} $</strong>.</p>
@@ -699,10 +804,10 @@
       $("depositStep3").classList.remove("hidden");
       $("confirmDepositBtn").textContent = "J'ai effectué le dépôt";
       $("confirmDepositBtn").disabled = false;
+      loadRequests(); // Rafraichir l'historique
     }, 800);
   });
 
-  // 4. RETRAIT & EMAIL DE DEMANDE
   $("withdrawForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const amount = parseFloat($("withdrawAmountInput").value);
@@ -719,7 +824,6 @@
     showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée. Un e-mail de confirmation vous a été envoyé.");
   });
 
-  // 6. MISE À JOUR DU PROFIL
   $("profileForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const wallet = $("profileWallet").value.trim();
