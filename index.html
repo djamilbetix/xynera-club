@@ -238,7 +238,7 @@
         <span>À propos</span>
       </div>
       
-      <!-- BOUTON ADMIN (Caché par défaut) -->
+      <!-- BOUTON ADMIN -->
       <div class="nav-item admin-item hidden" id="adminNavBtn" onclick="switchView('admin', this)">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
         <span>Administration</span>
@@ -313,6 +313,36 @@
             <h3>Activités récentes</h3>
             <div class="op-list" id="recentActivityList">
               <div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VUE : MON ÉQUIPE (Mise à jour) -->
+    <section id="view-team" class="view">
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
+      <div class="page-header">
+        <h1>Mon Équipe</h1>
+        <p>Invitez de nouveaux membres et gagnez des commissions sur leurs investissements.</p>
+      </div>
+      
+      <div class="dashboard-grid">
+        <div>
+          <div class="info-card" style="margin-top:0;">
+            <h3>Votre lien de parrainage</h3>
+            <p style="margin-bottom:16px; font-size:13px; color:var(--muted);">Partagez ce lien. Vous gagnerez <strong>3%</strong> de l'investissement de vos filleuls, crédité sur votre compte après l'activation de leur contrat. <strong>(Retirable)</strong></p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <input type="text" id="myReferralLinkInput" readonly style="width:100%; background:var(--page); padding:14px; border-radius:6px; font-size:13px; border:1px solid var(--line); color:var(--navy); font-family:monospace; outline:none;">
+              <button class="primary-btn" onclick="copyReferralLink()">Copier le lien</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="info-card" style="margin-top:0;">
+            <h3>Membres (<span id="myReferralCount">0</span>)</h3>
+            <div id="myTeamList">
+              <p style="font-size:13px; color:var(--muted);">Chargement...</p>
             </div>
           </div>
         </div>
@@ -501,7 +531,6 @@
           <label>Montant à déposer (USD)</label>
           <input type="number" id="depositAmountInput" placeholder="Min. 150" min="150" required style="font-size: 20px; font-weight: 600; padding: 16px;">
         </div>
-        <!-- Message des frais -->
         <div id="depositFeeNote" style="font-size:12px; color:var(--muted); margin-bottom:20px;">
           Le montant minimum de dépôt est de 150 $.
         </div>
@@ -567,7 +596,6 @@
           <option value="6">6 Mois (30%)</option>
         </select>
       </div>
-      <!-- Message des frais de contrat -->
       <div id="contractFeeDisplay" style="font-size:12px; color:var(--red); font-weight:600; margin-bottom:16px; display:none;">
         Frais d'activation uniques : 36.00 $ (seront déduits de votre solde)
       </div>
@@ -599,10 +627,19 @@
   let currentDepositAmount = 0;
   let userBalance = 0;
   let isAdmin = false;
-  let hasPaidFee = false; // Suivi des frais d'activation
+  let hasPaidFee = false;
+  let userReferralCode = "";
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
+  // Pré-remplir le code de parrainage via l'URL (?ref=CODE)
+  const urlParams = new URLSearchParams(window.location.search);
+  const refParam = urlParams.get('ref');
+  if (refParam) {
+    $("suReferral").value = refParam.toUpperCase();
+    switchAuthTab('signup'); // Ouvre directement l'onglet inscription
   }
 
   window.toggleSidebar = () => { $("sidebar").classList.toggle("open"); };
@@ -638,28 +675,24 @@
   };
 
   window.openContractModal = () => {
-    // Minimum requis: 150$ pour le contrat + 36$ de frais si non payés
     const minRequired = hasPaidFee ? 150 : 186; 
-    
     if (userBalance < minRequired) {
       showInfo("Solde insuffisant", `Vous devez avoir un solde minimum de ${minRequired} $ pour activer votre premier contrat.`, true);
       return;
     }
-    
     $("modalAvailableBalance").textContent = userBalance.toFixed(2) + " $";
-    
-    // Affichage ou non des frais de 36$
-    if (!hasPaidFee) {
-      $("contractFeeDisplay").style.display = "block";
-    } else {
-      $("contractFeeDisplay").style.display = "none";
-    }
-    
+    $("contractFeeDisplay").style.display = hasPaidFee ? "none" : "block";
     window.openModal('contractModal');
   };
 
   window.copyDepositAddress = (elementId) => {
     navigator.clipboard.writeText($(elementId).textContent).then(() => alert("Adresse copiée.")).catch(() => alert("Erreur."));
+  };
+
+  window.copyReferralLink = () => {
+    if(!userReferralCode) return;
+    const link = window.location.origin + '/?ref=' + userReferralCode;
+    navigator.clipboard.writeText(link).then(() => alert("Lien de parrainage copié ! Partagez-le pour gagner 3%.")).catch(() => alert("Erreur."));
   };
 
   window.switchAuthTab = (mode) => {
@@ -706,7 +739,6 @@
     }
   }
 
-  // --- CHARGEMENT PROFIL UTILISATEUR ---
   async function loadProfile() {
     const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance, role, has_paid_fee").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
@@ -716,8 +748,10 @@
     isAdmin = profile.role === 'admin';
     if (isAdmin) $("adminNavBtn").classList.remove("hidden");
     
-    hasPaidFee = profile.has_paid_fee || false; // Récupération du statut des frais
+    hasPaidFee = profile.has_paid_fee || false; 
     userBalance = profile.balance || 0;
+    userReferralCode = profile.referral_code || "";
+    
     $("userBalanceDisplay").textContent = userBalance.toFixed(2);
 
     $("sideName").textContent = name;
@@ -736,11 +770,18 @@
     $("profilePhone").value = profile.phone || "";
     $("profileWallet").value = profile.wallet_address || "";
     
+    // Mise à jour du lien de parrainage
+    if (userReferralCode) {
+      const link = window.location.origin + '/?ref=' + userReferralCode;
+      $("myReferralLinkInput").value = link;
+    } else {
+      $("myReferralLinkInput").value = "Génération du lien en cours...";
+    }
+    
     loadReferralCount();
     loadContracts();
   }
 
-  // --- GESTION DES CONTRATS UTILISATEUR ---
   async function loadContracts() {
     const { data, error } = await supabaseClient.from("contracts").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
     
@@ -765,7 +806,6 @@
     const duration = parseInt($("contractDuration").value);
     const errorDiv = $("contractError");
     
-    // Ajout des frais de 36$ si c'est le premier contrat
     const fee = hasPaidFee ? 0 : 36;
     const totalToDeduct = amount + fee;
 
@@ -783,7 +823,6 @@
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + duration);
 
-    // 1. Créer le contrat
     const { error: contractError } = await supabaseClient.from("contracts").insert({
       user_id: currentUser.id, amount: amount, duration_months: duration,
       start_date: startDate.toISOString(), end_date: endDate.toISOString(), status: 'active'
@@ -791,13 +830,12 @@
 
     if (contractError) { errorDiv.textContent = "Erreur : " + contractError.message; return; }
 
-    // 2. Mettre à jour le solde et marquer les frais comme payés
     const newBalance = userBalance - totalToDeduct;
     const updateData = { balance: newBalance };
     
     if (!hasPaidFee) {
       updateData.has_paid_fee = true;
-      hasPaidFee = true; // mise à jour locale
+      hasPaidFee = true; 
     }
 
     await supabaseClient.from("profiles").update(updateData).eq("id", currentUser.id);
@@ -910,7 +948,28 @@
     const { data, error } = await supabaseClient.rpc("xynera_my_team");
     if (!error) {
       const members = Array.isArray(data) ? data : [];
-      if($("myReferralCount")) $("myReferralCount").textContent = members.length;
+      $("myReferralCount").textContent = members.length;
+      
+      const list = $("myTeamList");
+      if (members.length === 0) {
+        // Message personnalisé demandé
+        list.innerHTML = `<div style="text-align:center; padding:20px 0;">
+          <p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p>
+          <p style="font-size:13px; color:var(--muted);">Partagez votre lien et gagnez <strong>3%</strong> de leur investissement qui sera crédité sur votre compte après l'activation de son contrat. <br><strong>(Et retirable)</strong></p>
+        </div>`;
+      } else {
+        list.innerHTML = "";
+        members.forEach(m => {
+          list.innerHTML += `
+            <div class="team-member" style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px;">
+              <div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${(m.full_name || "M")[0].toUpperCase()}</div>
+              <div>
+                <strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong>
+                <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
+              </div>
+            </div>`;
+        });
+      }
     }
   }
 
@@ -975,8 +1034,6 @@
   $("depositAmountForm").addEventListener("submit", (e) => {
     e.preventDefault(); 
     const amount = parseFloat($("depositAmountInput").value);
-    
-    // Vérification du minimum selon si les frais ont été payés ou non
     const minDeposit = hasPaidFee ? 150 : 186;
     
     if (amount < minDeposit) { 
@@ -1012,7 +1069,6 @@
     if(error) { $("profileStatusMsg").textContent = errorText(error); $("profileStatusMsg").style.color = "var(--red)"; } else { $("profileStatusMsg").textContent = "Profil mis à jour."; $("profileStatusMsg").style.color = "var(--green)"; loadProfile(); }
   });
 
-  // --- DECONNEXION ---
   const handleLogout = async () => { await supabaseClient.auth.signOut(); window.location.reload(); };
   $("logoutBtnSidebar").addEventListener("click", handleLogout);
   if($("logoutBtnProfile")) $("logoutBtnProfile").addEventListener("click", handleLogout);
