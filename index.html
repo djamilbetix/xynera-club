@@ -111,8 +111,9 @@
     .field label { display: block; color: var(--navy); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
     .field input, .field select { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--ink); outline: none; transition: 0.2s; }
     .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-    .primary-btn { background: var(--navy); color: #fff; padding: 14px 24px; border-radius: 8px; font-weight: 600; width: 100%; display: flex; justify-content: center; align-items: center;}
+    .primary-btn { background: var(--navy); color: #fff; padding: 14px 24px; border-radius: 8px; font-weight: 600; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;}
     .primary-btn:hover { background: var(--navy-light); }
+    .primary-btn:disabled { opacity: 0.7; cursor: not-allowed; }
     
     /* Page A Propos */
     .about-hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 60px 40px; border-radius: var(--radius); color: #fff; text-align: center; margin-bottom: 30px; }
@@ -148,6 +149,73 @@
     .ticker-item.neg { color: var(--red); }
     @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
+    /* ===== SKELETONS ===== */
+    .skeleton {
+      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+      border-radius: 6px;
+      display: block;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .skeleton-text { height: 12px; margin: 6px 0; }
+    .skeleton-text.w-60 { width: 60%; }
+    .skeleton-text.w-80 { width: 80%; }
+    .skeleton-text.w-40 { width: 40%; }
+    .skeleton-row { height: 44px; margin: 8px 0; border-radius: 8px; }
+    .skeleton-circle { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
+    .balance-skeleton {
+      display: inline-block !important;
+      width: 120px;
+      height: 32px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.08) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.08) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+    }
+
+    /* ===== SPINNER ===== */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .spinner.dark { border-color: rgba(15,23,42,0.15); border-top-color: var(--navy); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== APP LOADER (full screen) ===== */
+    .app-loader-overlay {
+      position: fixed; inset: 0;
+      background: rgba(248,250,252,0.92);
+      backdrop-filter: blur(3px);
+      z-index: 1500;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px;
+    }
+    .app-loader-overlay.hidden { display: none !important; }
+    .loader-ring {
+      width: 48px; height: 48px;
+      border: 4px solid var(--line);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    .loader-dots { display: inline-flex; gap: 6px; }
+    .loader-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--navy);
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+    .loader-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+
     @media (max-width: 1024px) {
       .dashboard-grid { grid-template-columns: 1fr; }
       .about-grid { grid-template-columns: 1fr; }
@@ -166,6 +234,13 @@
   </style>
 </head>
 <body>
+
+<!-- LOADER PLEIN ÉCRAN -->
+<div id="appLoader" class="app-loader-overlay hidden">
+  <div class="loader-ring"></div>
+  <div class="loader-dots"><span></span><span></span><span></span></div>
+  <div style="font-size:13px; color:var(--muted); font-weight:600; letter-spacing:0.3px;">Chargement de votre espace...</div>
+</div>
 
 <section id="authArea" style="position:fixed; inset:0; background:var(--page); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
   <div style="background:#fff; border-radius:var(--radius); box-shadow:0 10px 25px rgba(0,0,0,0.05); padding:40px; width:100%; max-width:420px; border: 1px solid var(--line); margin: auto;">
@@ -238,7 +313,7 @@
         <span>À propos</span>
       </div>
       
-      <!-- BOUTON ADMIN -->
+      <!-- BOUTON ADMIN (visible uniquement pour l'unique admin) -->
       <div class="nav-item admin-item hidden" id="adminNavBtn" onclick="switchView('admin', this)">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
         <span>Administration</span>
@@ -281,7 +356,10 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <div>
                 <div class="balance-label">Solde Disponible</div>
-                <div class="balance-amount" style="margin-bottom: 0;"><span id="userBalanceDisplay">0.00</span> <span>USD</span></div>
+                <div class="balance-amount" style="margin-bottom: 0;">
+                  <span id="userBalanceDisplay"><span class="balance-skeleton"></span></span>
+                  <span>USD</span>
+                </div>
               </div>
               <div style="text-align: right;">
                 <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Numéro de compte</div>
@@ -311,15 +389,13 @@
         <div>
           <div class="info-card" style="margin-top:0;">
             <h3>Activités récentes</h3>
-            <div class="op-list" id="recentActivityList">
-              <div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité.</div>
-            </div>
+            <div class="op-list" id="recentActivityList"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VUE : MON ÉQUIPE (Mise à jour) -->
+    <!-- VUE : MON ÉQUIPE -->
     <section id="view-team" class="view">
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
       <div class="page-header">
@@ -341,9 +417,7 @@
         <div>
           <div class="info-card" style="margin-top:0;">
             <h3>Membres (<span id="myReferralCount">0</span>)</h3>
-            <div id="myTeamList">
-              <p style="font-size:13px; color:var(--muted);">Chargement...</p>
-            </div>
+            <div id="myTeamList"></div>
           </div>
         </div>
       </div>
@@ -360,15 +434,15 @@
       <div class="stats-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:24px;">
         <div class="info-card" style="margin-top:0;">
           <h3>Fonds Totaux Plateforme</h3>
-          <div style="font-size:24px; font-weight:700; color:var(--green);" id="adminTotalFunds">0.00 $</div>
+          <div style="font-size:24px; font-weight:700; color:var(--green);" id="adminTotalFunds"><span class="skeleton skeleton-text" style="width:100px;height:24px;"></span></div>
         </div>
         <div class="info-card" style="margin-top:0;">
           <h3>Total Utilisateurs</h3>
-          <div style="font-size:24px; font-weight:700; color:var(--blue);" id="adminTotalUsers">0</div>
+          <div style="font-size:24px; font-weight:700; color:var(--blue);" id="adminTotalUsers"><span class="skeleton skeleton-text" style="width:60px;height:24px;"></span></div>
         </div>
         <div class="info-card" style="margin-top:0;">
           <h3>Demandes en attente</h3>
-          <div style="font-size:24px; font-weight:700; color:var(--red);" id="adminPendingRequests">0</div>
+          <div style="font-size:24px; font-weight:700; color:var(--red);" id="adminPendingRequests"><span class="skeleton skeleton-text" style="width:60px;height:24px;"></span></div>
         </div>
       </div>
 
@@ -377,7 +451,7 @@
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminPendingTable">
             <thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Action</th></tr></thead>
-            <tbody><tr><td colspan="4" style="text-align:center;">Aucune demande.</td></tr></tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
@@ -387,7 +461,7 @@
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
             <thead><tr><th>Nom</th><th>Email / UID</th><th>Solde</th><th>Rôle</th></tr></thead>
-            <tbody><tr><td colspan="4" style="text-align:center;">Chargement...</td></tr></tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
@@ -397,7 +471,7 @@
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminContractsTable">
             <thead><tr><th>Utilisateur</th><th>Montant</th><th>Fin du contrat</th><th>Statut</th></tr></thead>
-            <tbody><tr><td colspan="4" style="text-align:center;">Chargement...</td></tr></tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
@@ -408,9 +482,7 @@
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
       <div class="page-header"><h1>Mes Contrats</h1><p>Suivez l'évolution de vos contrats d'investissement.</p></div>
       <div class="info-card" style="margin-top:0;">
-        <div id="contractsContainer" style="overflow-x:auto;">
-          <div style="text-align:center; color:var(--muted); padding:40px;">Chargement...</div>
-        </div>
+        <div id="contractsContainer" style="overflow-x:auto;"></div>
       </div>
     </section>
 
@@ -418,7 +490,7 @@
     <section id="view-history" class="view">
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
       <div class="page-header"><h1>Historique</h1><p>Suivez le statut de toutes vos opérations.</p></div>
-      <div class="op-list" id="fullHistoryList"><div style="text-align:center; color:var(--muted); padding:40px;">Chargement...</div></div>
+      <div class="op-list" id="fullHistoryList"></div>
     </section>
 
     <!-- VUE : PROFIL -->
@@ -621,6 +693,11 @@
 (() => {
   const SUPABASE_URL = "https://fandrhnvlcsdtvemjhib.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhbmRyaG52bGNzZHR2ZW1qaGliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5NDU5OTYsImV4cCI6MjExMDUyMTk5Nn0.DJiPt_PsE5JnhjdyCHnzhFc3NmiOXHDlTMbjCr1JehQ";
+
+  // ==== CONSTANTE ADMIN UNIQUE ====
+  // Seul le profil dont account_number correspond à cette valeur est admin.
+  const SUPER_ADMIN_ACCOUNT_NUMBER = "5754806523";
+
   const $ = (id) => document.getElementById(id);
   let currentUser = null;
   let supabaseClient = null;
@@ -634,11 +711,72 @@
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  // Lire le code de parrainage depuis l'URL. L'affichage de l'onglet
-  // inscription sera activé après la définition de switchAuthTab.
   const urlParams = new URLSearchParams(window.location.search);
   const refParam = urlParams.get('ref');
   if (refParam) $("suReferral").value = refParam.toUpperCase();
+
+  /* ========= SKELETON & SPINNER HELPERS ========= */
+
+  function skeletonTableRows(cols, count = 3) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+      out += '<tr>';
+      for (let j = 0; j < cols; j++) out += '<td><div class="skeleton skeleton-text" style="width:80%;"></div></td>';
+      out += '</tr>';
+    }
+    return out;
+  }
+
+  function skeletonCardsHTML(count = 3) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+      out += `<div style="padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px; display:flex; align-items:center; gap:12px;">
+        <div class="skeleton skeleton-circle"></div>
+        <div style="flex:1;">
+          <div class="skeleton skeleton-text w-60"></div>
+          <div class="skeleton skeleton-text w-40"></div>
+        </div>
+      </div>`;
+    }
+    return out;
+  }
+
+  function bootstrapSkeletons() {
+    const ra = $("recentActivityList");
+    if (ra) ra.innerHTML = skeletonCardsHTML(3);
+
+    const tl = $("myTeamList");
+    if (tl) tl.innerHTML = skeletonCardsHTML(2);
+
+    const cc = $("contractsContainer");
+    if (cc) cc.innerHTML = '<table class="data-table"><thead><tr><th>Montant</th><th>Début</th><th>Fin</th><th>Statut</th></tr></thead><tbody>' + skeletonTableRows(4, 2) + '</tbody></table>';
+
+    const fh = $("fullHistoryList");
+    if (fh) fh.innerHTML = skeletonCardsHTML(4);
+
+    ["adminPendingTable", "adminUsersTable", "adminContractsTable"].forEach(id => {
+      const t = $(id);
+      if (t && t.querySelector('tbody')) {
+        const cols = t.querySelectorAll('thead th').length || 4;
+        t.querySelector('tbody').innerHTML = skeletonTableRows(cols, 3);
+      }
+    });
+  }
+
+  function setBtnLoading(btn, text = "Chargement...") {
+    if (!btn) return;
+    if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> ${text}`;
+  }
+
+  function resetBtn(btn) {
+    if (!btn) return;
+    btn.disabled = false;
+    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+  }
+
+  /* ========= UI NAV ========= */
 
   window.toggleSidebar = () => { $("sidebar").classList.toggle("open"); };
   window.switchView = (viewName, element) => {
@@ -702,8 +840,6 @@
     $("authSubtitle").textContent = isLogin ? "Accédez à votre espace investisseur." : "Créez votre compte xynary-club.";
   };
 
-  // Si l'utilisateur arrive via un lien de parrainage, ouvrir l'inscription
-  // maintenant que switchAuthTab est disponible.
   if (refParam) switchAuthTab('signup');
 
   function showInfo(title, desc, isError = false) {
@@ -741,20 +877,24 @@
     }
   }
 
+  /* ========= PROFIL / CHARGEMENT ========= */
+
   async function loadProfile() {
     const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance, role, has_paid_fee").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || "Membre";
     
-    isAdmin = profile.role === 'admin';
+    // === ADMIN UNIQUE ===
+    // On ignore totalement le champ "role" et on se base UNIQUEMENT sur account_number.
+    isAdmin = String(profile.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
     if (isAdmin) $("adminNavBtn").classList.remove("hidden");
+    else $("adminNavBtn").classList.add("hidden");
     
     hasPaidFee = profile.has_paid_fee || false; 
     userBalance = profile.balance || 0;
     userReferralCode = profile.referral_code || "";
 
-    // Générer et enregistrer un code uniquement pour le compte connecté
     if (!userReferralCode) {
       const randomPart = (window.crypto && crypto.randomUUID)
         ? crypto.randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase()
@@ -767,14 +907,17 @@
         .select("referral_code")
         .maybeSingle();
 
-      if (referralSaveError) {
-        console.error("Impossible d'enregistrer le code de parrainage :", referralSaveError);
-      } else if (savedProfile && savedProfile.referral_code) {
-        userReferralCode = savedProfile.referral_code;
-      }
+      if (referralSaveError) console.error("Impossible d'enregistrer le code de parrainage :", referralSaveError);
+      else if (savedProfile && savedProfile.referral_code) userReferralCode = savedProfile.referral_code;
     }
     
-    $("userBalanceDisplay").textContent = userBalance.toFixed(2);
+    // Solde : on remplace le skeleton
+    const balEl = $("userBalanceDisplay");
+    if (balEl) {
+      const sk = balEl.querySelector('.balance-skeleton');
+      if (sk) sk.remove();
+      balEl.textContent = userBalance.toFixed(2);
+    }
 
     $("sideName").textContent = name;
     $("sideEmail").textContent = currentUser.email;
@@ -792,10 +935,8 @@
     $("profilePhone").value = profile.phone || "";
     $("profileWallet").value = profile.wallet_address || "";
     
-    // Mise à jour du lien de parrainage
     if (userReferralCode) {
-      const link = window.location.origin + '/?ref=' + userReferralCode;
-      $("myReferralLinkInput").value = link;
+      $("myReferralLinkInput").value = window.location.origin + '/?ref=' + userReferralCode;
     } else {
       $("myReferralLinkInput").value = "Lien indisponible : vérifiez les droits de mise à jour de votre profil dans Supabase.";
     }
@@ -805,10 +946,17 @@
   }
 
   async function loadContracts() {
+    const container = $("contractsContainer");
+    container.innerHTML = '<table class="data-table"><thead><tr><th>Montant</th><th>Début</th><th>Fin</th><th>Statut</th></tr></thead><tbody>' + skeletonTableRows(4, 2) + '</tbody></table>';
+
     const { data, error } = await supabaseClient.from("contracts").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
     
     if (error || !data || data.length === 0) {
-      $("contractsContainer").innerHTML = '<div style="text-align:center; color:var(--muted); padding:40px;">Aucun contrat actif.</div>';
+      container.innerHTML = `<div style="text-align:center; padding:40px;">
+        <div style="font-size:40px; margin-bottom:8px;">📄</div>
+        <div style="color:var(--muted); font-size:14px; font-weight:600;">Aucun contrat actif.</div>
+        <div style="color:var(--muted); font-size:12px; margin-top:4px;">Activez votre premier contrat depuis le tableau de bord.</div>
+      </div>`;
       return;
     }
 
@@ -819,11 +967,14 @@
       html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${start}</td><td>${end}</td><td><span class="status-badge active">Contrat en cours</span></td></tr>`;
     });
     html += `</tbody></table>`;
-    $("contractsContainer").innerHTML = html;
+    container.innerHTML = html;
   }
+
+  /* ========= CONTRAT ========= */
 
   $("contractForm").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
     const amount = parseFloat($("contractAmountInput").value);
     const duration = parseInt($("contractDuration").value);
     const errorDiv = $("contractError");
@@ -840,7 +991,8 @@
       return; 
     }
 
-    errorDiv.textContent = "Activation...";
+    errorDiv.textContent = "";
+    setBtnLoading(btn, "Activation...");
     const startDate = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + duration);
@@ -850,7 +1002,7 @@
       start_date: startDate.toISOString(), end_date: endDate.toISOString(), status: 'active'
     });
 
-    if (contractError) { errorDiv.textContent = "Erreur : " + contractError.message; return; }
+    if (contractError) { errorDiv.textContent = "Erreur : " + contractError.message; resetBtn(btn); return; }
 
     const newBalance = userBalance - totalToDeduct;
     const updateData = { balance: newBalance };
@@ -861,20 +1013,34 @@
     }
 
     await supabaseClient.from("profiles").update(updateData).eq("id", currentUser.id);
+    resetBtn(btn);
 
     closeModal('contractModal');
     showInfo("Contrat Activé", `Félicitations, votre contrat est actif ! ${!hasPaidFee ? 'Les frais de 36$ ont été déduits.' : ''}`);
     loadProfile();
   });
 
-  // --- LOGIQUE ADMINISTRATEUR ---
+  /* ========= ADMIN ========= */
+
   async function loadAdminData() {
-    if(!isAdmin) return;
+    if (!isAdmin) return;
+
+    // Reset skeleton
+    ["adminPendingTable", "adminUsersTable", "adminContractsTable"].forEach(id => {
+      const t = $(id);
+      if (t && t.querySelector('tbody')) {
+        const cols = t.querySelectorAll('thead th').length || 4;
+        t.querySelector('tbody').innerHTML = skeletonTableRows(cols, 3);
+      }
+    });
+    $("adminTotalFunds").innerHTML = '<span class="skeleton skeleton-text" style="width:100px;height:24px;"></span>';
+    $("adminTotalUsers").innerHTML = '<span class="skeleton skeleton-text" style="width:60px;height:24px;"></span>';
+    $("adminPendingRequests").innerHTML = '<span class="skeleton skeleton-text" style="width:60px;height:24px;"></span>';
 
     const { data: profiles } = await supabaseClient.from("profiles").select("balance");
-    const totalFunds = profiles.reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
+    const totalFunds = (profiles || []).reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
     $("adminTotalFunds").textContent = totalFunds.toFixed(2) + " $";
-    $("adminTotalUsers").textContent = profiles.length;
+    $("adminTotalUsers").textContent = (profiles || []).length;
 
     const { data: deposits } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
     const { data: withdrawals } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
@@ -888,7 +1054,7 @@
 
     let pendingHtml = "";
     if(allPending.length === 0) {
-      pendingHtml = "<tr><td colspan='4' style='text-align:center;'>Aucune demande en attente.</td></tr>";
+      pendingHtml = "<tr><td colspan='4' style='text-align:center; color:var(--muted); padding:24px;'>Aucune demande en attente.</td></tr>";
     } else {
       allPending.forEach(item => {
         const date = new Date(item.created_at).toLocaleDateString('fr-FR');
@@ -911,12 +1077,15 @@
     const { data: allUsers } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee");
     let usersHtml = "";
     (allUsers || []).forEach(u => {
+      const isSuperAdmin = String(u.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
+      const displayRole = isSuperAdmin ? 'admin' : 'user';
+      const badgeClass = isSuperAdmin ? 'admin' : 'active';
       usersHtml += `
         <tr>
           <td>${u.full_name || 'Inconnu'}</td>
           <td><span style="font-family:monospace;">${u.account_number || '---'}</span></td>
           <td><strong>${Number(u.balance || 0).toFixed(2)} $</strong></td>
-          <td><span class="status-badge ${u.role === 'admin' ? 'admin' : 'active'}">${u.role || 'user'}</span></td>
+          <td><span class="status-badge ${badgeClass}">${displayRole}</span></td>
         </tr>
       `;
     });
@@ -925,7 +1094,7 @@
     const { data: allContracts } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
     let contractsHtml = "";
     if(!allContracts || allContracts.length === 0) {
-      contractsHtml = "<tr><td colspan='4' style='text-align:center;'>Aucun contrat.</td></tr>";
+      contractsHtml = "<tr><td colspan='4' style='text-align:center; color:var(--muted); padding:24px;'>Aucun contrat.</td></tr>";
     } else {
       allContracts.forEach(c => {
         const end = new Date(c.end_date).toLocaleDateString('fr-FR');
@@ -943,28 +1112,29 @@
   }
 
   window.approveRequest = async (id, type, amount, userId) => {
+    if (!isAdmin) { alert("Action réservée à l'administrateur."); return; }
     if(!confirm(`Confirmez-vous ce ${type} de ${amount} $ ?`)) return;
 
     if (type === 'Dépôt') {
       const { data: userProfile } = await supabaseClient.from("profiles").select("balance").eq("id", userId).single();
       const newBal = (Number(userProfile?.balance) || 0) + Number(amount);
-      
       await supabaseClient.from("profiles").update({ balance: newBal }).eq("id", userId);
       await supabaseClient.from("investment_interest_requests").update({ status: "approved" }).eq("id", id);
-    
     } else if (type === 'Retrait') {
       await supabaseClient.from("withdrawals").update({ status: "approved" }).eq("id", id);
     }
-    
     loadAdminData();
   };
 
   window.rejectRequest = async (id, type) => {
+    if (!isAdmin) { alert("Action réservée à l'administrateur."); return; }
     if(!confirm(`Refuser cette demande de ${type} ?`)) return;
     if (type === 'Dépôt') await supabaseClient.from("investment_interest_requests").update({ status: "rejected" }).eq("id", id);
     else if (type === 'Retrait') await supabaseClient.from("withdrawals").update({ status: "rejected" }).eq("id", id);
     loadAdminData();
   };
+
+  /* ========= ÉQUIPE ========= */
 
   async function loadReferralCount() {
     const { data, error } = await supabaseClient.rpc("xynera_my_team");
@@ -974,8 +1144,8 @@
       
       const list = $("myTeamList");
       if (members.length === 0) {
-        // Message personnalisé demandé
         list.innerHTML = `<div style="text-align:center; padding:20px 0;">
+          <div style="font-size:36px; margin-bottom:8px;">👥</div>
           <p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p>
           <p style="font-size:13px; color:var(--muted);">Partagez votre lien et gagnez <strong>3%</strong> de leur investissement qui sera crédité sur votre compte après l'activation de son contrat. <br><strong>(Et retirable)</strong></p>
         </div>`;
@@ -995,6 +1165,8 @@
     }
   }
 
+  /* ========= HISTORIQUE ========= */
+
   async function loadRequests() {
     try {
       const { data, error } = await supabaseClient.from("investment_interest_requests").select("*").order("created_at", { ascending: false });
@@ -1006,6 +1178,10 @@
       recentList.innerHTML = ""; fullList.innerHTML = "";
       if(rows.length === 0) {
         recentList.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité.</div>';
+        fullList.innerHTML = `<div style="text-align:center; padding:40px;">
+          <div style="font-size:40px; margin-bottom:8px;">📭</div>
+          <div style="color:var(--muted); font-size:14px; font-weight:600;">Aucune opération pour le moment.</div>
+        </div>`;
         return;
       }
       rows.forEach((item, index) => {
@@ -1022,17 +1198,29 @@
     } catch(e) {}
   }
 
+  /* ========= INIT APP ========= */
+
   async function initApp(user) {
     currentUser = user;
     $("authArea").classList.add("hidden");
-    try { await loadProfile(); await loadRequests(); } catch(e) { console.error(e); }
+    $("appLoader").classList.remove("hidden");
+    bootstrapSkeletons();
+    try { 
+      await loadProfile(); 
+      await loadRequests(); 
+    } catch(e) { 
+      console.error(e); 
+    } finally {
+      $("appLoader").classList.add("hidden");
+    }
   }
 
-  // --- AUTHENTIFICATION ---
+  /* ========= AUTH ========= */
+
   $("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("signupForm").querySelector('button[type="submit"]');
-    btn.disabled = true; btn.textContent = "Création..."; $("signupStatus").textContent = "";
+    setBtnLoading(btn, "Création..."); $("signupStatus").textContent = "";
     try {
       const name = $("suName").value.trim();
       const email = $("suEmail").value.trim();
@@ -1046,6 +1234,7 @@
           showInfo("Compte déjà existant", msg, true);
           $("liEmail").value = email; $("liPassword").value = ""; switchAuthTab('login');
         } else { $("signupStatus").textContent = msg; }
+        resetBtn(btn);
         return;
       }
       if (data.session) {
@@ -1055,31 +1244,32 @@
         showInfo("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé.");
       }
     } catch (err) {
-      console.error("Erreur inscription Xynary Club:", err);
-      $("signupStatus").textContent = "Une erreur est survenue pendant l'inscription. Vérifiez votre connexion et réessayez.";
+      console.error("Erreur inscription:", err);
+      $("signupStatus").textContent = "Une erreur est survenue. Vérifiez votre connexion et réessayez.";
     } finally {
-      btn.disabled = false; btn.textContent = "Créer un compte";
+      resetBtn(btn);
     }
   });
 
   $("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); const btn = $("loginForm").querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Connexion..."; $("loginStatus").textContent = "";
+    e.preventDefault(); 
+    const btn = $("loginForm").querySelector('button[type="submit"]'); 
+    setBtnLoading(btn, "Connexion..."); $("loginStatus").textContent = "";
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email: $("liEmail").value.trim(), password: $("liPassword").value });
-    if(error) { $("loginStatus").textContent = errorText(error); btn.disabled = false; btn.textContent = "Se connecter"; return; }
-    await initApp(data.user); btn.disabled = false; btn.textContent = "Se connecter";
+    if(error) { $("loginStatus").textContent = errorText(error); resetBtn(btn); return; }
+    await initApp(data.user); resetBtn(btn);
   });
 
-  // --- ACTIONS FINANCIÈRES ---
+  /* ========= DÉPÔT ========= */
+
   $("depositAmountForm").addEventListener("submit", (e) => {
     e.preventDefault(); 
     const amount = parseFloat($("depositAmountInput").value);
     const minDeposit = hasPaidFee ? 150 : 186;
-    
     if (amount < minDeposit) { 
       alert(`Le montant minimum de dépôt est de ${minDeposit} $.`); 
       return; 
     }
-    
     currentDepositAmount = amount; 
     $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
     $("depositStep1").classList.add("hidden"); 
@@ -1087,31 +1277,65 @@
   });
 
   $("confirmDepositBtn").addEventListener("click", async () => {
-    $("confirmDepositBtn").textContent = "Enregistrement..."; $("confirmDepositBtn").disabled = true;
+    const btn = $("confirmDepositBtn");
+    setBtnLoading(btn, "Enregistrement...");
     try { await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: "Dépôt USDT TRC20 initié.", status: "pending" }); } catch (err) { console.error(err); }
-    setTimeout(() => { $("depositStep2").classList.add("hidden"); $("depositStep3").classList.remove("hidden"); $("confirmDepositBtn").textContent = "J'ai effectué le dépôt"; $("confirmDepositBtn").disabled = false; loadRequests(); }, 800);
+    setTimeout(() => { 
+      $("depositStep2").classList.add("hidden"); 
+      $("depositStep3").classList.remove("hidden"); 
+      resetBtn(btn); 
+      loadRequests(); 
+    }, 800);
   });
 
+  /* ========= RETRAIT ========= */
+
   $("withdrawForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); const amount = parseFloat($("withdrawAmountInput").value);
+    e.preventDefault(); 
+    const btn = e.target.querySelector('button[type="submit"]');
+    const amount = parseFloat($("withdrawAmountInput").value);
     if (amount < 20) { alert("Le montant minimum de retrait est de 20 $."); return; }
     
+    setBtnLoading(btn, "Envoi...");
     try { await supabaseClient.from("withdrawals").insert({ user_id: currentUser.id, amount: amount, status: "pending" }); } catch (err) { console.error(err); }
+    resetBtn(btn);
     closeModal('withdrawModal'); showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée.");
   });
 
+  /* ========= PROFIL ========= */
+
   $("profileForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); const wallet = $("profileWallet").value.trim();
-    if(wallet && (wallet.length < 20 || /\s/.test(wallet))) { $("profileStatusMsg").textContent = "Format d'adresse invalide."; $("profileStatusMsg").style.color = "var(--red)"; return; }
-    $("profileStatusMsg").textContent = "Enregistrement..."; $("profileStatusMsg").style.color = "var(--muted)";
+    e.preventDefault(); 
+    const btn = e.target.querySelector('button[type="submit"]');
+    const wallet = $("profileWallet").value.trim();
+    if(wallet && (wallet.length < 20 || /\s/.test(wallet))) { 
+      $("profileStatusMsg").textContent = "Format d'adresse invalide."; 
+      $("profileStatusMsg").style.color = "var(--red)"; 
+      return; 
+    }
+    setBtnLoading(btn, "Enregistrement..."); 
+    $("profileStatusMsg").textContent = "";
     const { error } = await supabaseClient.from("profiles").update({ full_name: $("profileName").value.trim(), phone: $("profilePhone").value.trim() || null, wallet_address: wallet || null, updated_at: new Date().toISOString() }).eq("id", currentUser.id);
-    if(error) { $("profileStatusMsg").textContent = errorText(error); $("profileStatusMsg").style.color = "var(--red)"; } else { $("profileStatusMsg").textContent = "Profil mis à jour."; $("profileStatusMsg").style.color = "var(--green)"; loadProfile(); }
+    resetBtn(btn);
+    if(error) { 
+      $("profileStatusMsg").textContent = errorText(error); 
+      $("profileStatusMsg").style.color = "var(--red)"; 
+    } else { 
+      $("profileStatusMsg").textContent = "Profil mis à jour."; 
+      $("profileStatusMsg").style.color = "var(--green)"; 
+      loadProfile(); 
+    }
   });
+
+  /* ========= LOGOUT ========= */
 
   const handleLogout = async () => { await supabaseClient.auth.signOut(); window.location.reload(); };
   $("logoutBtnSidebar").addEventListener("click", handleLogout);
   if($("logoutBtnProfile")) $("logoutBtnProfile").addEventListener("click", handleLogout);
   
+  /* ========= BOOTSTRAP ========= */
+  bootstrapSkeletons();
+
   supabaseClient.auth.getSession().then(({ data: { session } }) => { 
     if (session) initApp(session.user); 
     else $("authArea").classList.remove("hidden"); 
