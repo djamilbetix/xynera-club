@@ -190,7 +190,7 @@
       <div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div>
       <div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div>
       <div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div>
-      <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="12" placeholder="Code"></div>
+      <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="20" placeholder="Code"></div>
       <button type="submit" class="primary-btn">Créer un compte</button>
       <div id="signupStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div>
     </form>
@@ -634,13 +634,11 @@
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  // Pré-remplir le code de parrainage via l'URL (?ref=CODE)
+  // Lire le code de parrainage depuis l'URL. L'affichage de l'onglet
+  // inscription sera activé après la définition de switchAuthTab.
   const urlParams = new URLSearchParams(window.location.search);
   const refParam = urlParams.get('ref');
-  if (refParam) {
-    $("suReferral").value = refParam.toUpperCase();
-    switchAuthTab('signup'); // Ouvre directement l'onglet inscription
-  }
+  if (refParam) $("suReferral").value = refParam.toUpperCase();
 
   window.toggleSidebar = () => { $("sidebar").classList.toggle("open"); };
   window.switchView = (viewName, element) => {
@@ -692,7 +690,7 @@
   window.copyReferralLink = () => {
     if(!userReferralCode) return;
     const link = window.location.origin + '/?ref=' + userReferralCode;
-    navigator.clipboard.writeText(link).then(() => alert("Lien de parrainage copié ! Partagez-le pour gagner 3%.")).catch(() => alert("Erreur."));
+    navigator.clipboard.writeText(link).then(() => alert("Lien copié avec succès")).catch(() => alert("Erreur."));
   };
 
   window.switchAuthTab = (mode) => {
@@ -703,6 +701,10 @@
     $("signupTab").style.background = "transparent"; $("signupTab").style.borderBottomColor = !isLogin ? "var(--navy)" : "transparent"; $("signupTab").style.color = !isLogin ? "var(--navy)" : "var(--muted)";
     $("authSubtitle").textContent = isLogin ? "Accédez à votre espace investisseur." : "Créez votre compte xynary-club.";
   };
+
+  // Si l'utilisateur arrive via un lien de parrainage, ouvrir l'inscription
+  // maintenant que switchAuthTab est disponible.
+  if (refParam) switchAuthTab('signup');
 
   function showInfo(title, desc, isError = false) {
     $("modalTitle").textContent = title;
@@ -1028,19 +1030,36 @@
 
   // --- AUTHENTIFICATION ---
   $("signupForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); const btn = $("signupForm").querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Création..."; $("signupStatus").textContent = "";
-    const name = $("suName").value.trim(); const email = $("suEmail").value.trim(); const pwd = $("suPassword").value; const ref = $("suReferral").value.trim().toUpperCase(); const newAccountNumber = generateAccountNumber();
-    
-    const { data, error } = await supabaseClient.auth.signUp({ email, password: pwd, options: { data: { full_name: name, referral_code: ref || null, account_number: newAccountNumber } } });
-    
-    if(error) {
-      const msg = errorText(error);
-      if (msg.includes("déjà associée")) { showInfo("Compte déjà existant", msg, true); $("liEmail").value = email; $("liPassword").value = ""; switchAuthTab('login'); } else { $("signupStatus").textContent = msg; }
-      btn.disabled = false; btn.textContent = "Créer un compte"; return;
+    e.preventDefault();
+    const btn = $("signupForm").querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = "Création..."; $("signupStatus").textContent = "";
+    try {
+      const name = $("suName").value.trim();
+      const email = $("suEmail").value.trim();
+      const pwd = $("suPassword").value;
+      const ref = $("suReferral").value.trim().toUpperCase();
+      const newAccountNumber = generateAccountNumber();
+      const { data, error } = await supabaseClient.auth.signUp({ email, password: pwd, options: { data: { full_name: name, referral_code: ref || null, account_number: newAccountNumber } } });
+      if (error) {
+        const msg = errorText(error);
+        if (msg.includes("déjà associée")) {
+          showInfo("Compte déjà existant", msg, true);
+          $("liEmail").value = email; $("liPassword").value = ""; switchAuthTab('login');
+        } else { $("signupStatus").textContent = msg; }
+        return;
+      }
+      if (data.session) {
+        showInfo("Bienvenue", "Votre compte est prêt. Connexion...");
+        setTimeout(() => { closeModal('actionModal'); initApp(data.user); }, 1500);
+      } else {
+        showInfo("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé.");
+      }
+    } catch (err) {
+      console.error("Erreur inscription Xynary Club:", err);
+      $("signupStatus").textContent = "Une erreur est survenue pendant l'inscription. Vérifiez votre connexion et réessayez.";
+    } finally {
+      btn.disabled = false; btn.textContent = "Créer un compte";
     }
-    if(data.session) {
-      showInfo("Bienvenue", "Votre compte est prêt. Connexion..."); setTimeout(() => { closeModal('actionModal'); initApp(data.user); }, 1500);
-    } else { showInfo("Vérifiez vos e-mails", "Un lien de confirmation vous a été envoyé."); btn.disabled = false; btn.textContent = "Créer un compte"; }
   });
 
   $("loginForm").addEventListener("submit", async (e) => {
