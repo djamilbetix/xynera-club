@@ -695,7 +695,6 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhbmRyaG52bGNzZHR2ZW1qaGliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5NDU5OTYsImV4cCI6MjExMDUyMTk5Nn0.DJiPt_PsE5JnhjdyCHnzhFc3NmiOXHDlTMbjCr1JehQ";
 
   // ==== CONSTANTE ADMIN UNIQUE ====
-  // Seul le profil dont account_number correspond à cette valeur est admin.
   const SUPER_ADMIN_ACCOUNT_NUMBER = "5754806523";
 
   const $ = (id) => document.getElementById(id);
@@ -880,13 +879,13 @@
   /* ========= PROFIL / CHARGEMENT ========= */
 
   async function loadProfile() {
+    // On ajoute referred_by_code au select pour éviter les erreurs futures
     const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance, role, has_paid_fee").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || "Membre";
     
     // === ADMIN UNIQUE ===
-    // On ignore totalement le champ "role" et on se base UNIQUEMENT sur account_number.
     isAdmin = String(profile.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
     if (isAdmin) $("adminNavBtn").classList.remove("hidden");
     else $("adminNavBtn").classList.add("hidden");
@@ -907,11 +906,10 @@
         .select("referral_code")
         .maybeSingle();
 
-      if (referralSaveError) console.error("Impossible d'enregistrer le code de parrainage :", referralSaveError);
+      if (referralSaveError) console.error("Erreur code parrainage :", referralSaveError);
       else if (savedProfile && savedProfile.referral_code) userReferralCode = savedProfile.referral_code;
     }
     
-    // Solde : on remplace le skeleton
     const balEl = $("userBalanceDisplay");
     if (balEl) {
       const sk = balEl.querySelector('.balance-skeleton');
@@ -1025,7 +1023,6 @@
   async function loadAdminData() {
     if (!isAdmin) return;
 
-    // Reset skeleton
     ["adminPendingTable", "adminUsersTable", "adminContractsTable"].forEach(id => {
       const t = $(id);
       if (t && t.querySelector('tbody')) {
@@ -1037,7 +1034,13 @@
     $("adminTotalUsers").innerHTML = '<span class="skeleton skeleton-text" style="width:60px;height:24px;"></span>';
     $("adminPendingRequests").innerHTML = '<span class="skeleton skeleton-text" style="width:60px;height:24px;"></span>';
 
-    const { data: profiles } = await supabaseClient.from("profiles").select("balance");
+    const { data: profiles, error: errProfiles } = await supabaseClient.from("profiles").select("balance, account_number");
+    if (errProfiles) {
+      console.error("Erreur RLS Admin:", errProfiles);
+      $("adminTotalUsers").textContent = "Erreur";
+      return;
+    }
+    
     const totalFunds = (profiles || []).reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
     $("adminTotalFunds").textContent = totalFunds.toFixed(2) + " $";
     $("adminTotalUsers").textContent = (profiles || []).length;
@@ -1138,30 +1141,37 @@
 
   async function loadReferralCount() {
     const { data, error } = await supabaseClient.rpc("xynera_my_team");
-    if (!error) {
-      const members = Array.isArray(data) ? data : [];
-      $("myReferralCount").textContent = members.length;
-      
-      const list = $("myTeamList");
-      if (members.length === 0) {
-        list.innerHTML = `<div style="text-align:center; padding:20px 0;">
-          <div style="font-size:36px; margin-bottom:8px;">👥</div>
-          <p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p>
-          <p style="font-size:13px; color:var(--muted);">Partagez votre lien et gagnez <strong>3%</strong> de leur investissement qui sera crédité sur votre compte après l'activation de son contrat. <br><strong>(Et retirable)</strong></p>
-        </div>`;
-      } else {
-        list.innerHTML = "";
-        members.forEach(m => {
-          list.innerHTML += `
-            <div class="team-member" style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px;">
-              <div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${(m.full_name || "M")[0].toUpperCase()}</div>
-              <div>
-                <strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong>
-                <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
-              </div>
-            </div>`;
-        });
-      }
+    
+    // GESTION DES ERREURS : on arrête le skeleton si ça plante
+    if (error) {
+      console.error("Erreur RPC xynera_my_team :", error);
+      $("myReferralCount").textContent = "0";
+      $("myTeamList").innerHTML = `<div style="color:var(--red); font-size:13px; padding:10px; text-align:center;">Erreur de chargement de l'équipe. Vérifiez la base de données (RPC).<br><small>${error.message}</small></div>`;
+      return;
+    }
+
+    const members = Array.isArray(data) ? data : [];
+    $("myReferralCount").textContent = members.length;
+    
+    const list = $("myTeamList");
+    if (members.length === 0) {
+      list.innerHTML = `<div style="text-align:center; padding:20px 0;">
+        <div style="font-size:36px; margin-bottom:8px;">👥</div>
+        <p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p>
+        <p style="font-size:13px; color:var(--muted);">Partagez votre lien et gagnez <strong>3%</strong> de leur investissement qui sera crédité sur votre compte après l'activation de son contrat. <br><strong>(Et retirable)</strong></p>
+      </div>`;
+    } else {
+      list.innerHTML = "";
+      members.forEach(m => {
+        list.innerHTML += `
+          <div class="team-member" style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${(m.full_name || "M")[0].toUpperCase()}</div>
+            <div>
+              <strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong>
+              <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
+            </div>
+          </div>`;
+      });
     }
   }
 
@@ -1227,7 +1237,20 @@
       const pwd = $("suPassword").value;
       const ref = $("suReferral").value.trim().toUpperCase();
       const newAccountNumber = generateAccountNumber();
-      const { data, error } = await supabaseClient.auth.signUp({ email, password: pwd, options: { data: { full_name: name, referral_code: ref || null, account_number: newAccountNumber } } });
+      
+      // MODIFICATION ICI : On enregistre referred_by_code (le code du parrain) au lieu de referral_code
+      const { data, error } = await supabaseClient.auth.signUp({ 
+        email, 
+        password: pwd, 
+        options: { 
+          data: { 
+            full_name: name, 
+            account_number: newAccountNumber,
+            referred_by_code: ref || null 
+          } 
+        } 
+      });
+      
       if (error) {
         const msg = errorText(error);
         if (msg.includes("déjà associée")) {
