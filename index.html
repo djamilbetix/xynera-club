@@ -386,8 +386,8 @@
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
-            <thead><tr><th>Nom</th><th>Email / UID</th><th>Solde</th><th>Rôle</th></tr></thead>
-            <tbody><tr><td colspan="4" style="text-align:center;">Chargement...</td></tr></tbody>
+            <thead><tr><th>Inscription</th><th>Nom</th><th>UID</th><th>N° Compte</th><th>Solde</th><th>Rôle</th></tr></thead>
+            <tbody><tr><td colspan="6" style="text-align:center;">Chargement...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -871,10 +871,18 @@
   async function loadAdminData() {
     if(!isAdmin) return;
 
-    const { data: profiles } = await supabaseClient.from("profiles").select("balance");
-    const totalFunds = profiles.reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
+    const { data: profiles, error: profileLoadError } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee, created_at").order("created_at", { ascending: false });
+    if (profileLoadError) {
+      console.error("Erreur chargement utilisateurs admin:", profileLoadError);
+      $("adminTotalFunds").textContent = "—";
+      $("adminTotalUsers").textContent = "—";
+      $("adminUsersTable").querySelector('tbody').innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--red);">Chargement des utilisateurs impossible. Vérifiez les permissions Supabase.</td></tr>';
+      return;
+    }
+    const safeProfiles = profiles || [];
+    const totalFunds = safeProfiles.reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
     $("adminTotalFunds").textContent = totalFunds.toFixed(2) + " $";
-    $("adminTotalUsers").textContent = profiles.length;
+    $("adminTotalUsers").textContent = safeProfiles.length;
 
     const { data: deposits } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
     const { data: withdrawals } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
@@ -908,18 +916,21 @@
     }
     $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-    const { data: allUsers } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee");
     let usersHtml = "";
-    (allUsers || []).forEach(u => {
+    safeProfiles.forEach(u => {
+      const signupDate = u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '—';
       usersHtml += `
         <tr>
+          <td>${signupDate}</td>
           <td>${u.full_name || 'Inconnu'}</td>
+          <td><span style="font-family:monospace; font-size:11px;">${u.id || '---'}</span></td>
           <td><span style="font-family:monospace;">${u.account_number || '---'}</span></td>
           <td><strong>${Number(u.balance || 0).toFixed(2)} $</strong></td>
           <td><span class="status-badge ${u.role === 'admin' ? 'admin' : 'active'}">${u.role || 'user'}</span></td>
         </tr>
       `;
     });
+    if (!usersHtml) usersHtml = '<tr><td colspan="6" style="text-align:center;">Aucun utilisateur trouvé.</td></tr>';
     $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml;
 
     const { data: allContracts } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
@@ -967,31 +978,37 @@
   };
 
   async function loadReferralCount() {
-    const { data, error } = await supabaseClient.rpc("xynera_my_team");
-    if (!error) {
+    const list = $("myTeamList");
+    list.innerHTML = '<p style="font-size:13px; color:var(--muted);">Vérification des parrainages...</p>';
+    try {
+      const { data, error } = await supabaseClient.rpc("xynera_my_team");
+      if (error) throw error;
       const members = Array.isArray(data) ? data : [];
       $("myReferralCount").textContent = members.length;
-      
-      const list = $("myTeamList");
       if (members.length === 0) {
-        // Message personnalisé demandé
         list.innerHTML = `<div style="text-align:center; padding:20px 0;">
-          <p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p>
-          <p style="font-size:13px; color:var(--muted);">Partagez votre lien et gagnez <strong>3%</strong> de leur investissement qui sera crédité sur votre compte après l'activation de son contrat. <br><strong>(Et retirable)</strong></p>
+          <p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Aucun membre de parrainage trouvé.</p>
+          <p style="font-size:13px; color:var(--muted);">Le lien fonctionne, mais la relation de parrainage doit être enregistrée dans la base de données pour apparaître ici.</p>
         </div>`;
       } else {
         list.innerHTML = "";
         members.forEach(m => {
+          const joinedDate = m.joined_at ? new Date(m.joined_at).toLocaleDateString('fr-FR') : 'Date inconnue';
+          const memberName = m.full_name || "Inconnu";
           list.innerHTML += `
             <div class="team-member" style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px;">
-              <div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${(m.full_name || "M")[0].toUpperCase()}</div>
+              <div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${memberName[0].toUpperCase()}</div>
               <div>
-                <strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong>
-                <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
+                <strong style="display:block; font-size:13px; color:var(--navy);">${memberName}</strong>
+                <small style="color:var(--muted); font-size:11px;">Inscrit le ${joinedDate}</small>
               </div>
             </div>`;
         });
       }
+    } catch (error) {
+      console.error("Erreur chargement équipe:", error);
+      $("myReferralCount").textContent = "—";
+      list.innerHTML = '<p style="color:var(--red); font-size:13px;">Impossible de charger votre équipe. Vérifiez la fonction Supabase xynera_my_team et ses permissions.</p>';
     }
   }
 
