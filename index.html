@@ -231,87 +231,6 @@
       .modal-box { padding: 24px; }
       .data-table { display: block; overflow-x: auto; white-space: nowrap; }
     }
-
-    /* ===== XYNARY CLUB PREMIUM UI REFRESH ===== */
-    :root {
-      --navy:#101a35; --navy-light:#1b2b4d; --red:#ef4444; --blue:#3478f6; --green:#10b981;
-      --ink:#17233f; --muted:#64748b; --line:#e6eaf2; --surface:#ffffff; --page:#f3f6fc;
-      --shadow:0 14px 36px rgba(24,40,80,.08); --radius:18px;
-      --accent-purple:#7c3aed; --accent-cyan:#06b6d4; --accent-amber:#f59e0b;
-    }
-    body { background:var(--page); color:var(--ink); }
-    .sidebar { background:linear-gradient(180deg,#101a35 0%,#17284b 100%); box-shadow:0 0 32px rgba(10,20,50,.12); }
-    .sidebar-header { border-bottom:1px solid rgba(255,255,255,.09); }
-    .sidebar-header strong { font-size:20px; letter-spacing:.4px; }
-    .nav-menu { padding:18px 14px; gap:7px; }
-    .nav-item { border-radius:13px; padding:13px 15px; color:#aebbd3; }
-    .nav-item:hover { background:rgba(255,255,255,.09); color:#fff; transform:translateX(-2px); }
-    .nav-item.active { border-right:0; border-radius:13px; background:linear-gradient(90deg,rgba(52,120,246,.28),rgba(124,58,237,.18)); color:#fff; box-shadow:inset 3px 0 0 #60a5fa; }
-    .nav-item.admin-item { border:1px solid rgba(245,158,11,.55); border-radius:13px; background:rgba(245,158,11,.07); }
-    .sidebar-footer { background:rgba(255,255,255,.045); border-top:1px solid rgba(255,255,255,.08); }
-    .user-avatar { background:linear-gradient(135deg,#3478f6,#7c3aed); box-shadow:0 6px 18px rgba(52,120,246,.3); }
-    .main-content { background:linear-gradient(135deg,#f5f8ff 0%,#f4f6fb 55%,#f9f5ff 100%); }
-    .view { max-width:1240px; padding:36px 42px 110px; }
-    .page-header h1 { color:#12203e; font-size:30px; letter-spacing:-.7px; }
-    .page-header p { color:#6c7c98; }
-    .back-btn { border-radius:11px; background:#fff; box-shadow:0 3px 12px rgba(16,26,53,.04); }
-    .back-btn:hover { color:var(--blue); border-color:#bcd1ff; background:#f8fbff; }
-    .info-card,.form-card,.about-card { border:1px solid rgba(218,226,241,.9); border-radius:20px; box-shadow:var(--shadow); }
-    .info-card h3,.form-card h3 { color:#182746; }
-    .balance-card { background:linear-gradient(125deg,#101a35 0%,#1e3564 56%,#384b88 100%); border-radius:22px; box-shadow:0 18px 38px rgba(20,40,80,.2); }
-    .balance-card:after { content:""; position:absolute; width:220px;height:220px;right:-90px;top:-95px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 68%);pointer-events:none; }
-    .btn-deposit { background:linear-gradient(135deg,#10b981,#059669); border-radius:12px; }
-    .btn-withdraw { border-radius:12px; }
-    .btn-contract { background:linear-gradient(135deg,#3478f6,#635bff); border-radius:12px; box-shadow:0 8px 18px rgba(52,120,246,.28); }
-    .primary-btn { background:linear-gradient(135deg,#172544,#2b4270); border-radius:12px; box-shadow:0 6px 16px rgba(17,32,64,.12); }
-    .primary-btn:hover { background:linear-gradient(135deg,#3478f6,#635bff); transform:translateY(-1px); }
-    .field input,.field select { border-radius:12px; background:#fbfcff; border-color:#dce4f3; padding:14px 15px; }
-    .field input:focus { background:#fff; border-color:#6a9cff; box-shadow:0 0 0 4px rgba(52,120,246,.11); }
-    .market-ticker-wrap { background:rgba(255,255,255,.94); backdrop-filter:blur(12px); border-color:#e5eaf3; }
-    .status-badge { border-radius:9px; }
-    .modal-box { border-radius:22px; }
-    .mobile-header { background:rgba(255,255,255,.95); backdrop-filter:blur(12px); }
-
-    /* Profile redesign */
-    #view-profile .page-header { margin-bottom:26px; }
-    #view-profile .profile-layout { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:24px; align-items:start; }
-    #view-profile .profile-summary-card { padding:0; overflow:hidden; background:#fff; }
-    #view-profile .profile-summary-hero { position:relative; padding:28px 28px 26px; color:#fff; background:linear-gradient(130deg,#172544 0%,#284b88 55%,#6956bf 100%); overflow:hidden; }
-    #view-profile .profile-summary-hero:before { content:""; position:absolute; width:240px;height:240px;border-radius:50%;right:-90px;top:-115px;background:rgba(255,255,255,.09); }
-    #view-profile .profile-summary-hero:after { content:""; position:absolute; width:130px;height:130px;border-radius:50%;right:40px;bottom:-95px;background:rgba(6,182,212,.18); }
-    #view-profile .profile-identity { display:flex; align-items:center; gap:18px; position:relative; z-index:1; }
-    #view-profile .profile-avatar-large { width:68px;height:68px;display:grid;place-items:center;border-radius:20px;background:linear-gradient(135deg,#60a5fa,#8b5cf6);font-size:25px;font-weight:800;box-shadow:0 10px 24px rgba(0,0,0,.18); }
-    #view-profile .profile-identity h2 { font-size:21px; font-weight:750; margin-bottom:4px; }
-    #view-profile .profile-identity p { color:#d7e4ff; font-size:13px; }
-    #view-profile .profile-chip { display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 11px;border-radius:30px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);font-size:11px;font-weight:700;letter-spacing:.3px; }
-    #view-profile .profile-details { padding:24px 28px 26px; display:grid; grid-template-columns:1fr 1fr; gap:15px; }
-    #view-profile .profile-detail { padding:14px 15px; border-radius:14px; background:#f7f9fd; border:1px solid #edf1f8; min-width:0; }
-    #view-profile .profile-detail.wallet { grid-column:1/-1; background:linear-gradient(120deg,#f2f7ff,#f8f5ff); border-color:#e4e8fa; }
-    #view-profile .profile-detail-label { display:flex;align-items:center;gap:8px;color:#71809b;font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.55px;margin-bottom:7px; }
-    #view-profile .profile-detail-label .profile-mini-icon { width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:#e8efff;color:#3478f6;font-size:12px; }
-    #view-profile .profile-detail-value { color:#182746;font-size:14px;font-weight:650;word-break:break-word;line-height:1.5; }
-    #view-profile .profile-detail.wallet .profile-detail-value { font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px; }
-    #view-profile .profile-logout { margin:0 28px 26px; background:#fff1f2; color:#e11d48; border:1px solid #ffe0e5; border-radius:12px; }
-    #view-profile .profile-logout:hover { background:#e11d48;color:#fff; }
-    #view-profile .profile-edit-card { padding:28px; background:#fff; }
-    #view-profile .profile-edit-heading { display:flex;align-items:center;gap:12px;margin-bottom:22px; }
-    #view-profile .profile-edit-icon { width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#3478f6,#7c3aed);font-size:18px; }
-    #view-profile .profile-edit-heading h3 { margin:0;font-size:19px;font-weight:750;color:#172544; }
-    #view-profile .profile-edit-heading p { margin-top:3px;color:#7786a1;font-size:12px; }
-    #view-profile .profile-edit-card .field label { font-size:12px;color:#52627f;letter-spacing:.1px; }
-    #view-profile .profile-edit-card .primary-btn { margin-top:5px; }
-    #view-profile .profile-security-note { margin-top:18px;padding:13px 14px;border-radius:12px;background:#eff6ff;color:#49658e;border:1px solid #dbeafe;font-size:12px;line-height:1.55; }
-    @media(max-width:900px) { #view-profile .profile-layout { grid-template-columns:1fr; } }
-    @media(max-width:600px) {
-      .view { padding:22px 16px 100px; }
-      #view-profile .profile-summary-hero { padding:23px 20px; }
-      #view-profile .profile-details { padding:18px 20px; grid-template-columns:1fr; gap:11px; }
-      #view-profile .profile-detail.wallet { grid-column:auto; }
-      #view-profile .profile-logout { margin:0 20px 20px; }
-      #view-profile .profile-edit-card { padding:22px 20px; }
-      #view-profile .profile-identity h2 { font-size:19px; }
-    }
-
   </style>
 </head>
 <body>
@@ -541,7 +460,7 @@
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
-            <thead><tr><th>Utilisateur</th><th>Numéro de compte</th><th>Solde</th><th>Rôle</th><th>Code parrainage</th><th>Inscription</th></tr></thead>
+            <thead><tr><th>Nom</th><th>Email / UID</th><th>Solde</th><th>Rôle</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -576,59 +495,35 @@
 
     <!-- VUE : PROFIL -->
     <section id="view-profile" class="view">
-      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">← Retour au tableau de bord</button></div>
-      <div class="page-header"><h1>Mon Profil</h1><p>Vos informations personnelles et paramètres de compte, réunis dans un espace sécurisé.</p></div>
-
-      <div class="profile-layout">
-        <div class="info-card profile-summary-card">
-          <div class="profile-summary-hero">
-            <div class="profile-identity">
-              <div class="profile-avatar-large" id="profileAvatarInitial">U</div>
-              <div>
-                <h2 id="profileHeroName">Mon compte</h2>
-                <p id="profileHeroEmail">Espace investisseur Xynary Club</p>
-                <span class="profile-chip">✦ Profil investisseur</span>
-              </div>
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
+      <div class="page-header"><h1>Mon Profil</h1><p>Gérez vos informations personnelles.</p></div>
+      
+      <div class="dashboard-grid">
+        <div>
+          <div class="info-card" style="margin-top:0;">
+            <h3>Informations Personnelles</h3>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Nom complet</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayName">---</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse e-mail</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayEmail">---</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Téléphone</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayPhone">Non renseigné</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse de retrait</div><div style="font-size:14px; color:var(--navy); font-weight:500; font-family:monospace; word-break:break-all;" id="profileDisplayWallet">Non configurée</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Numéro de compte (UID)</div><div style="font-size:15px; color:var(--navy); font-weight:700; font-family:monospace;" id="profileAccountNumber">---</div></div>
             </div>
+            <button class="logout-btn" id="logoutBtnProfile" style="margin-top:24px;">Se déconnecter</button>
           </div>
-          <div class="profile-details">
-            <div class="profile-detail">
-              <div class="profile-detail-label"><span class="profile-mini-icon">👤</span> Nom complet</div>
-              <div class="profile-detail-value" id="profileDisplayName">---</div>
-            </div>
-            <div class="profile-detail">
-              <div class="profile-detail-label"><span class="profile-mini-icon">✉</span> Adresse e-mail</div>
-              <div class="profile-detail-value" id="profileDisplayEmail">---</div>
-            </div>
-            <div class="profile-detail">
-              <div class="profile-detail-label"><span class="profile-mini-icon">☎</span> Téléphone</div>
-              <div class="profile-detail-value" id="profileDisplayPhone">Non renseigné</div>
-            </div>
-            <div class="profile-detail">
-              <div class="profile-detail-label"><span class="profile-mini-icon">◈</span> UID du compte</div>
-              <div class="profile-detail-value" id="profileAccountNumber">---</div>
-            </div>
-            <div class="profile-detail wallet">
-              <div class="profile-detail-label"><span class="profile-mini-icon">⌁</span> Adresse de retrait USDT TRC20</div>
-              <div class="profile-detail-value" id="profileDisplayWallet">Non configurée</div>
-            </div>
-          </div>
-          <button class="logout-btn profile-logout" id="logoutBtnProfile" style="margin-top:0;">⇥ Se déconnecter</button>
         </div>
 
-        <div class="form-card profile-edit-card">
-          <div class="profile-edit-heading">
-            <div class="profile-edit-icon">✎</div>
-            <div><h3>Modifier mon profil</h3><p>Gardez vos informations à jour.</p></div>
+        <div>
+          <div class="form-card" style="margin-top:0;">
+            <h3 style="font-size:16px; color:var(--navy); margin-bottom:20px; font-weight:600;">Modifier</h3>
+            <form id="profileForm">
+              <div class="field"><label>Nom complet</label><input id="profileName" required></div>
+              <div class="field"><label>Téléphone</label><input id="profilePhone" type="tel" placeholder="+243..."></div>
+              <div class="field"><label>Adresse de retrait (USDT TRC20) *</label><input id="profileWallet" type="text" required placeholder="Saisissez votre adresse TRC20"></div>
+              <button class="primary-btn" type="submit">Enregistrer</button>
+              <div id="profileStatusMsg" style="text-align:center; margin-top:16px; font-size:13px; font-weight:600;"></div>
+            </form>
           </div>
-          <form id="profileForm">
-            <div class="field"><label>Nom complet</label><input id="profileName" required placeholder="Votre nom complet"></div>
-            <div class="field"><label>Téléphone</label><input id="profilePhone" type="tel" placeholder="+243..."></div>
-            <div class="field"><label>Adresse de retrait (USDT TRC20) *</label><input id="profileWallet" type="text" required placeholder="Saisissez votre adresse TRC20"></div>
-            <button class="primary-btn" type="submit">✓ Enregistrer les modifications</button>
-            <div id="profileStatusMsg" style="text-align:center; margin-top:16px; font-size:13px; font-weight:600;"></div>
-          </form>
-          <div class="profile-security-note">🔒 <strong>Conseil de sécurité :</strong> vérifiez soigneusement votre adresse de retrait avant de l’enregistrer. Les retraits seront envoyés à l’adresse configurée dans votre profil.</div>
         </div>
       </div>
     </section>
@@ -1191,35 +1086,29 @@
     }
     $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-    const { data: allUsers, error: usersError } = await supabaseClient.from("profiles")
-      .select("id, full_name, account_number, balance, role, has_paid_fee, referral_code, referred_by_code, created_at")
-      .order("created_at", { ascending: false });
+    // Charger les profils sans imposer des noms de colonnes potentiellement différents selon la version du schéma.
+    const { data: allUsers, error: usersError } = await supabaseClient.from("profiles").select("*").order("created_at", { ascending: false });
     if (usersError) console.warn("Chargement utilisateurs admin:", usersError);
-    const safeText = (value) => String(value ?? "").replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
     let usersHtml = "";
-    if (usersError) {
-      usersHtml = `<tr><td colspan="6" style="text-align:center;color:var(--red);padding:20px;">Impossible de charger les utilisateurs : ${safeText(usersError.message)}</td></tr>`;
-    } else if (!allUsers || allUsers.length === 0) {
-      usersHtml = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Aucun utilisateur enregistré.</td></tr>`;
-    } else {
-      (allUsers || []).forEach(u => {
-        const isAdminUser = String(u.role || '').toLowerCase() === 'admin' || String(u.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
-        const displayRole = isAdminUser ? 'admin' : 'user';
-        const badgeClass = isAdminUser ? 'admin' : 'active';
-        const date = u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '—';
-        usersHtml += `
-          <tr>
-            <td><strong>${safeText(u.full_name || 'Nom non renseigné')}</strong><small style="display:block;color:var(--muted);font-size:11px;">UID : ${safeText(String(u.id || '').slice(0,8))}…</small></td>
-            <td><span style="font-family:monospace;">${safeText(u.account_number || '---')}</span></td>
-            <td><strong>${Number(u.balance || 0).toFixed(2)} $</strong></td>
-            <td><span class="status-badge ${badgeClass}">${displayRole}</span></td>
-            <td><span style="font-family:monospace;font-size:12px;">${safeText(u.referral_code || '—')}</span><small style="display:block;color:var(--muted);font-size:11px;">Parrain : ${safeText(u.referred_by_code || '—')}</small></td>
-            <td>${date}</td>
-          </tr>
-        `;
-      });
-    }
-    $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml;
+    (allUsers || []).forEach(u => {
+      const accountNumber = u.account_number || u.numero_de_compte || u["numéro_de_compte"] || u["numéro de compte"] || "---";
+      const name = u.full_name || u["nom et prénom"] || u.name || "Inconnu";
+      const refCode = u.referral_code || u.code_de_parrainage || u.code_de_parrainage || "---";
+      const parentCode = u.referred_by_code || u["référé par code"] || "---";
+      const isSuperAdmin = String(accountNumber).trim() === SUPER_ADMIN_ACCOUNT_NUMBER || String(u.role || '').toLowerCase() === 'admin';
+      const displayRole = isSuperAdmin ? 'admin' : 'user';
+      const badgeClass = isSuperAdmin ? 'admin' : 'active';
+      const safe = value => String(value ?? "").replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
+      usersHtml += `
+        <tr>
+          <td>${safe(name)}</td>
+          <td><span style="font-family:monospace;">${safe(accountNumber)}</span></td>
+          <td><strong>${Number(u.balance || u.equilibre || 0).toFixed(2)} $</strong></td>
+          <td><span class="status-badge ${badgeClass}">${displayRole}</span></td>
+        </tr>
+      `;
+    });
+    $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml || `<tr><td colspan="4" style="text-align:center;padding:20px;">Aucun utilisateur enregistré.</td></tr>`;
 
     const { data: allContracts, error: adminContractsError } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
     if (adminContractsError) console.warn("Chargement contrats admin:", adminContractsError);
@@ -1281,44 +1170,30 @@
     referralLoadInProgress = true;
     const list = $("myTeamList");
     try {
-      const { data, error } = await supabaseClient.rpc("xynera_my_team");
-      let members = Array.isArray(data) ? data : [];
-      if (error) {
-        console.warn("RPC xynera_my_team indisponible, tentative de secours:", error);
-        // Fallback : lire les profils liés au code de parrainage du membre connecté.
-        // La RPC reste préférable, car elle peut contourner les règles RLS de façon contrôlée.
-        if (userReferralCode) {
-          const fallback = await supabaseClient.from("profiles")
-            .select("full_name, created_at, account_number")
-            .eq("referred_by_code", userReferralCode)
-            .order("created_at", { ascending: false });
-          if (!fallback.error) members = (fallback.data || []).map(m => ({ full_name:m.full_name, joined_at:m.created_at, account_number:m.account_number }));
-          else {
-            console.error("Fallback équipe également en erreur:", fallback.error);
-            $("myReferralCount").textContent = "—";
-            list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">Impossible de charger votre équipe. Vérifiez la RPC xynera_my_team et les règles RLS de Supabase.</div>`;
-            return;
-          }
-        } else {
-          $("myReferralCount").textContent = "0";
-          list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);">Votre code de parrainage n'est pas encore disponible.</div>`;
-          return;
-        }
-      }
-      $("myReferralCount").textContent = members.length;
-      if (members.length === 0) {
+      // La relation de parrainage confirmée dans Supabase : profiles.referred_by = profiles.id du parrain.
+      // On n'utilise plus la RPC xynera_my_team, qui peut être absente ou incompatible.
+      const { data: members, error } = await supabaseClient
+        .from("profiles")
+        .select("id, full_name, referral_code, referred_by_code, created_at")
+        .eq("referred_by", currentUser.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const team = Array.isArray(members) ? members : [];
+      $("myReferralCount").textContent = team.length;
+      if (team.length === 0) {
         list.innerHTML = `<div style="text-align:center;padding:20px 0;"><div style="font-size:36px;margin-bottom:8px;">👥</div><p style="font-weight:600;color:var(--navy);margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p><p style="font-size:13px;color:var(--muted);">Partagez votre lien de parrainage.</p></div>`;
       } else {
-        list.innerHTML = members.map(m => {
-          const joined = m.joined_at ? new Date(m.joined_at).toLocaleDateString('fr-FR') : "Date inconnue";
-          const safeName = String(m.full_name || "Inconnu").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-          return `<div class="team-member" style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;"><div style="width:32px;height:32px;border-radius:50%;background:#eff6ff;color:var(--blue);display:grid;place-items:center;font-weight:600;font-size:12px;">${safeName[0].toUpperCase()}</div><div><strong style="display:block;font-size:13px;color:var(--navy);">${safeName}</strong><small style="color:var(--muted);font-size:11px;">Inscrit le ${joined}</small></div></div>`;
+        const escapeHtml = value => String(value ?? "").replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
+        list.innerHTML = team.map(m => {
+          const name = escapeHtml(m.full_name || "Inconnu");
+          const joined = m.created_at ? new Date(m.created_at).toLocaleDateString('fr-FR') : "Date inconnue";
+          return `<div class="team-member" style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;"><div style="width:32px;height:32px;border-radius:50%;background:#eff6ff;color:var(--blue);display:grid;place-items:center;font-weight:600;font-size:12px;">${(name[0] || "U").toUpperCase()}</div><div><strong style="display:block;font-size:13px;color:var(--navy);">${name}</strong><small style="color:var(--muted);font-size:11px;">Inscrit le ${joined}</small></div></div>`;
         }).join("");
       }
     } catch (err) {
       console.error("Erreur équipe:", err);
       $("myReferralCount").textContent = "—";
-      list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">Erreur réseau pendant le chargement de l'équipe.</div>`;
+      list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">Impossible de charger l'équipe. Vérifiez les accès Supabase (RLS) et réessayez.</div>`;
     } finally {
       referralLoadInProgress = false;
     }
@@ -1539,31 +1414,6 @@
     else $("authArea").classList.remove("hidden"); 
   });
 })();
-
-  // Refresh the decorative profile header when profile values are loaded.
-  const profileHeaderSync = () => {
-    const nameEl = document.getElementById('profileDisplayName');
-    const emailEl = document.getElementById('profileDisplayEmail');
-    const heroName = document.getElementById('profileHeroName');
-    const heroEmail = document.getElementById('profileHeroEmail');
-    const avatar = document.getElementById('profileAvatarInitial');
-    if (nameEl && heroName) {
-      const n = (nameEl.textContent || '').trim();
-      if (n && n !== '---') heroName.textContent = n;
-      if (avatar && n && n !== '---') avatar.textContent = n.charAt(0).toUpperCase();
-    }
-    if (emailEl && heroEmail) {
-      const e = (emailEl.textContent || '').trim();
-      if (e && e !== '---') heroEmail.textContent = e;
-    }
-  };
-  document.addEventListener('DOMContentLoaded', profileHeaderSync);
-  const profileObserver = new MutationObserver(profileHeaderSync);
-  const profileNameTarget = document.getElementById('profileDisplayName');
-  const profileEmailTarget = document.getElementById('profileDisplayEmail');
-  if (profileNameTarget) profileObserver.observe(profileNameTarget, {childList:true,characterData:true,subtree:true});
-  if (profileEmailTarget) profileObserver.observe(profileEmailTarget, {childList:true,characterData:true,subtree:true});
-
 </script>
 </body>
 </html>
