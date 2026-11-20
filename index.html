@@ -705,6 +705,8 @@
   let isAdmin = false;
   let hasPaidFee = false;
   let userReferralCode = "";
+  let adminLoadInProgress = false;
+  let referralLoadInProgress = false;
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -886,7 +888,7 @@
     const name = profile.full_name || "Membre";
     
     // === ADMIN UNIQUE ===
-    isAdmin = String(profile.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
+    isAdmin = String(profile.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER || String(profile.role || '').toLowerCase() === 'admin';
     if (isAdmin) $("adminNavBtn").classList.remove("hidden");
     else $("adminNavBtn").classList.add("hidden");
     
@@ -949,7 +951,12 @@
 
     const { data, error } = await supabaseClient.from("contracts").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
     
-    if (error || !data || data.length === 0) {
+    if (error) {
+      console.error("Erreur chargement contrats:", error);
+      container.innerHTML = `<div style="text-align:center; padding:24px; color:var(--red);">Impossible de charger les contrats. Réessayez plus tard.</div>`;
+      return;
+    }
+    if (!data || data.length === 0) {
       container.innerHTML = `<div style="text-align:center; padding:40px;">
         <div style="font-size:40px; margin-bottom:8px;">📄</div>
         <div style="color:var(--muted); font-size:14px; font-weight:600;">Aucun contrat actif.</div>
@@ -1021,8 +1028,9 @@
   /* ========= ADMIN ========= */
 
   async function loadAdminData() {
-    if (!isAdmin) return;
-
+    if (!isAdmin || adminLoadInProgress) return;
+    adminLoadInProgress = true;
+    try {
     ["adminPendingTable", "adminUsersTable", "adminContractsTable"].forEach(id => {
       const t = $(id);
       if (t && t.querySelector('tbody')) {
@@ -1045,8 +1053,9 @@
     $("adminTotalFunds").textContent = totalFunds.toFixed(2) + " $";
     $("adminTotalUsers").textContent = (profiles || []).length;
 
-    const { data: deposits } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
-    const { data: withdrawals } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
+    const { data: deposits, error: depositError } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
+    const { data: withdrawals, error: withdrawalError } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
+    if (depositError || withdrawalError) console.warn("Chargement demandes admin:", depositError || withdrawalError);
     
     const allPending = [
       ...(deposits || []).map(d => ({ ...d, type: 'Dépôt' })),
@@ -1077,7 +1086,8 @@
     }
     $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-    const { data: allUsers } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee");
+    const { data: allUsers, error: usersError } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee");
+    if (usersError) console.warn("Chargement utilisateurs admin:", usersError);
     let usersHtml = "";
     (allUsers || []).forEach(u => {
       const isSuperAdmin = String(u.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
@@ -1094,7 +1104,8 @@
     });
     $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml;
 
-    const { data: allContracts } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
+    const { data: allContracts, error: adminContractsError } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
+    if (adminContractsError) console.warn("Chargement contrats admin:", adminContractsError);
     let contractsHtml = "";
     if(!allContracts || allContracts.length === 0) {
       contractsHtml = "<tr><td colspan='4' style='text-align:center; color:var(--muted); padding:24px;'>Aucun contrat.</td></tr>";
@@ -1112,6 +1123,15 @@
       });
     }
     $("adminContractsTable").querySelector('tbody').innerHTML = contractsHtml;
+    } catch (adminError) {
+      console.error("Erreur chargement tableau admin:", adminError);
+      ["adminPendingTable", "adminUsersTable", "adminContractsTable"].forEach(id => {
+        const body = $(id)?.querySelector("tbody");
+        if (body) body.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--red);padding:20px;">Erreur de chargement. Vérifiez les politiques RLS et réessayez.</td></tr>`;
+      });
+    } finally {
+      adminLoadInProgress = false;
+    }
   }
 
   window.approveRequest = async (id, type, amount, userId) => {
@@ -1140,38 +1160,34 @@
   /* ========= ÉQUIPE ========= */
 
   async function loadReferralCount() {
-    const { data, error } = await supabaseClient.rpc("xynera_my_team");
-    
-    // GESTION DES ERREURS : on arrête le skeleton si ça plante
-    if (error) {
-      console.error("Erreur RPC xynera_my_team :", error);
-      $("myReferralCount").textContent = "0";
-      $("myTeamList").innerHTML = `<div style="color:var(--red); font-size:13px; padding:10px; text-align:center;">Erreur de chargement de l'équipe. Vérifiez la base de données (RPC).<br><small>${error.message}</small></div>`;
-      return;
-    }
-
-    const members = Array.isArray(data) ? data : [];
-    $("myReferralCount").textContent = members.length;
-    
+    if (referralLoadInProgress) return;
+    referralLoadInProgress = true;
     const list = $("myTeamList");
-    if (members.length === 0) {
-      list.innerHTML = `<div style="text-align:center; padding:20px 0;">
-        <div style="font-size:36px; margin-bottom:8px;">👥</div>
-        <p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p>
-        <p style="font-size:13px; color:var(--muted);">Partagez votre lien et gagnez <strong>3%</strong> de leur investissement qui sera crédité sur votre compte après l'activation de son contrat. <br><strong>(Et retirable)</strong></p>
-      </div>`;
-    } else {
-      list.innerHTML = "";
-      members.forEach(m => {
-        list.innerHTML += `
-          <div class="team-member" style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px;">
-            <div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${(m.full_name || "M")[0].toUpperCase()}</div>
-            <div>
-              <strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong>
-              <small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small>
-            </div>
-          </div>`;
-      });
+    try {
+      const { data, error } = await supabaseClient.rpc("xynera_my_team");
+      if (error) {
+        console.error("Erreur RPC xynera_my_team :", error);
+        $("myReferralCount").textContent = "—";
+        list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">La liste des filleuls ne peut pas être chargée. Vérifiez la fonction RPC xynera_my_team et les droits Supabase.</div>`;
+        return;
+      }
+      const members = Array.isArray(data) ? data : [];
+      $("myReferralCount").textContent = members.length;
+      if (members.length === 0) {
+        list.innerHTML = `<div style="text-align:center;padding:20px 0;"><div style="font-size:36px;margin-bottom:8px;">👥</div><p style="font-weight:600;color:var(--navy);margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p><p style="font-size:13px;color:var(--muted);">Partagez votre lien de parrainage.</p></div>`;
+      } else {
+        list.innerHTML = members.map(m => {
+          const joined = m.joined_at ? new Date(m.joined_at).toLocaleDateString('fr-FR') : "Date inconnue";
+          const safeName = String(m.full_name || "Inconnu").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+          return `<div class="team-member" style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;"><div style="width:32px;height:32px;border-radius:50%;background:#eff6ff;color:var(--blue);display:grid;place-items:center;font-weight:600;font-size:12px;">${safeName[0].toUpperCase()}</div><div><strong style="display:block;font-size:13px;color:var(--navy);">${safeName}</strong><small style="color:var(--muted);font-size:11px;">Inscrit le ${joined}</small></div></div>`;
+        }).join("");
+      }
+    } catch (err) {
+      console.error("Erreur équipe:", err);
+      $("myReferralCount").textContent = "—";
+      list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">Erreur réseau pendant le chargement de l'équipe.</div>`;
+    } finally {
+      referralLoadInProgress = false;
     }
   }
 
@@ -1217,7 +1233,8 @@
     bootstrapSkeletons();
     try { 
       await loadProfile(); 
-      await loadRequests(); 
+      await loadRequests();
+      if (isAdmin) await loadAdminData(); 
     } catch(e) { 
       console.error(e); 
     } finally {
@@ -1232,31 +1249,56 @@
     const btn = $("signupForm").querySelector('button[type="submit"]');
     setBtnLoading(btn, "Création..."); $("signupStatus").textContent = "";
     try {
-      const name = $("suName").value.trim();
-      const email = $("suEmail").value.trim();
+      const name = $("suName").value.trim().replace(/\s+/g, " ");
+      const email = $("suEmail").value.trim().toLowerCase();
       const pwd = $("suPassword").value;
       const ref = $("suReferral").value.trim().toUpperCase();
       const newAccountNumber = generateAccountNumber();
-      
-      // MODIFICATION ICI : On enregistre referred_by_code (le code du parrain) au lieu de referral_code
-      const { data, error } = await supabaseClient.auth.signUp({ 
-        email, 
-        password: pwd, 
-        options: { 
-          data: { 
-            full_name: name, 
+
+      // Contrôle strict des doublons de nom (insensible à la casse).
+      const { data: duplicateName, error: nameCheckError } = await supabaseClient
+        .from("profiles")
+        .select("id, full_name")
+        .ilike("full_name", name)
+        .limit(1);
+      if (nameCheckError) {
+        console.error("Vérification du nom impossible:", nameCheckError);
+        $("signupStatus").textContent = "Impossible de vérifier ce nom pour le moment. Réessayez.";
+        return;
+      }
+      if (duplicateName && duplicateName.length > 0) {
+        $("signupStatus").textContent = "Ce nom est déjà enregistré. Veuillez utiliser votre nom complet exact ou contacter l'administration.";
+        return;
+      }
+
+      // Supabase Auth bloque les doublons d'e-mail. En mode confirmation d'e-mail,
+      // il peut toutefois retourner un utilisateur sans identité pour un e-mail existant.
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password: pwd,
+        options: {
+          data: {
+            full_name: name,
             account_number: newAccountNumber,
-            referred_by_code: ref || null 
-          } 
-        } 
+            referred_by_code: ref || null
+          }
+        }
       });
-      
+
       if (error) {
         const msg = errorText(error);
-        if (msg.includes("déjà associée")) {
-          showInfo("Compte déjà existant", msg, true);
+        if (msg.includes("déjà associée") || /already registered|already exists|already in use/i.test(error.message || "")) {
+          $("signupStatus").textContent = "Cette adresse e-mail est déjà enregistrée. Veuillez vous connecter avec ce compte.";
           $("liEmail").value = email; $("liPassword").value = ""; switchAuthTab('login');
         } else { $("signupStatus").textContent = msg; }
+        resetBtn(btn);
+        return;
+      }
+
+      // Si Supabase masque le doublon (identities vide), signaler immédiatement.
+      if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        $("signupStatus").textContent = "Cette adresse e-mail est déjà enregistrée. Veuillez vous connecter.";
+        $("liEmail").value = email; $("liPassword").value = ""; switchAuthTab('login');
         resetBtn(btn);
         return;
       }
