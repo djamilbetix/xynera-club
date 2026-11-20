@@ -541,7 +541,7 @@
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
-            <thead><tr><th>Nom</th><th>Email / UID</th><th>Solde</th><th>Rôle</th></tr></thead>
+            <thead><tr><th>Utilisateur</th><th>Numéro de compte</th><th>Solde</th><th>Rôle</th><th>Code parrainage</th><th>Inscription</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -1191,22 +1191,34 @@
     }
     $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-    const { data: allUsers, error: usersError } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee");
+    const { data: allUsers, error: usersError } = await supabaseClient.from("profiles")
+      .select("id, full_name, account_number, balance, role, has_paid_fee, referral_code, referred_by_code, created_at")
+      .order("created_at", { ascending: false });
     if (usersError) console.warn("Chargement utilisateurs admin:", usersError);
+    const safeText = (value) => String(value ?? "").replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
     let usersHtml = "";
-    (allUsers || []).forEach(u => {
-      const isSuperAdmin = String(u.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
-      const displayRole = isSuperAdmin ? 'admin' : 'user';
-      const badgeClass = isSuperAdmin ? 'admin' : 'active';
-      usersHtml += `
-        <tr>
-          <td>${u.full_name || 'Inconnu'}</td>
-          <td><span style="font-family:monospace;">${u.account_number || '---'}</span></td>
-          <td><strong>${Number(u.balance || 0).toFixed(2)} $</strong></td>
-          <td><span class="status-badge ${badgeClass}">${displayRole}</span></td>
-        </tr>
-      `;
-    });
+    if (usersError) {
+      usersHtml = `<tr><td colspan="6" style="text-align:center;color:var(--red);padding:20px;">Impossible de charger les utilisateurs : ${safeText(usersError.message)}</td></tr>`;
+    } else if (!allUsers || allUsers.length === 0) {
+      usersHtml = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Aucun utilisateur enregistré.</td></tr>`;
+    } else {
+      (allUsers || []).forEach(u => {
+        const isAdminUser = String(u.role || '').toLowerCase() === 'admin' || String(u.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
+        const displayRole = isAdminUser ? 'admin' : 'user';
+        const badgeClass = isAdminUser ? 'admin' : 'active';
+        const date = u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '—';
+        usersHtml += `
+          <tr>
+            <td><strong>${safeText(u.full_name || 'Nom non renseigné')}</strong><small style="display:block;color:var(--muted);font-size:11px;">UID : ${safeText(String(u.id || '').slice(0,8))}…</small></td>
+            <td><span style="font-family:monospace;">${safeText(u.account_number || '---')}</span></td>
+            <td><strong>${Number(u.balance || 0).toFixed(2)} $</strong></td>
+            <td><span class="status-badge ${badgeClass}">${displayRole}</span></td>
+            <td><span style="font-family:monospace;font-size:12px;">${safeText(u.referral_code || '—')}</span><small style="display:block;color:var(--muted);font-size:11px;">Parrain : ${safeText(u.referred_by_code || '—')}</small></td>
+            <td>${date}</td>
+          </tr>
+        `;
+      });
+    }
     $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml;
 
     const { data: allContracts, error: adminContractsError } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
@@ -1270,13 +1282,29 @@
     const list = $("myTeamList");
     try {
       const { data, error } = await supabaseClient.rpc("xynera_my_team");
+      let members = Array.isArray(data) ? data : [];
       if (error) {
-        console.error("Erreur RPC xynera_my_team :", error);
-        $("myReferralCount").textContent = "—";
-        list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">La liste des filleuls ne peut pas être chargée. Vérifiez la fonction RPC xynera_my_team et les droits Supabase.</div>`;
-        return;
+        console.warn("RPC xynera_my_team indisponible, tentative de secours:", error);
+        // Fallback : lire les profils liés au code de parrainage du membre connecté.
+        // La RPC reste préférable, car elle peut contourner les règles RLS de façon contrôlée.
+        if (userReferralCode) {
+          const fallback = await supabaseClient.from("profiles")
+            .select("full_name, created_at, account_number")
+            .eq("referred_by_code", userReferralCode)
+            .order("created_at", { ascending: false });
+          if (!fallback.error) members = (fallback.data || []).map(m => ({ full_name:m.full_name, joined_at:m.created_at, account_number:m.account_number }));
+          else {
+            console.error("Fallback équipe également en erreur:", fallback.error);
+            $("myReferralCount").textContent = "—";
+            list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">Impossible de charger votre équipe. Vérifiez la RPC xynera_my_team et les règles RLS de Supabase.</div>`;
+            return;
+          }
+        } else {
+          $("myReferralCount").textContent = "0";
+          list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);">Votre code de parrainage n'est pas encore disponible.</div>`;
+          return;
+        }
       }
-      const members = Array.isArray(data) ? data : [];
       $("myReferralCount").textContent = members.length;
       if (members.length === 0) {
         list.innerHTML = `<div style="text-align:center;padding:20px 0;"><div style="font-size:36px;margin-bottom:8px;">👥</div><p style="font-weight:600;color:var(--navy);margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p><p style="font-size:13px;color:var(--muted);">Partagez votre lien de parrainage.</p></div>`;
