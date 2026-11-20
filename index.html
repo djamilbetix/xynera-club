@@ -912,7 +912,7 @@
 
   async function loadProfile() {
     // On ajoute referred_by_code au select pour éviter les erreurs futures
-    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, account_number, balance, role, has_paid_fee").eq("id", currentUser.id).maybeSingle();
+    const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, referred_by, referred_by_code, account_number, balance, role, has_paid_fee").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
     const name = profile.full_name || "Membre";
@@ -971,8 +971,7 @@
       $("myReferralLinkInput").value = "Lien indisponible : vérifiez les droits de mise à jour de votre profil dans Supabase.";
     }
     
-    loadReferralCount();
-    loadContracts();
+    await Promise.allSettled([loadReferralCount(), loadContracts()]);
   }
 
   async function loadContracts() {
@@ -1213,13 +1212,23 @@
     try {
       // La relation de parrainage confirmée dans Supabase : profiles.referred_by = profiles.id du parrain.
       // On n'utilise plus la RPC xynera_my_team, qui peut être absente ou incompatible.
-      const { data: members, error } = await supabaseClient
+      // Double matching: UUID relationship is primary; referral code is a fallback
+      // for older profiles that were created before referred_by was resolved.
+      let teamQuery = supabaseClient
         .from("profiles")
         .select("id, full_name, referral_code, referred_by_code, referred_by, created_at")
-        .eq("referred_by", currentUser.id)
-        .order("created_at", { ascending: false });
+        .eq("referred_by", currentUser.id);
+      if (userReferralCode) {
+        teamQuery = supabaseClient
+          .from("profiles")
+          .select("id, full_name, referral_code, referred_by_code, referred_by, created_at")
+          .or(`referred_by.eq.${currentUser.id},referred_by_code.eq.${userReferralCode}`);
+      }
+      const { data: members, error } = await teamQuery.order("created_at", { ascending: false });
       if (error) throw error;
-      const team = Array.isArray(members) ? members : [];
+      const team = Array.isArray(members)
+        ? Array.from(new Map(members.map(member => [member.id, member])).values())
+        : [];
       $("myReferralCount").textContent = team.length;
       renderReferralRewards(team.length);
       if (team.length === 0) {
