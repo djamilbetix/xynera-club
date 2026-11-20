@@ -1210,25 +1210,11 @@
     referralLoadInProgress = true;
     const list = $("myTeamList");
     try {
-      // La relation de parrainage confirmée dans Supabase : profiles.referred_by = profiles.id du parrain.
-      // On n'utilise plus la RPC xynera_my_team, qui peut être absente ou incompatible.
-      // Double matching: UUID relationship is primary; referral code is a fallback
-      // for older profiles that were created before referred_by was resolved.
-      let teamQuery = supabaseClient
-        .from("profiles")
-        .select("id, full_name, referral_code, referred_by_code, referred_by, created_at")
-        .eq("referred_by", currentUser.id);
-      if (userReferralCode) {
-        teamQuery = supabaseClient
-          .from("profiles")
-          .select("id, full_name, referral_code, referred_by_code, referred_by, created_at")
-          .or(`referred_by.eq.${currentUser.id},referred_by_code.eq.${userReferralCode}`);
-      }
-      const { data: members, error } = await teamQuery.order("created_at", { ascending: false });
+      // RPC sécurisée : contourne les politiques RLS de lecture des profils,
+      // tout en ne retournant que les filleuls du compte connecté.
+      const { data: members, error } = await supabaseClient.rpc("xynera_my_team_secure");
       if (error) throw error;
-      const team = Array.isArray(members)
-        ? Array.from(new Map(members.map(member => [member.id, member])).values())
-        : [];
+      const team = Array.isArray(members) ? members : [];
       $("myReferralCount").textContent = team.length;
       renderReferralRewards(team.length);
       if (team.length === 0) {
@@ -1242,10 +1228,10 @@
         }).join("");
       }
     } catch (err) {
-      console.error("Erreur équipe:", err);
+      console.error("Erreur équipe/RPC xynera_my_team_secure:", err);
       $("myReferralCount").textContent = "—";
       [10,20,50].forEach(t => { const label = $("rewardLabel" + t); const status = $("rewardStatus" + t); if(label) label.textContent = "Données indisponibles"; if(status) status.textContent = "Erreur de chargement"; });
-      list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">Impossible de charger l'équipe. Vérifiez les accès Supabase (RLS) et réessayez.</div>`;
+      list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">La fonction sécurisée de l'équipe n'est pas encore installée dans Supabase. Exécutez le script SQL fourni, puis rechargez l'application.</div>`;
     } finally {
       referralLoadInProgress = false;
     }
