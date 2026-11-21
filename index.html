@@ -467,7 +467,11 @@
     <!-- VUE : MES CONTRATS -->
     <section id="view-contracts" class="view">
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
-      <div class="page-header"><h1>Mes Contrats</h1><p>Suivez l'évolution de vos contrats d'investissement.</p></div>
+      <div class="page-header"><h1>Mes Contrats</h1><p>Consultez le montant, la date de début, la date d'échéance et le statut de vos contrats.</p></div>
+      <div class="info-card" style="margin-top:0; margin-bottom:16px; border-left:4px solid var(--blue);">
+        <h3 style="margin-top:0;">Suivi du contrat</h3>
+        <p style="margin-bottom:0;">Chaque contrat doit afficher son montant, sa durée, ses dates et son statut. À l'échéance, le statut doit être indiqué comme « Échu — vérification requise ». Aucun montant ne doit être crédité automatiquement sans vérification des opérations, des conditions contractuelles et de la conformité.</p>
+      </div>
       <div class="info-card" style="margin-top:0;"><div id="contractsContainer" style="overflow-x:auto;"></div></div>
     </section>
 
