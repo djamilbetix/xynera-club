@@ -375,7 +375,7 @@
       </div>
         <div class="reward-levels" id="referralRewardLevels">
           <div class="reward-card bronze" data-reward-threshold="10">
-            <img class="reward-product-image" src="https://images.unsplash.com/photo-1693669714827-64e44e0564d6?auto=format&fit=crop&w=1000&q=85" alt="Téléphone intelligent premium">
+            <img class="reward-product-image" src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=900&q=80" alt="Téléphone intelligent premium">
             <div class="reward-top"><div class="reward-badge">NIVEAU 01</div><div><div class="reward-title">SMARTPHONE ACHIEVER</div><div class="reward-threshold">10 filleuls directs</div></div></div>
             <div class="reward-prize">Récompense : un téléphone</div>
             <div class="reward-progress-track"><div class="reward-progress-fill" id="rewardProgress10"></div></div>
@@ -383,7 +383,7 @@
             <span class="reward-status" id="rewardStatus10">En progression</span>
           </div>
           <div class="reward-card silver" data-reward-threshold="20">
-            <img class="reward-product-image" src="https://images.unsplash.com/photo-1589400066718-871249af5f71?auto=format&fit=crop&w=1000&q=85" alt="Ordinateur portable premium">
+            <img class="reward-product-image" src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80" alt="Ordinateur portable premium">
             <div class="reward-top"><div class="reward-badge">NIVEAU 02</div><div><div class="reward-title">DIGITAL LEADER</div><div class="reward-threshold">20 filleuls directs</div></div></div>
             <div class="reward-prize">Récompense : un ordinateur portable</div>
             <div class="reward-progress-track"><div class="reward-progress-fill" id="rewardProgress20"></div></div>
@@ -437,7 +437,7 @@
         <h3>Demandes de Dépôts / Retraits en attente</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminPendingTable">
-            <thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Action</th></tr></thead>
+            <thead><tr><th>Date</th><th>Type</th><th>Membre</th><th>Montant</th><th>Informations de vérification</th><th>Action</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -602,6 +602,23 @@
         <span class="address-text" id="addr-usdt_trc">TJgfBr2eLatokAaTFNt8dnDDvkFJQ1BiCU</span>
         <button class="copy-btn" onclick="copyDepositAddress('addr-usdt_trc')">Copier</button>
       </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label>Nom du titulaire / expéditeur</label>
+        <input type="text" id="depositSenderName" placeholder="Nom utilisé pour envoyer les fonds" required>
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label>Numéro ou adresse de l'expéditeur</label>
+        <input type="text" id="depositSenderAddress" placeholder="Numéro Mobile Money ou adresse portefeuille" required>
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label>Référence / TxHash de la transaction</label>
+        <input type="text" id="depositTxRef" placeholder="Identifiant unique de transaction" required>
+      </div>
+      <div class="field" style="margin-bottom:16px;">
+        <label>Date et heure du transfert</label>
+        <input type="datetime-local" id="depositTransferDate" required>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin:0 0 16px;line-height:1.5;">Les informations ci-dessus servent à vérifier votre paiement. Ne partagez jamais votre mot de passe, code OTP, phrase secrète ou clé privée.</div>
       <button class="primary-btn" id="confirmDepositBtn" style="background:var(--green);">J'ai effectué le dépôt</button>
       <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
     </div>
@@ -1001,12 +1018,21 @@
 
       let pendingHtml = "";
       if(allPending.length === 0) {
-        pendingHtml = "<tr><td colspan='4' style='text-align:center; color:var(--muted); padding:24px;'>Aucune demande.</td></tr>";
+        pendingHtml = "<tr><td colspan='6' style='text-align:center; color:var(--muted); padding:24px;'>Aucune demande.</td></tr>";
       } else {
+        const pendingUserIds = [...new Set(allPending.map(item => item.user_id).filter(Boolean))];
+        let pendingProfiles = {};
+        if (pendingUserIds.length) {
+          const { data: profileRows } = await supabaseClient.from("profiles").select("id,full_name,email,account_number").in("id", pendingUserIds);
+          (profileRows || []).forEach(profile => pendingProfiles[profile.id] = profile);
+        }
+        const escPending = value => String(value ?? "—").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
         allPending.forEach(item => {
           const date = new Date(item.created_at).toLocaleDateString('fr-FR');
           const amount = item.type === 'Dépôt' ? item.indicative_amount_usd : item.amount;
-          pendingHtml += `<tr><td>${date}</td><td><strong>${item.type}</strong></td><td>${Number(amount).toFixed(2)} $</td><td><button class="action-btn btn-approve" onclick="approveRequest('${item.id}', '${item.type}', ${amount}, '${item.user_id}')">Approuver</button><button class="action-btn btn-reject" onclick="rejectRequest('${item.id}', '${item.type}')">Refuser</button></td></tr>`;
+          const profile = pendingProfiles[item.user_id] || {};
+          const verification = item.type === 'Dépôt' ? escPending(item.message || "Informations non fournies") : "—";
+          pendingHtml += `<tr><td>${date}</td><td><strong>${item.type}</strong></td><td>${escPending(profile.full_name || profile.email || item.user_id)}<br><small>${escPending(profile.account_number || "Compte non trouvé")}</small></td><td>${Number(amount).toFixed(2)} $</td><td style="min-width:220px;white-space:pre-wrap;word-break:break-word;font-size:12px;">${verification}</td><td><button class="action-btn btn-approve" onclick="approveRequest('${item.id}', '${item.type}', ${amount}, '${item.user_id}')">Approuver</button><button class="action-btn btn-reject" onclick="rejectRequest('${item.id}', '${item.type}')">Refuser</button></td></tr>`;
         });
       }
       $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
@@ -1274,9 +1300,20 @@
   });
 
   $("confirmDepositBtn").addEventListener("click", async () => {
+    const senderName = $("depositSenderName").value.trim();
+    const senderAddress = $("depositSenderAddress").value.trim();
+    const txRef = $("depositTxRef").value.trim();
+    const transferDate = $("depositTransferDate").value;
+    if (!senderName || !senderAddress || !txRef || !transferDate) {
+      alert("Veuillez remplir toutes les informations de vérification du paiement."); return;
+    }
     const btn = $("confirmDepositBtn"); setBtnLoading(btn, "Enregistrement...");
-    try { await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: "Dépôt USDT TRC20 initié.", status: "pending" }); } catch (err) { console.error(err); }
-    setTimeout(() => { $("depositStep2").classList.add("hidden"); $("depositStep3").classList.remove("hidden"); resetBtn(btn); loadRequests(); }, 800);
+    const verificationMessage = `DÉPÔT USDT TRC20 — À VÉRIFIER\nNom expéditeur: ${senderName}\nAdresse/numéro expéditeur: ${senderAddress}\nRéférence/TxHash: ${txRef}\nDate du transfert: ${transferDate}\nRéseau indiqué: TRC20\nMontant déclaré: ${currentDepositAmount} USD`;
+    const { error } = await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: verificationMessage, status: "pending" });
+    if (error) {
+      alert("Impossible d'enregistrer la demande : " + error.message); resetBtn(btn); return;
+    }
+    $("depositStep2").classList.add("hidden"); $("depositStep3").classList.remove("hidden"); resetBtn(btn); loadRequests(); loadAdminData();
   });
 
   $("withdrawForm").addEventListener("submit", async (e) => {
