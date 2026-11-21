@@ -749,12 +749,33 @@
 
   async function loadProfile() {
     try {
-      const { data, error } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
-      if (error) throw error;
+      // 1. Tenter de récupérer le profil
+      let { data: profile, error } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
       
-      const profile = data || {};
+      // 2. SYSTÈME D'AUTO-RÉPARATION : Si le profil n'existe pas, on le crée immédiatement
+      if (!profile) {
+        console.warn("Profil introuvable, création automatique en cours...");
+        const newAccountNumber = generateAccountNumber();
+        const newRefCode = `XYN-${Math.random().toString(36).slice(2, 12).toUpperCase()}`;
+        
+        const { data: newProfile, error: insertError } = await supabaseClient.from("profiles").insert({
+          id: currentUser.id,
+          full_name: currentUser.user_metadata?.full_name || "Membre",
+          account_number: newAccountNumber,
+          referral_code: newRefCode,
+          role: 'user',
+          balance: 0,
+          has_paid_fee: false
+        }).select().single();
+
+        if (insertError) throw new Error("Impossible de créer le profil : " + insertError.message);
+        profile = newProfile;
+      }
+
+      // 3. Traitement normal du profil
       const name = profile.full_name || "Membre";
       
+      // Identification stricte de l'admin
       isAdmin = (String(profile.account_number || "").trim() === SUPER_ADMIN_ACCOUNT_NUMBER);
       if (isAdmin) $("adminNavBtn").classList.remove("hidden");
       else $("adminNavBtn").classList.add("hidden");
@@ -763,8 +784,9 @@
       userBalance = profile.balance || 0;
       userReferralCode = profile.referral_code || "";
 
+      // Générer un code s'il manque (sécurité supplémentaire)
       if (!userReferralCode) {
-        const randomPart = (window.crypto && crypto.randomUUID) ? crypto.randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase() : Math.random().toString(36).slice(2, 12).toUpperCase();
+        const randomPart = Math.random().toString(36).slice(2, 12).toUpperCase();
         userReferralCode = `XYN-${randomPart}`;
         await supabaseClient.from("profiles").update({ referral_code: userReferralCode }).eq("id", currentUser.id);
       }
@@ -776,6 +798,7 @@
         balEl.textContent = userBalance.toFixed(2);
       }
 
+      // Mise à jour de l'interface
       $("sideName").textContent = name;
       $("sideEmail").textContent = currentUser.email;
       $("sideAvatar").textContent = (name.trim()[0] || "U").toUpperCase();
@@ -793,12 +816,17 @@
       
       $("myReferralLinkInput").value = window.location.origin + '/?ref=' + userReferralCode;
       
-      await loadReferralCount();
-      await loadContracts();
+      // Lancer les autres chargements en parallèle
+      await Promise.all([loadReferralCount(), loadContracts()]);
+      
     } catch (err) {
       console.error("Erreur loadProfile:", err);
+      // Arrêter les skeletons même en cas d'erreur fatale
       const balEl = $("userBalanceDisplay");
       if (balEl) { const sk = balEl.querySelector('.balance-skeleton'); if (sk) sk.remove(); balEl.textContent = "Erreur"; }
+      $("sideName").textContent = "Erreur de profil";
+      $("sideEmail").textContent = currentUser.email;
+      $("sideAvatar").textContent = "!";
     }
   }
 
@@ -822,8 +850,7 @@
       html += `</tbody></table>`;
       container.innerHTML = html;
     } catch (err) {
-      console.error("Erreur loadContracts:", err);
-      container.innerHTML = `<div style="color:var(--red); text-align:center; padding:20px;">Erreur de chargement des contrats.</div>`;
+      container.innerHTML = `<div style="color:var(--red); text-align:center; padding:20px; font-size:13px;">Erreur de chargement des contrats.</div>`;
     }
   }
 
@@ -935,9 +962,7 @@
     try {
       const { data, error } = await supabaseClient.rpc("xynera_my_team");
       
-      // Si la fonction SQL n'existe pas ou plante, on l'affiche clairement
       if (error) {
-        console.error("Erreur RPC:", error);
         list.innerHTML = `<div style="color:var(--red); font-size:12px; text-align:center; padding:10px;">Erreur de chargement (SQL).<br>Vérifiez l'onglet SQL de Supabase.<br><small>${error.message}</small></div>`;
         return;
       }
@@ -954,7 +979,6 @@
         });
       }
     } catch (err) {
-      console.error("Erreur Team:", err);
       list.innerHTML = `<div style="color:var(--red); font-size:13px; text-align:center; padding:20px;">Erreur inattendue.</div>`;
     }
   }
