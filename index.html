@@ -106,6 +106,19 @@
     .auth-feedback.is-info { display:block; color:#1e40af; background:#eff6ff; border:1px solid #bfdbfe; }
 
 
+
+/* Email confirmation centered modal with blurred background */
+.email-confirm-overlay{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,15,30,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);opacity:0;pointer-events:none;transition:opacity .2s}
+.email-confirm-overlay.active{opacity:1;pointer-events:auto}
+.email-confirm-card{width:min(100%,430px);background:#fff;border:1px solid #dbeafe;border-radius:18px;box-shadow:0 25px 70px rgba(0,0,0,.28);padding:26px 24px;transform:translateY(10px);transition:transform .2s;text-align:center}
+.email-confirm-overlay.active .email-confirm-card{transform:translateY(0)}
+.email-confirm-icon{width:58px;height:58px;border-radius:50%;background:#ecfdf5;color:#059669;display:grid;place-items:center;margin:0 auto 15px;font-size:28px}
+.email-confirm-card h2{color:var(--navy);font-size:20px;margin-bottom:10px}
+.email-confirm-card p{color:#475569;font-size:14px;line-height:1.6;margin-bottom:10px}
+.email-confirm-address{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:9px;padding:10px;color:#0f172a;font-weight:700;word-break:break-word;margin:12px 0 18px}
+.admin-referrals-cell{max-width:280px;white-space:normal!important;font-size:12px;color:#475569!important;line-height:1.5}
+@media(max-width:600px){.email-confirm-card{padding:22px 18px}}
+
     .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: 0.3s; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
     .modal-box { background: #fff; width: min(100%, 460px); border-radius: var(--radius); padding: 32px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto;}
@@ -197,6 +210,18 @@
     </form>
   </div>
 </section>
+
+
+<div id="emailConfirmOverlay" class="email-confirm-overlay" aria-modal="true" role="dialog" aria-labelledby="emailConfirmTitle">
+ <div class="email-confirm-card">
+  <div class="email-confirm-icon">✉</div>
+  <h2 id="emailConfirmTitle">Confirmez votre adresse e-mail</h2>
+  <p>Votre inscription est enregistrée. Pour activer votre compte Xynary Club, veuillez confirmer votre adresse e-mail via <strong>Supabase Auth</strong> dans votre boîte de réception.</p>
+  <div id="emailConfirmAddress" class="email-confirm-address"></div>
+  <p>Ouvrez le message de confirmation (vérifiez aussi les spams), puis cliquez sur le lien de confirmation. L'accès à votre compte sera disponible après validation.</p>
+  <button type="button" class="primary-btn" onclick="closeEmailConfirmModal()">J'ai compris</button>
+ </div>
+</div>
 
 <div class="app-layout">
   <aside class="sidebar" id="sidebar">
@@ -382,7 +407,7 @@
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
-            <thead><tr><th>Nom complet</th><th>Adresse e-mail</th><th>Numéro de compte</th><th>Rôle</th><th>Statut</th></tr></thead>
+            <thead><tr><th>Nom complet</th><th>Adresse e-mail</th><th>Numéro de compte</th><th>Rôle</th><th>Parrainages</th><th>Membres parrainés</th><th>Statut</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -946,19 +971,10 @@
       }
       $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-      // La liste d'administration lit les profils de la nouvelle architecture.
-      const [{ data: allUsers, error: usersError }, { data: allRoles, error: rolesError }] = await Promise.all([
-        supabaseClient.from("xy_profiles").select("id,email,full_name,account_number,status").order("created_at", { ascending: false }),
-        supabaseClient.from("xy_user_roles").select("user_id,role")
-      ]);
-      if (usersError) throw usersError;
-      if (rolesError) throw rolesError;
-
-      const roleMap = new Map();
-      (allRoles || []).forEach(row => {
-        if (!roleMap.has(row.user_id)) roleMap.set(row.user_id, []);
-        roleMap.get(row.user_id).push(row.role);
-      });
+      // RPC protégée : liste des utilisateurs avec nombre et noms de filleuls.
+      const { data: adminOverview, error: overviewError } = await supabaseClient.rpc("xy_admin_referral_overview");
+      if (overviewError) throw overviewError;
+      const allUsers = Array.isArray(adminOverview) ? adminOverview : [];
 
       const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
@@ -966,18 +982,20 @@
 
       let usersHtml = "";
       (allUsers || []).forEach(u => {
-        const roles = roleMap.get(u.id) || ["user"];
-        const roleLabel = roles.includes("admin") ? "Administrateur" : "Membre";
-        const roleClass = roles.includes("admin") ? "admin" : "active";
+        const roleLabel = u.role === "admin" ? "Administrateur" : "Membre";
+        const roleClass = u.role === "admin" ? "admin" : "active";
+        const referralNames = u.referral_names || "Aucun membre parrainé";
         usersHtml += `<tr>
           <td><strong>${escapeHtml(u.full_name || "Nom non renseigné")}</strong></td>
           <td>${escapeHtml(u.email || "—")}</td>
           <td><span style="font-family:monospace;">${escapeHtml(u.account_number || "—")}</span></td>
           <td><span class="status-badge ${roleClass}">${roleLabel}</span></td>
+          <td><strong>${Number(u.referral_count || 0)}</strong></td>
+          <td class="admin-referrals-cell">${escapeHtml(referralNames)}</td>
           <td><span class="status-badge ${u.status === "active" ? "active" : "pending"}">${escapeHtml(u.status || "inconnu")}</span></td>
         </tr>`;
       });
-      if (!usersHtml) usersHtml = "<tr><td colspan='5' style='text-align:center;color:var(--muted);padding:24px;'>Aucun profil trouvé.</td></tr>";
+      if (!usersHtml) usersHtml = "<tr><td colspan='7' style='text-align:center;color:var(--muted);padding:24px;'>Aucun profil trouvé.</td></tr>";
       $("adminUsersTable").querySelector("tbody").innerHTML = usersHtml;
       $("adminTotalUsers").textContent = String((allUsers || []).length);
       // Aucun solde global fictif : son calcul sera connecté au ledger dans une étape séparée.
@@ -1038,8 +1056,10 @@
         list.innerHTML = `<div style="text-align:center; padding:20px 0;"><div style="font-size:36px; margin-bottom:8px;">👥</div><p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Aucun membre.</p><p style="font-size:13px; color:var(--muted);">Partagez votre lien pour gagner 3%.</p></div>`;
       } else {
         list.innerHTML = "";
+        const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
         members.forEach(m => {
-          list.innerHTML += `<div style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px;"><div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${(m.full_name || "M")[0].toUpperCase()}</div><div><strong style="display:block; font-size:13px; color:var(--navy);">${m.full_name || "Inconnu"}</strong><small style="color:var(--muted); font-size:11px;">Inscrit le ${new Date(m.joined_at).toLocaleDateString()}</small></div></div>`;
+          const joinDate = m.joined_at ? new Date(m.joined_at).toLocaleDateString("fr-FR") : "Date indisponible";
+          list.innerHTML += `<div style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px;"><div style="width:32px; height:32px; border-radius:50%; background:#eff6ff; color:var(--blue); display:grid; place-items:center; font-weight:600; font-size:12px;">${esc((m.full_name || "M")[0].toUpperCase())}</div><div style="min-width:0"><strong style="display:block; font-size:13px; color:var(--navy);">${esc(m.full_name || "Inconnu")}</strong><small style="display:block;color:var(--muted);font-size:11px;">${esc(m.email || "E-mail non disponible")}</small><small style="color:var(--muted); font-size:11px;">Inscrit le ${esc(joinDate)}</small></div></div>`;
         });
       }
     } catch (err) {
@@ -1090,7 +1110,9 @@
     }
   }
 
-  $("signupForm").addEventListener("submit", async (e) => {
+  window.closeEmailConfirmModal = () => { const overlay = $("emailConfirmOverlay"); if (overlay) overlay.classList.remove("active"); };
+  function showEmailConfirmModal(email) { const overlay = $("emailConfirmOverlay"); const address = $("emailConfirmAddress"); if(address) address.textContent = email || "Votre adresse e-mail"; if(overlay) overlay.classList.add("active"); }
+    $("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("signupForm").querySelector('button[type="submit"]');
     if (signupAwaitingEmailConfirmation || btn.disabled) return;
@@ -1156,15 +1178,8 @@
 
       // Confirmation e-mail obligatoire : l'utilisateur reste sur la page d'inscription.
       signupAwaitingEmailConfirmation = true;
-      setSignupMessage(
-        `Votre demande d'inscription a bien été enregistrée, ${name}.\n\n` +
-        `Nous avons envoyé un e-mail de confirmation à : ${email}\n\n` +
-        `1. Ouvrez votre boîte de réception (vérifiez également les courriers indésirables / spam).\n` +
-        `2. Ouvrez le message de confirmation et cliquez sur « Confirmer mon adresse e-mail ».\n` +
-        `3. Votre compte sera activé après cette confirmation. Vous pourrez alors accéder à votre espace Xynary Club.\n\n` +
-        `Tant que l'adresse e-mail n'est pas confirmée, l'accès à l'espace membre reste bloqué.`,
-        "success"
-      );
+      setSignupMessage("Inscription enregistrée. Veuillez confirmer votre adresse e-mail via Supabase Auth dans votre boîte mail pour activer votre compte.", "success");
+      showEmailConfirmModal(email);
 
       // Évite les doubles clics et les demandes répétées pendant l'attente de confirmation.
       $("signupForm").querySelectorAll("input").forEach(input => { input.disabled = true; });
