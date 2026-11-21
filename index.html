@@ -589,7 +589,16 @@
       </form>
     </div>
     <div id="depositStep2" class="hidden">
+      <div style="display:flex;gap:10px;margin-bottom:16px;">
+        <button type="button" class="action-btn" style="flex:1;background:#e8edf5;color:#172033;" onclick="returnDepositToStep1()">← Retour</button>
+        <button type="button" class="action-btn" style="flex:1;background:#fee2e2;color:#991b1b;" onclick="closeModal('depositModal')">Annuler / Accueil</button>
+      </div>
       <div class="modal-title">Effectuer le transfert</div>
+      <div class="field" style="margin-bottom:18px;">
+        <label>Identifiant du compte Xynary</label>
+        <input type="text" id="depositAccountIdDisplay" readonly value="" style="background:#f3f6fa;font-weight:700;color:#172033;">
+        <small style="color:var(--muted);">Identifiant automatiquement récupéré depuis votre profil.</small>
+      </div>
       <div style="text-align:center; margin-bottom: 24px;">
          <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Montant à envoyer</div>
          <div style="font-size: 24px; font-weight: 700; color: var(--navy);" id="displayDepositAmount">0.00 $</div>
@@ -603,8 +612,9 @@
         <button class="copy-btn" onclick="copyDepositAddress('addr-usdt_trc')">Copier</button>
       </div>
       <div class="field" style="margin-bottom:12px;">
-        <label>Nom du titulaire / expéditeur</label>
-        <input type="text" id="depositSenderName" placeholder="Nom utilisé pour envoyer les fonds" required>
+        <label>Nom du membre (récupéré automatiquement depuis votre profil)</label>
+        <input type="text" id="depositSenderName" readonly placeholder="Nom du profil" required style="background:#f3f6fa;font-weight:600;color:#172033;">
+        <small style="color:var(--muted);">Ce nom est récupéré depuis votre compte. Si nécessaire, modifiez d’abord votre profil.</small>
       </div>
       <div class="field" style="margin-bottom:12px;">
         <label>Numéro ou adresse de l'expéditeur</label>
@@ -620,7 +630,6 @@
       </div>
       <div style="font-size:12px;color:var(--muted);margin:0 0 16px;line-height:1.5;">Les informations ci-dessus servent à vérifier votre paiement. Ne partagez jamais votre mot de passe, code OTP, phrase secrète ou clé privée.</div>
       <button class="primary-btn" id="confirmDepositBtn" style="background:var(--green);">J'ai effectué le dépôt</button>
-      <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('depositModal')">Annuler</button>
     </div>
     <div id="depositStep3" class="hidden" style="text-align: center;">
       <div class="modal-title" style="margin-bottom: 12px;">Dépôt en attente</div>
@@ -686,6 +695,7 @@
 
   const $ = (id) => document.getElementById(id);
   let currentUser = null;
+  let currentAccountNumber = "";
   let supabaseClient = null;
   let currentDepositAmount = 0;
   let userBalance = 0;
@@ -907,6 +917,7 @@
       $("sideName").textContent = name;
       $("sideEmail").textContent = currentUser.email || profile.email || "";
       $("sideAvatar").textContent = (name[0] || "U").toUpperCase();
+      currentAccountNumber = profile.account_number || "";
       $("dashAccountNumber").textContent = profile.account_number || "---";
       $("profileDisplayName").textContent = name;
       $("profileDisplayEmail").textContent = currentUser.email || profile.email || "";
@@ -1296,6 +1307,8 @@
     const amount = parseFloat($("depositAmountInput").value); const minDeposit = hasPaidFee ? 150 : 186;
     if (amount < minDeposit) { alert(`Le minimum de dépôt est de ${minDeposit} $.`); return; }
     currentDepositAmount = amount; $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
+    $("depositAccountIdDisplay").value = currentAccountNumber || "Identifiant non disponible";
+    $("depositSenderName").value = $("profileDisplayName").textContent.trim() || "Nom non disponible";
     $("depositStep1").classList.add("hidden"); $("depositStep2").classList.remove("hidden");
   });
 
@@ -1308,7 +1321,7 @@
       alert("Veuillez remplir toutes les informations de vérification du paiement."); return;
     }
     const btn = $("confirmDepositBtn"); setBtnLoading(btn, "Enregistrement...");
-    const verificationMessage = `DÉPÔT USDT TRC20 — À VÉRIFIER\nNom expéditeur: ${senderName}\nAdresse/numéro expéditeur: ${senderAddress}\nRéférence/TxHash: ${txRef}\nDate du transfert: ${transferDate}\nRéseau indiqué: TRC20\nMontant déclaré: ${currentDepositAmount} USD`;
+    const verificationMessage = `DÉPÔT USDT TRC20 — À VÉRIFIER\nCompte Xynary: ${currentAccountNumber}\nNom expéditeur: ${senderName}\nAdresse/numéro expéditeur: ${senderAddress}\nRéférence/TxHash: ${txRef}\nDate du transfert: ${transferDate}\nRéseau indiqué: TRC20\nMontant déclaré: ${currentDepositAmount} USD`;
     const { error } = await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: verificationMessage, status: "pending" });
     if (error) {
       alert("Impossible d'enregistrer la demande : " + error.message); resetBtn(btn); return;
