@@ -171,7 +171,17 @@
       .modal-box { padding: 24px; }
       .data-table { display: block; overflow-x: auto; white-space: nowrap; }
     }
-  </style>
+  
+/* Xynary Club referral reward levels */
+.reward-levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0 22px}
+.reward-card{position:relative;overflow:hidden;border:1px solid #334155;border-radius:16px;padding:18px;background:linear-gradient(145deg,#101827,#202a3b);color:#f8fafc;box-shadow:0 8px 22px rgba(15,23,42,.12)}
+.reward-card:after{content:'';position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:var(--reward-glow);opacity:.12}
+.reward-card.bronze{--reward-glow:#cd7f32;border-color:#8b5a2b}.reward-card.silver{--reward-glow:#cbd5e1;border-color:#94a3b8}.reward-card.gold{--reward-glow:#fbbf24;border-color:#b8860b}
+.reward-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}.reward-badge{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:var(--reward-glow);color:#101827;box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+.reward-title{font-weight:800;letter-spacing:.06em}.reward-threshold{font-size:12px;color:#cbd5e1}.reward-prize{font-weight:700;margin:10px 0;color:#fff}.reward-progress-track{height:8px;background:#475569;border-radius:99px;overflow:hidden}.reward-progress-fill{height:100%;width:0;background:var(--reward-glow);border-radius:99px;transition:width .5s}.reward-progress-text{display:flex;justify-content:space-between;font-size:12px;color:#cbd5e1;margin-top:7px}.reward-status{display:inline-flex;margin-top:10px;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:700;background:rgba(255,255,255,.09);color:#e2e8f0}.reward-status.unlocked{background:rgba(16,185,129,.18);color:#6ee7b7}
+@media(max-width:600px){.reward-levels{grid-template-columns:1fr}.reward-card{padding:16px}}
+
+</style>
 </head>
 <body>
 
@@ -361,6 +371,32 @@
             </div>
           </div>
         </div>
+      </div>
+        <div class="reward-levels" id="referralRewardLevels">
+          <div class="reward-card bronze" data-reward-threshold="10">
+            <div class="reward-top"><div class="reward-badge">📱</div><div><div class="reward-title">AMBASSADEUR</div><div class="reward-threshold">Niveau 1 · 10 filleuls</div></div></div>
+            <div class="reward-prize">Récompense prévue : Téléphone</div>
+            <div class="reward-progress-track"><div class="reward-progress-fill" id="rewardProgress10"></div></div>
+            <div class="reward-progress-text"><span id="rewardText10">0 / 10 membres</span><span id="rewardRemain10">10 restants</span></div>
+            <span class="reward-status" id="rewardStatus10">À débloquer</span>
+          </div>
+          <div class="reward-card silver" data-reward-threshold="20">
+            <div class="reward-top"><div class="reward-badge">💻</div><div><div class="reward-title">ÉLITE</div><div class="reward-threshold">Niveau 2 · 20 filleuls</div></div></div>
+            <div class="reward-prize">Récompense prévue : Ordinateur</div>
+            <div class="reward-progress-track"><div class="reward-progress-fill" id="rewardProgress20"></div></div>
+            <div class="reward-progress-text"><span id="rewardText20">0 / 20 membres</span><span id="rewardRemain20">20 restants</span></div>
+            <span class="reward-status" id="rewardStatus20">À débloquer</span>
+          </div>
+          <div class="reward-card gold" data-reward-threshold="50">
+            <div class="reward-top"><div class="reward-badge">🏆</div><div><div class="reward-title">LÉGENDE</div><div class="reward-threshold">Niveau 3 · 50 filleuls</div></div></div>
+            <div class="reward-prize">Bonus annoncé : 50 % sur chaque contrat*</div>
+            <div class="reward-progress-track"><div class="reward-progress-fill" id="rewardProgress50"></div></div>
+            <div class="reward-progress-text"><span id="rewardText50">0 / 50 membres</span><span id="rewardRemain50">50 restants</span></div>
+            <span class="reward-status" id="rewardStatus50">À débloquer</span>
+            <small style="display:block;color:#cbd5e1;margin-top:10px">*Sous réserve de conditions publiées, de validation et de conformité réglementaire.</small>
+          </div>
+        </div>
+      <div class="dashboard-grid">
         <div>
           <div class="info-card" style="margin-top:0;">
             <h3>Membres (<span id="myReferralCount">0</span>)</h3>
@@ -407,7 +443,7 @@
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
-            <thead><tr><th>Nom complet</th><th>Adresse e-mail</th><th>Numéro de compte</th><th>Rôle</th><th>Parrainages</th><th>Membres parrainés</th><th>Statut</th></tr></thead>
+            <thead><tr><th>Nom complet</th><th>Adresse e-mail</th><th>Numéro de compte</th><th>Rôle</th><th>Parrainages</th><th>Niveau</th><th>Membres parrainés</th><th>Statut</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -991,6 +1027,7 @@
           <td><span style="font-family:monospace;">${escapeHtml(u.account_number || "—")}</span></td>
           <td><span class="status-badge ${roleClass}">${roleLabel}</span></td>
           <td><strong>${Number(u.referral_count || 0)}</strong></td>
+          <td>${Number(u.referral_count || 0) >= 50 ? '🏆 Légende' : Number(u.referral_count || 0) >= 20 ? '💻 Élite' : Number(u.referral_count || 0) >= 10 ? '📱 Ambassadeur' : '—'}</td>
           <td class="admin-referrals-cell">${escapeHtml(referralNames)}</td>
           <td><span class="status-badge ${u.status === "active" ? "active" : "pending"}">${escapeHtml(u.status || "inconnu")}</span></td>
         </tr>`;
@@ -1039,7 +1076,27 @@
     } catch (e) { alert("Erreur: " + e.message); }
   };
 
+  function updateReferralRewards(count) {
+    const levels = [10,20,50];
+    levels.forEach(threshold => {
+      const pct = Math.min(100, Math.max(0, count / threshold * 100));
+      const progress = $("rewardProgress" + threshold);
+      const text = $("rewardText" + threshold);
+      const remain = $("rewardRemain" + threshold);
+      const status = $("rewardStatus" + threshold);
+      if (progress) progress.style.width = pct + "%";
+      if (text) text.textContent = count + " / " + threshold + " membres";
+      if (remain) remain.textContent = count >= threshold ? "Objectif atteint" : (threshold-count) + " restants";
+      if (status) {
+        const unlocked = count >= threshold;
+        status.textContent = unlocked ? "NIVEAU ATTEINT · validation requise" : "À débloquer";
+        status.classList.toggle("unlocked", unlocked);
+      }
+    });
+  }
+
   async function loadReferralCount() {
+    updateReferralRewards(0);
     const list = $("myTeamList");
     try {
       const { data, error } = await supabaseClient.rpc("xynera_my_team");
@@ -1051,6 +1108,7 @@
       
       const members = Array.isArray(data) ? data : [];
       $("myReferralCount").textContent = members.length;
+      updateReferralRewards(members.length);
       
       if (members.length === 0) {
         list.innerHTML = `<div style="text-align:center; padding:20px 0;"><div style="font-size:36px; margin-bottom:8px;">👥</div><p style="font-weight:600; color:var(--navy); margin-bottom:8px;">Aucun membre.</p><p style="font-size:13px; color:var(--muted);">Partagez votre lien pour gagner 3%.</p></div>`;
