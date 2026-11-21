@@ -269,6 +269,9 @@
       <div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div>
       <div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div>
       <button type="submit" class="primary-btn">Se connecter</button>
+      <div style="text-align:center; margin-top:14px;">
+        <button type="button" onclick="openForgotPasswordModal()" style="color:var(--blue); font-size:13px; font-weight:600;">Mot de passe oublié ?</button>
+      </div>
       <div id="loginStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div>
     </form>
 
@@ -718,6 +721,41 @@
   </div>
 </div>
 
+<!-- MODALE MOT DE PASSE OUBLIÉ -->
+<div id="forgotPasswordModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">Mot de passe oublié</div>
+    <p style="text-align:center; color:var(--muted); font-size:13px; margin-bottom:20px; line-height:1.5;">
+      Saisissez votre adresse e-mail. Vous recevrez un lien pour réinitialiser votre mot de passe.
+    </p>
+    <form id="forgotPasswordForm">
+      <div class="field">
+        <label>Adresse e-mail</label>
+        <input type="email" id="forgotEmail" required placeholder="nom@exemple.com">
+      </div>
+      <button type="submit" class="primary-btn">Envoyer le lien</button>
+      <button type="button" style="width:100%; text-align:center; margin-top:16px; color:var(--muted); font-size:14px; font-weight: 500;" onclick="closeModal('forgotPasswordModal')">Annuler</button>
+    </form>
+    <div id="forgotPasswordStatus" style="text-align:center; margin-top:12px; font-size:13px;"></div>
+  </div>
+</div>
+
+<!-- MODALE NOUVEAU MOT DE PASSE -->
+<div id="resetPasswordModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">Nouveau mot de passe</div>
+    <p style="text-align:center; color:var(--muted); font-size:13px; margin-bottom:20px;">
+      Choisissez un nouveau mot de passe sécurisé.
+    </p>
+    <form id="resetPasswordForm">
+      <div class="field"><label>Nouveau mot de passe</label><input type="password" id="newPassword" minlength="8" required placeholder="8 caractères minimum"></div>
+      <div class="field"><label>Confirmer le mot de passe</label><input type="password" id="confirmPassword" minlength="8" required placeholder="Confirmez"></div>
+      <button type="submit" class="primary-btn">Réinitialiser le mot de passe</button>
+    </form>
+    <div id="resetPasswordStatus" style="text-align:center; margin-top:12px; font-size:13px;"></div>
+  </div>
+</div>
+
 <script>
 (() => {
   const SUPABASE_URL = "https://fandrhnvlcsdtvemjhib.supabase.co";
@@ -736,6 +774,7 @@
   let userReferralCode = "";
   let adminLoadInProgress = false;
   let referralLoadInProgress = false;
+  let recoveryMode = false;
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -834,6 +873,10 @@
     }
     if(id === 'withdrawModal') $("withdrawForm").reset();
     if(id === 'contractModal') { $("contractForm").reset(); $("contractError").textContent = ""; }
+    if(id === 'forgotPasswordModal') {
+      $("forgotPasswordForm").reset();
+      $("forgotPasswordStatus").textContent = "";
+    }
   };
   
   window.openDepositModal = () => {
@@ -860,6 +903,12 @@
     if(!userReferralCode) return;
     const link = window.location.origin + '/?ref=' + userReferralCode;
     navigator.clipboard.writeText(link).then(() => alert("Lien copié avec succès")).catch(() => alert("Erreur."));
+  };
+
+  window.openForgotPasswordModal = () => {
+    $("forgotPasswordForm").reset();
+    $("forgotPasswordStatus").textContent = "";
+    window.openModal('forgotPasswordModal');
   };
 
   window.switchAuthTab = (mode) => {
@@ -911,7 +960,6 @@
   /* ========= PROFIL / CHARGEMENT ========= */
 
   async function loadProfile() {
-    // On ajoute referred_by_code au select pour éviter les erreurs futures
     const { data, error } = await supabaseClient.from("profiles").select("full_name, phone, wallet_address, referral_code, referred_by, referred_by_code, account_number, balance, role, has_paid_fee").eq("id", currentUser.id).maybeSingle();
     if (error) throw error;
     const profile = data || {};
@@ -1047,6 +1095,22 @@
     }
 
     await supabaseClient.from("profiles").update(updateData).eq("id", currentUser.id);
+
+    // === COMMISSION 3% AU PARRAIN (crédit automatique) ===
+    try {
+      const { data: commResult, error: commErr } = await supabaseClient.rpc(
+        "credit_referral_commission",
+        { p_amount: amount }
+      );
+      if (commErr) {
+        console.warn("Commission non créditée :", commErr);
+      } else if (commResult && commResult.success) {
+        console.log(`Commission 3% (${commResult.commission} $) créditée au parrain.`);
+      }
+    } catch (err) {
+      console.warn("Commission RPC erreur :", err);
+    }
+
     resetBtn(btn);
 
     closeModal('contractModal');
@@ -1115,7 +1179,6 @@
     }
     $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-    // Charger les profils sans imposer des noms de colonnes potentiellement différents selon la version du schéma.
     const { data: allUsers, error: usersError } = await supabaseClient.from("profiles").select("*").order("created_at", { ascending: false });
     if (usersError) console.warn("Chargement utilisateurs admin:", usersError);
     let usersHtml = "";
@@ -1210,13 +1273,40 @@
     referralLoadInProgress = true;
     const list = $("myTeamList");
     try {
-      // RPC sécurisée : contourne les politiques RLS de lecture des profils,
-      // tout en ne retournant que les filleuls du compte connecté.
-      const { data: members, error } = await supabaseClient.rpc("xynera_my_team_secure");
-      if (error) throw error;
-      const team = Array.isArray(members) ? members : [];
+      let team = [];
+
+      // 1) RPC sécurisée
+      try {
+        const { data: members, error } = await supabaseClient.rpc("xynera_my_team_secure");
+        if (error) throw error;
+        team = Array.isArray(members) ? members : [];
+      } catch (rpcErr) {
+        console.warn("RPC xynera_my_team_secure indisponible, fallback direct :", rpcErr);
+      }
+
+      // 2) Fallback : requête directe par referred_by (UUID du parrain)
+      if (team.length === 0) {
+        const { data: byId, error: byIdErr } = await supabaseClient
+          .from("profiles")
+          .select("id, full_name, created_at")
+          .eq("referred_by", currentUser.id)
+          .order("created_at", { ascending: false });
+        if (!byIdErr && byId) team = byId;
+      }
+
+      // 3) Fallback : requête par referred_by_code (si referred_by n'est pas encore rempli)
+      if (team.length === 0 && userReferralCode) {
+        const { data: byCode, error: byCodeErr } = await supabaseClient
+          .from("profiles")
+          .select("id, full_name, created_at")
+          .eq("referred_by_code", userReferralCode)
+          .order("created_at", { ascending: false });
+        if (!byCodeErr && byCode) team = byCode;
+      }
+
       $("myReferralCount").textContent = team.length;
       renderReferralRewards(team.length);
+
       if (team.length === 0) {
         list.innerHTML = `<div style="text-align:center;padding:20px 0;"><div style="font-size:36px;margin-bottom:8px;">👥</div><p style="font-weight:600;color:var(--navy);margin-bottom:8px;">Vous n'avez aucune personne dans votre équipe.</p><p style="font-size:13px;color:var(--muted);">Partagez votre lien de parrainage.</p></div>`;
       } else {
@@ -1228,10 +1318,15 @@
         }).join("");
       }
     } catch (err) {
-      console.error("Erreur équipe/RPC xynera_my_team_secure:", err);
+      console.error("Erreur équipe :", err);
       $("myReferralCount").textContent = "—";
-      [10,20,50].forEach(t => { const label = $("rewardLabel" + t); const status = $("rewardStatus" + t); if(label) label.textContent = "Données indisponibles"; if(status) status.textContent = "Erreur de chargement"; });
-      list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">La fonction sécurisée de l'équipe n'est pas encore installée dans Supabase. Exécutez le script SQL fourni, puis rechargez l'application.</div>`;
+      [10,20,50].forEach(t => {
+        const label = $("rewardLabel" + t);
+        const status = $("rewardStatus" + t);
+        if (label) label.textContent = "Données indisponibles";
+        if (status) status.textContent = "Erreur de chargement";
+      });
+      list.innerHTML = `<div style="color:var(--red);font-size:13px;padding:10px;text-align:center;">Impossible de charger votre équipe. Réessayez plus tard.</div>`;
     } finally {
       referralLoadInProgress = false;
     }
@@ -1317,6 +1412,17 @@
         return;
       }
 
+      // === RÉSOLUTION DU PARRAIN AVANT SIGNUP (RPC publique) ===
+      let sponsorId = null;
+      if (ref) {
+        try {
+          const { data: resolved } = await supabaseClient.rpc("resolve_referral_code", { p_code: ref });
+          if (resolved) sponsorId = resolved;
+        } catch (err) {
+          console.warn("Résolution du code de parrainage échouée :", err);
+        }
+      }
+
       // Supabase Auth bloque les doublons d'e-mail. En mode confirmation d'e-mail,
       // il peut toutefois retourner un utilisateur sans identité pour un e-mail existant.
       const { data, error } = await supabaseClient.auth.signUp({
@@ -1326,7 +1432,8 @@
           data: {
             full_name: name,
             account_number: newAccountNumber,
-            referred_by_code: ref || null
+            referred_by_code: ref || null,
+            referred_by: sponsorId
           }
         }
       });
@@ -1349,6 +1456,20 @@
         return;
       }
       if (data.session) {
+        // Filet de sécurité : si le trigger Supabase n'a pas rempli referred_by,
+        // on le fait nous-mêmes (RLS autorise l'update de son propre profil).
+        if (sponsorId) {
+          try {
+            await supabaseClient
+              .from("profiles")
+              .update({ referred_by: sponsorId, referred_by_code: ref })
+              .eq("id", data.user.id)
+              .is("referred_by", null);
+          } catch (err) {
+            console.warn("Impossible de forcer referred_by :", err);
+          }
+        }
+
         showInfo("Bienvenue", "Votre compte est prêt. Connexion...");
         setTimeout(() => { closeModal('actionModal'); initApp(data.user); }, 1500);
       } else {
@@ -1369,6 +1490,70 @@
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email: $("liEmail").value.trim(), password: $("liPassword").value });
     if(error) { $("loginStatus").textContent = errorText(error); resetBtn(btn); return; }
     await initApp(data.user); resetBtn(btn);
+  });
+
+  /* ========= MOT DE PASSE OUBLIÉ / RESET ========= */
+
+  $("forgotPasswordForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    const email = $("forgotEmail").value.trim().toLowerCase();
+    setBtnLoading(btn, "Envoi...");
+    $("forgotPasswordStatus").textContent = "";
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+
+    resetBtn(btn);
+    if (error) {
+      $("forgotPasswordStatus").textContent = errorText(error);
+      $("forgotPasswordStatus").style.color = "var(--red)";
+    } else {
+      $("forgotPasswordStatus").textContent =
+        "Un e-mail de réinitialisation a été envoyé. Vérifiez votre boîte de réception (et les spams).";
+      $("forgotPasswordStatus").style.color = "var(--green)";
+    }
+  });
+
+  function showResetPasswordModal() {
+    $("authArea").classList.add("hidden");
+    $("resetPasswordModal").classList.add("active");
+  }
+
+  $("resetPasswordForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    const pwd = $("newPassword").value;
+    const confirm = $("confirmPassword").value;
+
+    if (pwd !== confirm) {
+      $("resetPasswordStatus").textContent = "Les mots de passe ne correspondent pas.";
+      $("resetPasswordStatus").style.color = "var(--red)";
+      return;
+    }
+
+    setBtnLoading(btn, "Mise à jour...");
+    const { error } = await supabaseClient.auth.updateUser({ password: pwd });
+    resetBtn(btn);
+
+    if (error) {
+      $("resetPasswordStatus").textContent = errorText(error);
+      $("resetPasswordStatus").style.color = "var(--red)";
+    } else {
+      $("resetPasswordStatus").textContent = "Mot de passe mis à jour. Redirection...";
+      $("resetPasswordStatus").style.color = "var(--green)";
+      setTimeout(() => {
+        window.location.href = window.location.origin + window.location.pathname;
+      }, 1500);
+    }
+  });
+
+  supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      recoveryMode = true;
+      showResetPasswordModal();
+    }
   });
 
   /* ========= DÉPÔT ========= */
@@ -1447,10 +1632,22 @@
   /* ========= BOOTSTRAP ========= */
   bootstrapSkeletons();
 
-  supabaseClient.auth.getSession().then(({ data: { session } }) => { 
-    if (session) initApp(session.user); 
-    else $("authArea").classList.remove("hidden"); 
-  });
+  const hashHasRecovery = (window.location.hash || '').includes('type=recovery');
+
+  if (hashHasRecovery) {
+    recoveryMode = true;
+    // Supabase traite le token en arrière-plan → on attend un peu puis on force la modale
+    setTimeout(() => {
+      if (!$("resetPasswordModal").classList.contains('active')) {
+        showResetPasswordModal();
+      }
+    }, 900);
+  } else {
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session) initApp(session.user);
+      else $("authArea").classList.remove("hidden");
+    });
+  }
 })();
 </script>
 </body>
