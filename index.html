@@ -38,6 +38,8 @@
     .user-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
     .user-info strong { font-size: 14px; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .user-info small { font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role { display:inline-flex; align-items:center; width:max-content; margin-top:4px; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:700; letter-spacing:.03em; background:rgba(148,163,184,.16); color:#cbd5e1; }
+    .user-role.admin { background:rgba(245,158,11,.16); color:#fbbf24; }
     .logout-btn { width: 100%; padding: 12px; border-radius: 8px; background: rgba(220,38,38,0.15); color: #f87171; font-weight: 600; font-size: 13px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px; }
     .logout-btn:hover { background: rgba(220,38,38,0.25); color: #fff; }
 
@@ -245,6 +247,7 @@
         <div class="user-info">
           <strong id="sideName">---</strong>
           <small id="sideEmail">---</small>
+          <span class="user-role" id="sideRole">Membre</span>
         </div>
       </div>
       <button class="logout-btn" id="logoutBtnSidebar">
@@ -379,7 +382,7 @@
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
-            <thead><tr><th>Nom</th><th>Email / UID</th><th>Solde</th><th>Rôle</th></tr></thead>
+            <thead><tr><th>Nom complet</th><th>Adresse e-mail</th><th>Numéro de compte</th><th>Rôle</th><th>Statut</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -422,6 +425,7 @@
             <div style="display:flex; flex-direction:column; gap:16px;">
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Nom complet</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayName">---</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse e-mail</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayEmail">---</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Type de compte</div><div style="font-size:15px; color:var(--navy); font-weight:600;" id="profileDisplayRole">Membre</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Téléphone</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayPhone">Non renseigné</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse de retrait</div><div style="font-size:14px; color:var(--navy); font-weight:500; font-family:monospace; word-break:break-all;" id="profileDisplayWallet">Non configurée</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Numéro de compte (UID)</div><div style="font-size:15px; color:var(--navy); font-weight:700; font-family:monospace;" id="profileAccountNumber">---</div></div>
@@ -597,7 +601,6 @@
   const SUPABASE_URL = "https://fandrhnvlcsdtvemjhib.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhbmRyaG52bGNzZHR2ZW1qaGliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5NDU5OTYsImV4cCI6MjExMDUyMTk5Nn0.DJiPt_PsE5JnhjdyCHnzhFc3NmiOXHDlTMbjCr1JehQ";
 
-  const SUPER_ADMIN_ACCOUNT_NUMBER = "5754806523";
 
   const $ = (id) => document.getElementById(id);
   let currentUser = null;
@@ -765,36 +768,24 @@
         currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || ""
       ).trim();
 
-      // La nouvelle architecture Xynary utilise xy_profiles.
-      let profile = null;
-      const { data: xyProfile, error: xyProfileError } = await supabaseClient
+      // Le profil de référence est désormais xy_profiles.
+      const { data: profile, error: profileError } = await supabaseClient
         .from("xy_profiles")
         .select("id,email,full_name,phone,account_number,referral_code,referred_by,wallet_address,status")
         .eq("id", currentUser.id)
         .maybeSingle();
 
-      if (xyProfileError) {
-        console.error("Lecture de xy_profiles impossible:", xyProfileError);
-      } else {
-        profile = xyProfile;
-      }
-
-      // Lecture de secours pour afficher les anciens comptes pendant la transition.
+      if (profileError) throw profileError;
       if (!profile) {
-        const { data: legacyProfile, error: legacyError } = await supabaseClient
-          .from("profiles")
-          .select("id,full_name,phone,wallet_address,account_number,referral_code,balance,has_paid_fee,role")
-          .eq("id", currentUser.id)
-          .maybeSingle();
-        if (legacyError) console.warn("Profil historique non disponible:", legacyError);
-        if (legacyProfile) profile = legacyProfile;
+        throw new Error("Profil Xynary introuvable. Vérifiez que le profil a été créé après la confirmation de l'inscription.");
       }
 
-      profile = profile || {};
-      const name = String(profile.full_name || metadataName || currentUser.email?.split("@")[0] || "Membre").trim();
+      const name = String(
+        profile.full_name || metadataName || currentUser.email?.split("@")[0] || "Membre"
+      ).trim();
 
-      // Si le profil existe mais que le nom est vide, synchroniser le nom fourni à l'inscription.
-      if (!profile.full_name && metadataName && profile.id) {
+      // Si le profil existe mais que le nom est vide, reprendre le nom enregistré dans Auth.
+      if (!profile.full_name && metadataName) {
         const { error: nameSyncError } = await supabaseClient
           .from("xy_profiles")
           .update({ full_name: metadataName })
@@ -802,19 +793,25 @@
         if (nameSyncError) console.warn("Synchronisation du nom impossible:", nameSyncError);
       }
 
-      // Le rôle administrateur vient maintenant de xy_user_roles.
+      // Seul le rôle stocké dans xy_user_roles autorise l'interface administrateur.
+      // L'adresse e-mail ou une valeur cachée dans le HTML ne donne jamais les droits admin.
       const { data: roleRows, error: roleError } = await supabaseClient
         .from("xy_user_roles")
         .select("role")
         .eq("user_id", currentUser.id);
-      if (roleError) console.warn("Lecture du rôle impossible:", roleError);
-      const hasAdminRole = Array.isArray(roleRows) && roleRows.some(row => row.role === "admin");
-      isAdmin = hasAdminRole || String(profile.account_number || "").trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
-      if ($("adminNavBtn")) $("adminNavBtn").classList.toggle("hidden", !isAdmin);
+      if (roleError) throw roleError;
+      isAdmin = Array.isArray(roleRows) && roleRows.some(row => row.role === "admin");
 
-      // Les soldes seront raccordés au journal xy_ledger_entries dans une étape dédiée.
-      hasPaidFee = Boolean(profile.has_paid_fee || false);
-      userBalance = Number(profile.balance || 0);
+      if ($("adminNavBtn")) $("adminNavBtn").classList.toggle("hidden", !isAdmin);
+      if ($("sideRole")) {
+        $("sideRole").textContent = isAdmin ? "Administrateur" : "Membre";
+        $("sideRole").classList.toggle("admin", isAdmin);
+      }
+      if ($("profileDisplayRole")) $("profileDisplayRole").textContent = isAdmin ? "Administrateur" : "Membre";
+
+      // Le solde reste provisoirement à zéro : il sera calculé à partir du journal financier.
+      hasPaidFee = false;
+      userBalance = 0;
       userReferralCode = profile.referral_code || "";
 
       const balEl = $("userBalanceDisplay");
@@ -824,16 +821,16 @@
         balEl.textContent = userBalance.toFixed(2);
       }
 
-      // Le nom saisi lors de l'inscription s'affiche dans le menu et dans Mon Profil.
+      // Le nom est visible dans le menu latéral et dans Mon Profil pour chaque utilisateur.
       $("sideName").textContent = name;
-      $("sideEmail").textContent = currentUser.email || "";
+      $("sideEmail").textContent = currentUser.email || profile.email || "";
       $("sideAvatar").textContent = (name[0] || "U").toUpperCase();
-      $("dashAccountNumber").textContent = profile.account_number || currentUser.user_metadata?.account_number || "---";
+      $("dashAccountNumber").textContent = profile.account_number || "---";
       $("profileDisplayName").textContent = name;
-      $("profileDisplayEmail").textContent = currentUser.email || "";
+      $("profileDisplayEmail").textContent = currentUser.email || profile.email || "";
       $("profileDisplayPhone").textContent = profile.phone || "Non renseigné";
       $("profileDisplayWallet").textContent = profile.wallet_address || "Non configurée";
-      $("profileAccountNumber").textContent = profile.account_number || currentUser.user_metadata?.account_number || "---";
+      $("profileAccountNumber").textContent = profile.account_number || "---";
       $("profileName").value = name;
       $("profilePhone").value = profile.phone || "";
       $("profileWallet").value = profile.wallet_address || "";
@@ -858,6 +855,14 @@
       $("profileDisplayName").textContent = fallbackName;
       $("profileDisplayEmail").textContent = currentUser.email || "";
       $("profileName").value = fallbackName;
+      if ($("sideRole")) {
+        $("sideRole").textContent = "Rôle non vérifié";
+        $("sideRole").classList.remove("admin");
+      }
+      if ($("profileDisplayRole")) $("profileDisplayRole").textContent = "Rôle non vérifié";
+      isAdmin = false;
+      if ($("adminNavBtn")) $("adminNavBtn").classList.add("hidden");
+      showInfo("Profil non chargé", err.message || "Impossible de charger votre profil.", true);
     }
   }
 
@@ -919,10 +924,9 @@
     $("adminPendingRequests").textContent = "...";
 
     try {
-      const { data: profiles } = await supabaseClient.from("profiles").select("balance, account_number");
-      const totalFunds = (profiles || []).reduce((sum, p) => sum + (Number(p.balance) || 0), 0);
-      $("adminTotalFunds").textContent = totalFunds.toFixed(2) + " $";
-      $("adminTotalUsers").textContent = (profiles || []).length;
+      // Le nouveau schéma n'a pas de colonne de solde mutable dans xy_profiles.
+      // Le total sera affiché une fois le calcul du ledger implémenté côté serveur.
+      $("adminTotalFunds").textContent = "À calculer depuis le journal";
 
       const { data: deposits } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
       const { data: withdrawals } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
@@ -942,13 +946,42 @@
       }
       $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
 
-      const { data: allUsers } = await supabaseClient.from("profiles").select("id, full_name, account_number, balance, role, has_paid_fee");
+      // La liste d'administration lit les profils de la nouvelle architecture.
+      const [{ data: allUsers, error: usersError }, { data: allRoles, error: rolesError }] = await Promise.all([
+        supabaseClient.from("xy_profiles").select("id,email,full_name,account_number,status").order("created_at", { ascending: false }),
+        supabaseClient.from("xy_user_roles").select("user_id,role")
+      ]);
+      if (usersError) throw usersError;
+      if (rolesError) throw rolesError;
+
+      const roleMap = new Map();
+      (allRoles || []).forEach(row => {
+        if (!roleMap.has(row.user_id)) roleMap.set(row.user_id, []);
+        roleMap.get(row.user_id).push(row.role);
+      });
+
+      const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+      }[ch]));
+
       let usersHtml = "";
       (allUsers || []).forEach(u => {
-        const isSA = String(u.account_number || '').trim() === SUPER_ADMIN_ACCOUNT_NUMBER;
-        usersHtml += `<tr><td>${u.full_name || 'Inconnu'}</td><td><span style="font-family:monospace;">${u.account_number || '---'}</span></td><td><strong>${Number(u.balance || 0).toFixed(2)} $</strong></td><td><span class="status-badge ${isSA ? 'admin' : 'active'}">${isSA ? 'admin' : 'user'}</span></td></tr>`;
+        const roles = roleMap.get(u.id) || ["user"];
+        const roleLabel = roles.includes("admin") ? "Administrateur" : "Membre";
+        const roleClass = roles.includes("admin") ? "admin" : "active";
+        usersHtml += `<tr>
+          <td><strong>${escapeHtml(u.full_name || "Nom non renseigné")}</strong></td>
+          <td>${escapeHtml(u.email || "—")}</td>
+          <td><span style="font-family:monospace;">${escapeHtml(u.account_number || "—")}</span></td>
+          <td><span class="status-badge ${roleClass}">${roleLabel}</span></td>
+          <td><span class="status-badge ${u.status === "active" ? "active" : "pending"}">${escapeHtml(u.status || "inconnu")}</span></td>
+        </tr>`;
       });
-      $("adminUsersTable").querySelector('tbody').innerHTML = usersHtml;
+      if (!usersHtml) usersHtml = "<tr><td colspan='5' style='text-align:center;color:var(--muted);padding:24px;'>Aucun profil trouvé.</td></tr>";
+      $("adminUsersTable").querySelector("tbody").innerHTML = usersHtml;
+      $("adminTotalUsers").textContent = String((allUsers || []).length);
+      // Aucun solde global fictif : son calcul sera connecté au ledger dans une étape séparée.
+      $("adminTotalFunds").textContent = "À calculer depuis le journal";
 
       const { data: allContracts } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
       let contractsHtml = "";
