@@ -340,7 +340,7 @@
 
           <div class="info-card">
             <h3>La première plateforme d'opportunités</h3>
-            <p>Rejoignez <strong>xynary-club</strong> et profitez d'une expertise de pointe sur le Forex et la Crypto, avec des rendements optimisés allant de 15% à 30% selon vos contrats.</p>
+            <p>Rejoignez <strong>xynary-club</strong> pour découvrir des stratégies sur les marchés Forex et Crypto. Les performances ne sont pas garanties : les résultats peuvent varier et des pertes sont possibles.</p>
           </div>
         </div>
 
@@ -454,7 +454,7 @@
       </div>
 
       <div class="info-card">
-        <h3>Contrats Actifs (Tous les utilisateurs)</h3>
+        <h3>Contrats (Tous les utilisateurs)</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminContractsTable">
             <thead><tr><th>Utilisateur</th><th>Montant</th><th>Fin du contrat</th><th>Statut</th></tr></thead>
@@ -523,20 +523,14 @@
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
       <div class="about-hero">
         <h2>Bienvenue chez xynary-club</h2>
-        <p>Un club de traders enregistré réunissant des membres partout dans le monde. Depuis 2020, notre mission est de vous aider à générer des bénéfices réguliers sur les marchés financiers.</p>
+        <p>Une communauté de membres intéressés par l’analyse des marchés financiers et les stratégies Forex et Crypto. Les investissements comportent des risques, y compris une perte partielle ou totale du capital.</p>
       </div>
       <div class="about-section">
         <h3>Pourquoi investir chez nous ?</h3>
         <div class="about-grid">
           <div class="about-card">
-            <h4>Des Rendements Compétitifs</h4>
-            <p>Nous offrons des opportunités d'investissement très compétitives sur le marché :</p>
-            <ul class="about-list">
-              <li><strong>15%</strong> pour un contrat de 1 Mois.</li>
-              <li><strong>20%</strong> pour un contrat de 2 Mois.</li>
-              <li><strong>25%</strong> pour un contrat de 4 Mois.</li>
-              <li><strong>30%</strong> pour un contrat de 6 Mois.</li>
-            </ul>
+            <h4>Suivi des contrats et des résultats</h4>
+            <p>Chaque contrat présente sa durée, son montant, ses dates et son statut. Aucun taux de rendement fixe n’est promis. Les gains ou pertes doivent être calculés à partir des performances réellement constatées et vérifiées.</p>
           </div>
           <div class="about-card">
             <h4>Une Expertise Reconnue</h4>
@@ -664,13 +658,14 @@
     <form id="contractForm">
       <div class="field"><label>Montant à investir (USD)</label><input type="number" id="contractAmountInput" placeholder="Montant à bloquer" min="150" required></div>
       <div class="field">
-        <label>Durée du contrat (et bénéfice)</label>
+        <label>Durée du contrat</label>
         <select id="contractDuration" style="background:var(--page);">
-          <option value="1">1 Mois (15%)</option>
-          <option value="2">2 Mois (20%)</option>
-          <option value="4">4 Mois (25%)</option>
-          <option value="6">6 Mois (30%)</option>
+          <option value="1">1 mois</option>
+          <option value="2">2 mois</option>
+          <option value="4">4 mois</option>
+          <option value="6">6 mois</option>
         </select>
+        <small style="display:block;color:var(--muted);line-height:1.5;margin-top:8px;">Aucun rendement n’est garanti. Le résultat final dépend des performances réellement constatées et peut être négatif.</small>
       </div>
       <div id="contractFeeDisplay" style="font-size:12px; color:var(--red); font-weight:600; margin-bottom:16px; display:none;">Frais d'activation uniques : 36.00 $ (seront déduits de votre solde)</div>
       <button type="submit" class="primary-btn" style="background:var(--blue);">Confirmer le blocage</button>
@@ -703,6 +698,8 @@
   let supabaseClient = null;
   let currentDepositAmount = 0;
   let userBalance = 0;
+  let balanceLoaded = false;
+  let pendingContractRequestId = null;
   let isAdmin = false;
   let hasPaidFee = false;
   let userReferralCode = "";
@@ -796,8 +793,9 @@
   
   window.openDepositModal = () => { updateDepositModalUI(); window.openModal('depositModal'); };
   window.openContractModal = () => {
-    const minRequired = hasPaidFee ? 150 : 186; 
-    if (userBalance < minRequired) { showInfo("Solde insuffisant", `Vous devez avoir un solde minimum de ${minRequired} $ pour activer votre premier contrat.`, true); return; }
+    if (!balanceLoaded) { showInfo("Solde indisponible", "Le solde n’a pas pu être vérifié auprès du serveur. Réessayez après actualisation.", true); return; }
+    const minRequired = hasPaidFee ? 150 : 186;
+    if (userBalance < minRequired) { showInfo("Solde insuffisant", `Solde disponible : ${userBalance.toFixed(2)} USD. Montant minimum requis : ${minRequired} USD.`, true); return; }
     $("modalAvailableBalance").textContent = userBalance.toFixed(2) + " $";
     $("contractFeeDisplay").style.display = hasPaidFee ? "none" : "block";
     window.openModal('contractModal');
@@ -847,15 +845,18 @@
   }
 
   function generateAccountNumber() { return Math.floor(1000000000 + Math.random() * 9000000000).toString(); }
+  function makeRequestUuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
 
   function updateDepositModalUI() {
-    if (!hasPaidFee) {
-      $("depositAmountInput").min = "186"; $("depositAmountInput").placeholder = "Min. 186";
-      $("depositFeeNote").innerHTML = "<strong style='color:var(--red);'>Premier dépôt :</strong> 150 $ + 36 $ (frais) = <strong>186 $ minimum.</strong>";
-    } else {
-      $("depositAmountInput").min = "150"; $("depositAmountInput").placeholder = "Min. 150";
-      $("depositFeeNote").innerHTML = "Le montant minimum de dépôt est de 150 $.";
-    }
+    $("depositAmountInput").min = "150";
+    $("depositAmountInput").placeholder = "Min. 150";
+    $("depositFeeNote").textContent = "Montant minimum de dépôt : 150 USD. Les éventuels frais de service sont affichés séparément avant l’activation d’un contrat.";
   }
 
   async function loadProfile() {
@@ -905,9 +906,14 @@
       }
       if ($("profileDisplayRole")) $("profileDisplayRole").textContent = isAdmin ? "Administrateur" : "Membre";
 
-      // Le solde reste provisoirement à zéro : il sera calculé à partir du journal financier.
-      hasPaidFee = false;
-      userBalance = 0;
+      // Le solde est calculé côté serveur depuis le ledger signé xy_ledger_entries.
+      const { data: summaryData, error: summaryError } = await supabaseClient.rpc("xy_get_account_summary");
+      if (summaryError) throw summaryError;
+      const summary = Array.isArray(summaryData) ? summaryData[0] : summaryData;
+      if (!summary || summary.available_balance === undefined) throw new Error("Le serveur n’a pas retourné le solde disponible.");
+      userBalance = Number(summary.available_balance || 0);
+      hasPaidFee = Boolean(summary.has_paid_fee);
+      balanceLoaded = true;
       userReferralCode = profile.referral_code || "";
 
       const balEl = $("userBalanceDisplay");
@@ -943,7 +949,7 @@
       if (balEl) {
         const sk = balEl.querySelector('.balance-skeleton');
         if (sk) sk.remove();
-        balEl.textContent = "0.00";
+        balEl.textContent = "—";
       }
       const fallbackName = String(currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0] || "Membre");
       $("sideName").textContent = fallbackName;
@@ -958,6 +964,7 @@
       }
       if ($("profileDisplayRole")) $("profileDisplayRole").textContent = "Rôle non vérifié";
       isAdmin = false;
+      balanceLoaded = false;
       if ($("adminNavBtn")) $("adminNavBtn").classList.add("hidden");
       showInfo("Profil non chargé", err.message || "Impossible de charger votre profil.", true);
     }
@@ -966,7 +973,7 @@
   async function loadContracts() {
     const container = $("contractsContainer");
     try {
-      const { data, error } = await supabaseClient.from("contracts").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
+      const { data, error } = await supabaseClient.from("xy_contracts").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
       if (error) throw error;
       
       if (!data || data.length === 0) {
@@ -978,7 +985,9 @@
       data.forEach(c => {
         const start = new Date(c.start_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
         const end = new Date(c.end_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
-        html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${start}</td><td>${end}</td><td><span class="status-badge active">En cours</span></td></tr>`;
+        const statusLabel = c.status === "completed" ? "Terminé" : (new Date(c.end_date) <= new Date() ? "Échu — règlement en attente" : "En cours");
+        const statusClass = c.status === "completed" ? "active" : (new Date(c.end_date) <= new Date() ? "pending" : "active");
+        html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${start}</td><td>${end}</td><td><span class="status-badge ${statusClass}">${statusLabel}</span></td></tr>`;
       });
       html += `</tbody></table>`;
       container.innerHTML = html;
@@ -990,135 +999,180 @@
   $("contractForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
-    const amount = parseFloat($("contractAmountInput").value);
-    const duration = parseInt($("contractDuration").value);
+    const amount = Number($("contractAmountInput").value);
+    const durationMonths = Number($("contractDuration").value);
+    const durationDays = durationMonths * 30;
     const errorDiv = $("contractError");
-    const fee = hasPaidFee ? 0 : 36;
-    const totalToDeduct = amount + fee;
 
-    if (totalToDeduct > userBalance) { errorDiv.textContent = `Solde insuffisant (Requis: ${totalToDeduct.toFixed(2)} $).`; return; }
-    if (amount < 150) { errorDiv.textContent = "Le montant minimum est de 150 $."; return; }
+    if (!balanceLoaded) { errorDiv.textContent = "Solde non vérifié. Actualisez la page et réessayez."; return; }
+    if (!Number.isFinite(amount) || amount < 150) { errorDiv.textContent = "Le montant minimum est de 150 USD."; return; }
+    if (![30, 60, 120, 180].includes(durationDays)) { errorDiv.textContent = "Durée non valide."; return; }
 
-    errorDiv.textContent = ""; setBtnLoading(btn, "Activation...");
-    const startDate = new Date(); const endDate = new Date(); endDate.setMonth(endDate.getMonth() + duration);
-
-    const { error: contractError } = await supabaseClient.from("contracts").insert({ user_id: currentUser.id, amount: amount, duration_months: duration, start_date: startDate.toISOString(), end_date: endDate.toISOString(), status: 'active' });
-    if (contractError) { errorDiv.textContent = "Erreur : " + contractError.message; resetBtn(btn); return; }
-
-    const updateData = { balance: userBalance - totalToDeduct };
-    if (!hasPaidFee) { updateData.has_paid_fee = true; hasPaidFee = true; }
-    await supabaseClient.from("profiles").update(updateData).eq("id", currentUser.id);
-    
-    resetBtn(btn); closeModal('contractModal');
-    showInfo("Contrat Activé", `Félicitations, votre contrat est actif !`);
-    loadProfile();
+    errorDiv.textContent = "";
+    setBtnLoading(btn, "Activation sécurisée...");
+    try {
+      if (!pendingContractRequestId) pendingContractRequestId = makeRequestUuid();
+      const { data, error } = await supabaseClient.rpc("xy_create_contract", {
+        p_request_id: pendingContractRequestId,
+        p_amount: amount,
+        p_duration_days: durationDays
+      });
+      if (error) throw error;
+      pendingContractRequestId = null;
+      await loadProfile();
+      await loadContracts();
+      resetBtn(btn);
+      closeModal("contractModal");
+      showInfo("Contrat activé", "Le contrat a été enregistré et le débit a été inscrit dans le journal financier.");
+    } catch (err) {
+      errorDiv.textContent = errorText(err);
+      resetBtn(btn);
+    }
   });
 
   async function loadAdminData() {
     if (!isAdmin) return;
-    $("adminTotalFunds").textContent = "...";
-    $("adminTotalUsers").textContent = "...";
-    $("adminPendingRequests").textContent = "...";
+    $("adminTotalFunds").textContent = "…";
+    $("adminTotalUsers").textContent = "…";
+    $("adminPendingRequests").textContent = "…";
 
     try {
-      // Le nouveau schéma n'a pas de colonne de solde mutable dans xy_profiles.
-      // Le total sera affiché une fois le calcul du ledger implémenté côté serveur.
-      $("adminTotalFunds").textContent = "À calculer depuis le journal";
+      const [depositRes, financialRes, profileRes, contractRes] = await Promise.all([
+        supabaseClient.from("xy_deposit_requests").select("*").eq("status", "pending").order("created_at", { ascending: false }),
+        supabaseClient.rpc("xy_admin_financial_summary"),
+        supabaseClient.rpc("xy_admin_referral_overview"),
+        supabaseClient.from("xy_contracts").select("*").order("created_at", { ascending: false })
+      ]);
+      if (depositRes.error) throw depositRes.error;
+      if (financialRes.error) throw financialRes.error;
+      if (profileRes.error) throw profileRes.error;
+      if (contractRes.error) throw contractRes.error;
 
-      const { data: deposits } = await supabaseClient.from("investment_interest_requests").select("*").eq("status", "pending");
-      const { data: withdrawals } = await supabaseClient.from("withdrawals").select("*").eq("status", "pending");
-      
-      const allPending = [...(deposits || []).map(d => ({ ...d, type: 'Dépôt' })), ...(withdrawals || []).map(w => ({ ...w, type: 'Retrait' }))].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-      $("adminPendingRequests").textContent = allPending.length;
+      const deposits = depositRes.data || [];
+      const allUsers = Array.isArray(profileRes.data) ? profileRes.data : [];
+      const financialSummary = Array.isArray(financialRes.data) ? financialRes.data[0] : financialRes.data;
+      $("adminTotalFunds").textContent = Number(financialSummary?.net_available_balance || 0).toFixed(2) + " USD";
+      $("adminTotalUsers").textContent = String(allUsers.length);
+      $("adminPendingRequests").textContent = String(deposits.length);
 
+      const pendingIds = [...new Set(deposits.map(d => d.user_id).filter(Boolean))];
+      let profilesById = {};
+      if (pendingIds.length) {
+        const { data: profiles, error } = await supabaseClient.from("xy_profiles").select("id,full_name,email,account_number").in("id", pendingIds);
+        if (error) throw error;
+        (profiles || []).forEach(p => profilesById[p.id] = p);
+      }
+      const esc = value => String(value ?? "—").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
       let pendingHtml = "";
-      if(allPending.length === 0) {
-        pendingHtml = "<tr><td colspan='6' style='text-align:center; color:var(--muted); padding:24px;'>Aucune demande.</td></tr>";
+      if (!deposits.length) {
+        pendingHtml = "<tr><td colspan='6' style='text-align:center;color:var(--muted);padding:24px;'>Aucun dépôt en attente.</td></tr>";
       } else {
-        const pendingUserIds = [...new Set(allPending.map(item => item.user_id).filter(Boolean))];
-        let pendingProfiles = {};
-        if (pendingUserIds.length) {
-          const { data: profileRows } = await supabaseClient.from("profiles").select("id,full_name,email,account_number").in("id", pendingUserIds);
-          (profileRows || []).forEach(profile => pendingProfiles[profile.id] = profile);
-        }
-        const escPending = value => String(value ?? "—").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
-        allPending.forEach(item => {
-          const date = new Date(item.created_at).toLocaleDateString('fr-FR');
-          const amount = item.type === 'Dépôt' ? item.indicative_amount_usd : item.amount;
-          const profile = pendingProfiles[item.user_id] || {};
-          const verification = item.type === 'Dépôt' ? escPending(item.message || "Informations non fournies") : "—";
-          pendingHtml += `<tr><td>${date}</td><td><strong>${item.type}</strong></td><td>${escPending(profile.full_name || profile.email || item.user_id)}<br><small>${escPending(profile.account_number || "Compte non trouvé")}</small></td><td>${Number(amount).toFixed(2)} $</td><td style="min-width:220px;white-space:pre-wrap;word-break:break-word;font-size:12px;">${verification}</td><td><button class="action-btn btn-approve" onclick="approveRequest('${item.id}', '${item.type}', ${amount}, '${item.user_id}')">Approuver</button><button class="action-btn btn-reject" onclick="rejectRequest('${item.id}', '${item.type}')">Refuser</button></td></tr>`;
+        deposits.forEach(d => {
+          const p = profilesById[d.user_id] || {};
+          const date = new Date(d.created_at).toLocaleDateString("fr-FR");
+          const info = [
+            "Nom : " + (d.sender_name || "—"),
+            "Expéditeur : " + (d.sender_address || "—"),
+            "Référence : " + (d.transaction_reference || "—"),
+            "Date transfert : " + (d.transfer_date ? new Date(d.transfer_date).toLocaleString("fr-FR") : "—"),
+            "Réseau : " + (d.payment_method || "—")
+          ].join("\n");
+          pendingHtml += `<tr><td>${date}</td><td><strong>Dépôt</strong></td><td>${esc(p.full_name || p.email || d.user_id)}<br><small>${esc(p.account_number || "Compte non trouvé")}</small></td><td>${Number(d.amount).toFixed(2)} ${esc(d.currency || "USD")}</td><td style="min-width:220px;white-space:pre-wrap;word-break:break-word;font-size:12px;">${esc(info)}</td><td><button class="action-btn btn-approve" onclick="approveRequest('${d.id}', 'Dépôt', ${Number(d.amount)}, '${d.user_id}')">Approuver</button><button class="action-btn btn-reject" onclick="rejectRequest('${d.id}', 'Dépôt')">Refuser</button></td></tr>`;
         });
       }
-      $("adminPendingTable").querySelector('tbody').innerHTML = pendingHtml;
-
-      // RPC protégée : liste des utilisateurs avec nombre et noms de filleuls.
-      const { data: adminOverview, error: overviewError } = await supabaseClient.rpc("xy_admin_referral_overview");
-      if (overviewError) throw overviewError;
-      const allUsers = Array.isArray(adminOverview) ? adminOverview : [];
-
-      const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
-      }[ch]));
+      $("adminPendingTable").querySelector("tbody").innerHTML = pendingHtml;
 
       let usersHtml = "";
-      (allUsers || []).forEach(u => {
+      allUsers.forEach(u => {
         const roleLabel = u.role === "admin" ? "Administrateur" : "Membre";
         const roleClass = u.role === "admin" ? "admin" : "active";
         const referralNames = u.referral_names || "Aucun membre parrainé";
-        usersHtml += `<tr>
-          <td><strong>${escapeHtml(u.full_name || "Nom non renseigné")}</strong></td>
-          <td>${escapeHtml(u.email || "—")}</td>
-          <td><span style="font-family:monospace;">${escapeHtml(u.account_number || "—")}</span></td>
-          <td><span class="status-badge ${roleClass}">${roleLabel}</span></td>
-          <td><strong>${Number(u.referral_count || 0)}</strong></td>
-          <td>${Number(u.referral_count || 0) >= 50 ? 'Elite Partner' : Number(u.referral_count || 0) >= 20 ? 'Digital Leader' : Number(u.referral_count || 0) >= 10 ? 'Smartphone Achiever' : '—'}</td>
-          <td class="admin-referrals-cell">${escapeHtml(referralNames)}</td>
-          <td><span class="status-badge ${u.status === "active" ? "active" : "pending"}">${escapeHtml(u.status || "inconnu")}</span></td>
-        </tr>`;
+        usersHtml += `<tr><td><strong>${esc(u.full_name || "Nom non renseigné")}</strong></td><td>${esc(u.email || "—")}</td><td><span style="font-family:monospace;">${esc(u.account_number || "—")}</span></td><td><span class="status-badge ${roleClass}">${roleLabel}</span></td><td><strong>${Number(u.referral_count || 0)}</strong></td><td>${Number(u.referral_count || 0) >= 50 ? "Elite Partner" : Number(u.referral_count || 0) >= 20 ? "Digital Leader" : Number(u.referral_count || 0) >= 10 ? "Smartphone Achiever" : "—"}</td><td>${esc(referralNames)}</td><td><span class="status-badge ${u.status === "active" ? "active" : "pending"}">${esc(u.status || "inconnu")}</span></td></tr>`;
       });
-      if (!usersHtml) usersHtml = "<tr><td colspan='7' style='text-align:center;color:var(--muted);padding:24px;'>Aucun profil trouvé.</td></tr>";
+      if (!usersHtml) usersHtml = "<tr><td colspan='8' style='text-align:center;color:var(--muted);padding:24px;'>Aucun profil trouvé.</td></tr>";
       $("adminUsersTable").querySelector("tbody").innerHTML = usersHtml;
-      $("adminTotalUsers").textContent = String((allUsers || []).length);
-      // Aucun solde global fictif : son calcul sera connecté au ledger dans une étape séparée.
-      $("adminTotalFunds").textContent = "À calculer depuis le journal";
 
-      const { data: allContracts } = await supabaseClient.from("contracts").select("*, profiles(full_name)");
-      let contractsHtml = "";
-      if(!allContracts || allContracts.length === 0) { contractsHtml = "<tr><td colspan='4' style='text-align:center; color:var(--muted); padding:24px;'>Aucun contrat.</td></tr>"; } 
-      else {
-        allContracts.forEach(c => {
-          contractsHtml += `<tr><td>${c.profiles?.full_name || 'Inconnu'}</td><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${new Date(c.end_date).toLocaleDateString('fr-FR')}</td><td><span class="status-badge active">${c.status}</span></td></tr>`;
-        });
+      const contractRows = contractRes.data || [];
+      const contractUserIds = [...new Set(contractRows.map(c => c.user_id).filter(Boolean))];
+      let contractProfiles = {};
+      if (contractUserIds.length) {
+        const { data: rows, error } = await supabaseClient.from("xy_profiles").select("id,full_name,email").in("id", contractUserIds);
+        if (error) throw error;
+        (rows || []).forEach(p => contractProfiles[p.id] = p);
       }
-      $("adminContractsTable").querySelector('tbody').innerHTML = contractsHtml;
-
-    } catch (e) { console.error("Admin Error:", e); }
+      let contractsHtml = "";
+      if (!contractRows.length) contractsHtml = "<tr><td colspan='5' style='text-align:center;color:var(--muted);padding:24px;'>Aucun contrat.</td></tr>";
+      else contractRows.forEach(c => {
+        const profile = contractProfiles[c.user_id] || {};
+        const mature = c.status === "active" && new Date(c.end_date) <= new Date();
+        const statusLabel = c.status === "completed" ? "Terminé" : mature ? "Échu — règlement requis" : "En cours";
+        const settleButton = mature ? `<button class="action-btn btn-approve" onclick="settleContract('${c.id}')">Régler</button>` : "—";
+        contractsHtml += `<tr><td>${esc(profile.full_name || profile.email || c.user_id)}</td><td><strong>${Number(c.amount).toFixed(2)} USD</strong></td><td>${new Date(c.end_date).toLocaleDateString("fr-FR")}</td><td><span class="status-badge ${c.status === "completed" ? "active" : mature ? "pending" : "active"}">${statusLabel}</span></td><td>${settleButton}</td></tr>`;
+      });
+      const adminContractsHead = $("adminContractsTable").querySelector("thead");
+      if (adminContractsHead && adminContractsHead.querySelectorAll("th").length === 4) adminContractsHead.querySelector("tr").insertAdjacentHTML("beforeend", "<th>Règlement</th>");
+      $("adminContractsTable").querySelector("tbody").innerHTML = contractsHtml;
+    } catch (e) {
+      console.error("Admin Error:", e);
+      $("adminPendingRequests").textContent = "Erreur";
+      showInfo("Espace administrateur", errorText(e), true);
+    }
   }
 
-  window.approveRequest = async (id, type, amount, userId) => {
-    if (!isAdmin) return;
-    if(!confirm(`Confirmez-vous ce ${type} de ${amount} $ ?`)) return;
+  window.approveRequest = async (id, type, amount) => {
+    if (!isAdmin || type !== "Dépôt") return;
+    if (!confirm(`Confirmez-vous la réception réelle et la vérification de ce dépôt de ${amount} USD ?`)) return;
     try {
-      if (type === 'Dépôt') {
-        const { data: u } = await supabaseClient.from("profiles").select("balance").eq("id", userId).single();
-        await supabaseClient.from("profiles").update({ balance: (Number(u?.balance) || 0) + Number(amount) }).eq("id", userId);
-        await supabaseClient.from("investment_interest_requests").update({ status: "approved" }).eq("id", id);
-      } else {
-        await supabaseClient.from("withdrawals").update({ status: "approved" }).eq("id", id);
-      }
-      loadAdminData();
-    } catch (e) { alert("Erreur: " + e.message); }
+      const { data, error } = await supabaseClient.rpc("xy_admin_review_deposit", {
+        p_deposit_id: id,
+        p_decision: "approve",
+        p_admin_note: "Paiement vérifié par l’administrateur avant approbation."
+      });
+      if (error) throw error;
+      await loadAdminData();
+      await loadProfile();
+      showInfo("Dépôt approuvé", "La demande a été approuvée et le crédit a été enregistré de façon atomique dans le journal financier.");
+    } catch (e) { showInfo("Approbation impossible", errorText(e), true); }
   };
 
   window.rejectRequest = async (id, type) => {
-    if (!isAdmin) return;
-    if(!confirm(`Refuser cette demande de ${type} ?`)) return;
+    if (!isAdmin || type !== "Dépôt") return;
+    if (!confirm("Refuser cette demande de dépôt ?")) return;
     try {
-      if (type === 'Dépôt') await supabaseClient.from("investment_interest_requests").update({ status: "rejected" }).eq("id", id);
-      else await supabaseClient.from("withdrawals").update({ status: "rejected" }).eq("id", id);
-      loadAdminData();
-    } catch (e) { alert("Erreur: " + e.message); }
+      const { error } = await supabaseClient.rpc("xy_admin_review_deposit", {
+        p_deposit_id: id,
+        p_decision: "reject",
+        p_admin_note: "Demande refusée après vérification administrative."
+      });
+      if (error) throw error;
+      await loadAdminData();
+      showInfo("Demande refusée", "Le dépôt a été refusé sans crédit du solde.");
+    } catch (e) { showInfo("Refus impossible", errorText(e), true); }
+  };
+
+  window.settleContract = async (contractId) => {
+    if (!isAdmin) return;
+    const capitalText = prompt("Capital réellement retourné au membre (USD) :");
+    if (capitalText === null) return;
+    const pnlText = prompt("Résultat net réellement réalisé (USD, négatif en cas de perte) :", "0");
+    if (pnlText === null) return;
+    const capital = Number(capitalText);
+    const pnl = Number(pnlText);
+    if (!Number.isFinite(capital) || !Number.isFinite(pnl) || capital < 0) {
+      showInfo("Montants invalides", "Saisissez des montants numériques valides.", true); return;
+    }
+    if (!confirm("Confirmez-vous ces montants à partir des résultats financiers réellement constatés ?")) return;
+    try {
+      const { error } = await supabaseClient.rpc("xy_admin_settle_contract", {
+        p_contract_id: contractId,
+        p_capital_return: capital,
+        p_realized_pnl: pnl,
+        p_admin_note: "Règlement saisi après vérification des résultats réels."
+      });
+      if (error) throw error;
+      await loadAdminData();
+      showInfo("Contrat réglé", "Le retour de capital et le résultat réel ont été inscrits dans le journal du membre.");
+    } catch (e) { showInfo("Règlement impossible", errorText(e), true); }
   };
 
   function updateReferralRewards(count) {
@@ -1172,29 +1226,31 @@
 
   async function loadRequests() {
     try {
-      const { data, error } = await supabaseClient.from("investment_interest_requests").select("*").order("created_at", { ascending: false });
-      if (error) return;
+      const { data, error } = await supabaseClient.from("xy_deposit_requests").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
       const rows = data || [];
       const recentList = $("recentActivityList"); const fullList = $("fullHistoryList");
-      if(!recentList || !fullList) return;
-      
+      if (!recentList || !fullList) return;
       recentList.innerHTML = ""; fullList.innerHTML = "";
-      if(rows.length === 0) {
-        recentList.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:20px 0;">Aucune activité.</div>';
-        fullList.innerHTML = `<div style="text-align:center; padding:40px;"><div style="font-size:40px; margin-bottom:8px;">📭</div><div style="color:var(--muted); font-size:14px; font-weight:600;">Aucune opération.</div></div>`;
+      if (!rows.length) {
+        recentList.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px 0;">Aucune activité.</div>';
+        fullList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Aucune opération enregistrée.</div>';
         return;
       }
       rows.forEach((item, index) => {
-        const isRecent = index < 3;
-        const amount = item.indicative_amount_usd ? Number(item.indicative_amount_usd).toLocaleString() + " $" : "—";
-        const date = new Date(item.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
-        const statusClass = item.status === 'approved' ? 'active' : 'pending';
-        const statusText = item.status === 'approved' ? 'Approuvé' : 'En attente';
-        const html = `<div class="op-item" style="padding:12px; margin-bottom:8px;"><div class="op-info"><div class="op-details"><strong>Demande</strong><small>${date}</small></div></div><div style="text-align: right;"><div class="op-amount">${amount}</div><div style="margin-top: 4px;"><span class="status-badge ${statusClass}">${statusText}</span></div></div></div>`;
-        if(isRecent) recentList.innerHTML += html;
+        const amount = Number(item.amount || 0).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + (item.currency || "USD");
+        const date = new Date(item.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+        const statusClass = item.status === "approved" ? "active" : item.status === "rejected" ? "pending" : "pending";
+        const statusText = item.status === "approved" ? "Approuvé" : item.status === "rejected" ? "Refusé" : "En attente";
+        const html = `<div class="op-item" style="padding:12px;margin-bottom:8px;"><div class="op-info"><div class="op-details"><strong>Dépôt</strong><small>${date}</small></div></div><div style="text-align:right;"><div class="op-amount">${amount}</div><div style="margin-top:4px;"><span class="status-badge ${statusClass}">${statusText}</span></div></div></div>`;
+        if (index < 3) recentList.innerHTML += html;
         fullList.innerHTML += html;
       });
-    } catch(e) { console.error(e); }
+    } catch (e) {
+      console.error("Erreur historique:", e);
+      const recentList = $("recentActivityList");
+      if (recentList) recentList.textContent = "Impossible de charger l’historique pour le moment.";
+    }
   }
 
   async function initApp(user) {
@@ -1308,7 +1364,7 @@
 
   $("depositAmountForm").addEventListener("submit", (e) => {
     e.preventDefault(); 
-    const amount = parseFloat($("depositAmountInput").value); const minDeposit = hasPaidFee ? 150 : 186;
+    const amount = parseFloat($("depositAmountInput").value); const minDeposit = 150;
     if (amount < minDeposit) { alert(`Le minimum de dépôt est de ${minDeposit} $.`); return; }
     currentDepositAmount = amount; $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
     $("depositAccountIdDisplay").value = currentAccountNumber || "Identifiant non disponible";
@@ -1325,8 +1381,18 @@
       alert("Veuillez remplir toutes les informations de vérification du paiement."); return;
     }
     const btn = $("confirmDepositBtn"); setBtnLoading(btn, "Enregistrement...");
-    const verificationMessage = `DÉPÔT USDT TRC20 — À VÉRIFIER\nCompte Xynary: ${currentAccountNumber}\nNom expéditeur: ${senderName}\nAdresse/numéro expéditeur: ${senderAddress}\nRéférence/TxHash: ${txRef}\nDate du transfert: ${transferDate}\nRéseau indiqué: TRC20\nMontant déclaré: ${currentDepositAmount} USD`;
-    const { error } = await supabaseClient.from("investment_interest_requests").insert({ user_id: currentUser.id, indicative_amount_usd: currentDepositAmount, market_interest: "crypto_review", message: verificationMessage, status: "pending" });
+    const { error } = await supabaseClient.from("xy_deposit_requests").insert({
+      user_id: currentUser.id,
+      amount: currentDepositAmount,
+      currency: "USD",
+      payment_method: "USDT TRC20",
+      transaction_reference: txRef,
+      sender_name: senderName,
+      sender_address: senderAddress,
+      transfer_date: new Date(transferDate).toISOString(),
+      proof_url: null,
+      status: "pending"
+    });
     if (error) {
       alert("Impossible d'enregistrer la demande : " + error.message); resetBtn(btn); return;
     }
@@ -1334,11 +1400,8 @@
   });
 
   $("withdrawForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); const amount = parseFloat($("withdrawAmountInput").value);
-    if (amount < 20) { alert("Le minimum de retrait est de 20 $."); return; }
-    setBtnLoading(btn, "Envoi...");
-    try { await supabaseClient.from("withdrawals").insert({ user_id: currentUser.id, amount: amount, status: "pending" }); } catch (err) { console.error(err); }
-    resetBtn(btn); closeModal('withdrawModal'); showInfo("Demande envoyée", "Votre demande de retrait a été enregistrée.");
+    e.preventDefault();
+    showInfo("Retraits temporairement indisponibles", "Le module de retrait doit encore être raccordé au journal xy_ et à une validation sécurisée. Aucune demande n’a été envoyée.", true);
   });
 
   $("profileForm").addEventListener("submit", async (e) => {
