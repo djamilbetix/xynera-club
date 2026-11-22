@@ -213,6 +213,7 @@
 
     <form id="signupForm" style="display:none;">
       <div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div>
+      <div class="field"><label>Pays</label><select id="suCountry" required><option value="">Sélectionnez votre pays</option><option>République démocratique du Congo</option><option>République du Congo</option><option>Angola</option><option>Burundi</option><option>Rwanda</option><option>Ouganda</option><option>Tanzanie</option><option>Zambie</option><option>Afrique du Sud</option><option>Kenya</option><option>Nigeria</option><option>Ghana</option><option>Cameroun</option><option>Côte d’Ivoire</option><option>Sénégal</option><option>France</option><option>Belgique</option><option>Canada</option><option>États-Unis</option><option>Royaume-Uni</option><option>Autre</option></select></div>
       <div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div>
       <div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div>
       <div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="20" placeholder="Code"></div>
@@ -447,7 +448,7 @@
         <h3>Liste des Utilisateurs</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminUsersTable">
-            <thead><tr><th>Nom complet</th><th>Adresse e-mail</th><th>Numéro de compte</th><th>Rôle</th><th>Parrainages</th><th>Niveau</th><th>Membres parrainés</th><th>Statut</th></tr></thead>
+            <thead><tr><th>Nom complet</th><th>Adresse e-mail</th><th>Pays</th><th>Numéro de compte</th><th>Rôle</th><th>Parrainages</th><th>Niveau</th><th>Membres parrainés</th><th>Statut</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -457,7 +458,7 @@
         <h3>Contrats (Tous les utilisateurs)</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminContractsTable">
-            <thead><tr><th>Utilisateur</th><th>Montant</th><th>Fin du contrat</th><th>Statut</th></tr></thead>
+            <thead><tr><th>Utilisateur</th><th>Montant</th><th>Durée</th><th>Fin du contrat</th><th>Bonus / résultat final</th><th>Statut</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -467,7 +468,7 @@
     <!-- VUE : MES CONTRATS -->
     <section id="view-contracts" class="view">
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
-      <div class="page-header"><h1>Mes Contrats</h1><p>Consultez le montant, la date de début, la date d'échéance et le statut de vos contrats.</p></div>
+      <div class="page-header"><h1>Mes Contrats</h1><p>Consultez le montant, la durée en mois, les dates, le résultat final et le statut de vos contrats.</p></div>
       <div class="info-card" style="margin-top:0; margin-bottom:16px; border-left:4px solid var(--blue);">
         <h3 style="margin-top:0;">Suivi du contrat</h3>
         <p style="margin-bottom:0;">Chaque contrat doit afficher son montant, sa durée, ses dates et son statut. À l'échéance, le statut doit être indiqué comme « Échu — vérification requise ». Aucun montant ne doit être crédité automatiquement sans vérification des opérations, des conditions contractuelles et de la conformité.</p>
@@ -494,6 +495,7 @@
             <div style="display:flex; flex-direction:column; gap:16px;">
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Nom complet</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayName">---</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse e-mail</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayEmail">---</div></div>
+              <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Pays</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayCountry">Non renseigné</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Type de compte</div><div style="font-size:15px; color:var(--navy); font-weight:600;" id="profileDisplayRole">Membre</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Téléphone</div><div style="font-size:15px; color:var(--navy); font-weight:500;" id="profileDisplayPhone">Non renseigné</div></div>
               <div><div style="font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase;">Adresse de retrait</div><div style="font-size:14px; color:var(--navy); font-weight:500; font-family:monospace; word-break:break-all;" id="profileDisplayWallet">Non configurée</div></div>
@@ -508,6 +510,7 @@
             <h3 style="font-size:16px; color:var(--navy); margin-bottom:20px; font-weight:600;">Modifier</h3>
             <form id="profileForm">
               <div class="field"><label>Nom complet</label><input id="profileName" required></div>
+              <div class="field"><label>Pays</label><select id="profileCountry" required><option value="">Sélectionnez votre pays</option><option>République démocratique du Congo</option><option>République du Congo</option><option>Angola</option><option>Burundi</option><option>Rwanda</option><option>Ouganda</option><option>Tanzanie</option><option>Zambie</option><option>Afrique du Sud</option><option>Kenya</option><option>Nigeria</option><option>Ghana</option><option>Cameroun</option><option>Côte d’Ivoire</option><option>Sénégal</option><option>France</option><option>Belgique</option><option>Canada</option><option>États-Unis</option><option>Royaume-Uni</option><option>Autre</option></select></div>
               <div class="field"><label>Téléphone</label><input id="profilePhone" type="tel" placeholder="+243..."></div>
               <div class="field"><label>Adresse de retrait (USDT TRC20) *</label><input id="profileWallet" type="text" required placeholder="Saisissez votre adresse TRC20"></div>
               <button class="primary-btn" type="submit">Enregistrer</button>
@@ -740,7 +743,7 @@
   function bootstrapSkeletons() {
     const ra = $("recentActivityList"); if (ra) ra.innerHTML = skeletonCardsHTML(3);
     const tl = $("myTeamList"); if (tl) tl.innerHTML = skeletonCardsHTML(2);
-    const cc = $("contractsContainer"); if (cc) cc.innerHTML = '<table class="data-table"><thead><tr><th>Montant</th><th>Début</th><th>Fin</th><th>Statut</th></tr></thead><tbody>' + skeletonTableRows(4, 2) + '</tbody></table>';
+    const cc = $("contractsContainer"); if (cc) cc.innerHTML = '<table class="data-table"><thead><tr><th>Montant</th><th>Durée</th><th>Début</th><th>Fin</th><th>Bonus / résultat final</th><th>Statut</th></tr></thead><tbody>' + skeletonTableRows(6, 2) + '</tbody></table>';
     const fh = $("fullHistoryList"); if (fh) fh.innerHTML = skeletonCardsHTML(4);
     ["adminPendingTable", "adminUsersTable", "adminContractsTable"].forEach(id => {
       const t = $(id);
@@ -932,6 +935,10 @@
       $("profileDisplayName").textContent = name;
       $("profileDisplayEmail").textContent = currentUser.email || profile.email || "";
       $("profileDisplayPhone").textContent = profile.phone || "Non renseigné";
+      const savedCountry = profile.country || currentUser.user_metadata?.country || "";
+      $("profileDisplayCountry").textContent = savedCountry || "Non renseigné";
+      $("profileCountry").value = savedCountry;
+      if (!profile.country && savedCountry) { await supabaseClient.from("xy_profiles").update({ country: savedCountry }).eq("id", currentUser.id); }
       $("profileDisplayWallet").textContent = profile.wallet_address || "Non configurée";
       $("profileAccountNumber").textContent = profile.account_number || "---";
       $("profileName").value = name;
@@ -981,13 +988,25 @@
         return;
       }
 
-      let html = `<table class="data-table"><thead><tr><th>Montant</th><th>Début</th><th>Fin</th><th>Statut</th></tr></thead><tbody>`;
+      let html = `<table class="data-table"><thead><tr><th>Montant</th><th>Durée</th><th>Début</th><th>Fin</th><th>Bonus / résultat final</th><th>Statut</th></tr></thead><tbody>`;
+      const contractMonths = (startDate, endDate) => {
+        const a = new Date(startDate), b = new Date(endDate);
+        let months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+        if (b.getDate() < a.getDate()) months--;
+        return Math.max(0, months);
+      };
+      const finalResult = c => {
+        const candidates = [c.final_bonus, c.bonus_amount, c.profit_amount, c.pnl, c.realized_profit];
+        const actual = candidates.find(v => typeof v === "number" && Number.isFinite(v));
+        return actual === undefined ? "À valider à l’échéance" : `${Number(actual).toFixed(2)} USD (résultat enregistré)`;
+      };
       data.forEach(c => {
         const start = new Date(c.start_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
         const end = new Date(c.end_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
+        const months = contractMonths(c.start_date, c.end_date);
         const statusLabel = c.status === "completed" ? "Terminé" : (new Date(c.end_date) <= new Date() ? "Échu — règlement en attente" : "En cours");
         const statusClass = c.status === "completed" ? "active" : (new Date(c.end_date) <= new Date() ? "pending" : "active");
-        html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${start}</td><td>${end}</td><td><span class="status-badge ${statusClass}">${statusLabel}</span></td></tr>`;
+        html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${months} mois</td><td>${start}</td><td>${end}</td><td>${finalResult(c)}</td><td><span class="status-badge ${statusClass}">${statusLabel}</span></td></tr>`;
       });
       html += `</tbody></table>`;
       container.innerHTML = html;
@@ -1050,6 +1069,8 @@
 
       const deposits = depositRes.data || [];
       const allUsers = Array.isArray(profileRes.data) ? profileRes.data : [];
+      let countryByUser = {};
+      if (allUsers.length) { const ids = allUsers.map(u => u.id).filter(Boolean); const countryRes = await supabaseClient.from("xy_profiles").select("id,country").in("id", ids); if (!countryRes.error) (countryRes.data || []).forEach(row => { countryByUser[row.id] = row.country || "—"; }); }
       const financialSummary = Array.isArray(financialRes.data) ? financialRes.data[0] : financialRes.data;
       $("adminTotalFunds").textContent = Number(financialSummary?.net_available_balance || 0).toFixed(2) + " USD";
       $("adminTotalUsers").textContent = String(allUsers.length);
@@ -1087,7 +1108,7 @@
         const roleLabel = u.role === "admin" ? "Administrateur" : "Membre";
         const roleClass = u.role === "admin" ? "admin" : "active";
         const referralNames = u.referral_names || "Aucun membre parrainé";
-        usersHtml += `<tr><td><strong>${esc(u.full_name || "Nom non renseigné")}</strong></td><td>${esc(u.email || "—")}</td><td><span style="font-family:monospace;">${esc(u.account_number || "—")}</span></td><td><span class="status-badge ${roleClass}">${roleLabel}</span></td><td><strong>${Number(u.referral_count || 0)}</strong></td><td>${Number(u.referral_count || 0) >= 50 ? "Elite Partner" : Number(u.referral_count || 0) >= 20 ? "Digital Leader" : Number(u.referral_count || 0) >= 10 ? "Smartphone Achiever" : "—"}</td><td>${esc(referralNames)}</td><td><span class="status-badge ${u.status === "active" ? "active" : "pending"}">${esc(u.status || "inconnu")}</span></td></tr>`;
+        usersHtml += `<tr><td><strong>${esc(u.full_name || "Nom non renseigné")}</strong></td><td>${esc(u.email || "—")}</td><td>${esc(countryByUser[u.id] || "—")}</td><td><span style="font-family:monospace;">${esc(u.account_number || "—")}</span></td><td><span class="status-badge ${roleClass}">${roleLabel}</span></td><td><strong>${Number(u.referral_count || 0)}</strong></td><td>${Number(u.referral_count || 0) >= 50 ? "Elite Partner" : Number(u.referral_count || 0) >= 20 ? "Digital Leader" : Number(u.referral_count || 0) >= 10 ? "Smartphone Achiever" : "—"}</td><td>${esc(referralNames)}</td><td><span class="status-badge ${u.status === "active" ? "active" : "pending"}">${esc(u.status || "inconnu")}</span></td></tr>`;
       });
       if (!usersHtml) usersHtml = "<tr><td colspan='8' style='text-align:center;color:var(--muted);padding:24px;'>Aucun profil trouvé.</td></tr>";
       $("adminUsersTable").querySelector("tbody").innerHTML = usersHtml;
@@ -1101,16 +1122,23 @@
         (rows || []).forEach(p => contractProfiles[p.id] = p);
       }
       let contractsHtml = "";
-      if (!contractRows.length) contractsHtml = "<tr><td colspan='5' style='text-align:center;color:var(--muted);padding:24px;'>Aucun contrat.</td></tr>";
+      if (!contractRows.length) contractsHtml = "<tr><td colspan='7' style='text-align:center;color:var(--muted);padding:24px;'>Aucun contrat.</td></tr>";
       else contractRows.forEach(c => {
         const profile = contractProfiles[c.user_id] || {};
         const mature = c.status === "active" && new Date(c.end_date) <= new Date();
         const statusLabel = c.status === "completed" ? "Terminé" : mature ? "Échu — règlement requis" : "En cours";
+        const startDate = new Date(c.start_date), endDate = new Date(c.end_date);
+        let months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+        if (endDate.getDate() < startDate.getDate()) months--;
+        months = Math.max(0, months);
+        const bonusFields = [c.final_bonus, c.bonus_amount, c.profit_amount, c.pnl, c.realized_profit];
+        const actualBonus = bonusFields.find(v => typeof v === "number" && Number.isFinite(v));
+        const bonusText = actualBonus === undefined ? "À valider à l’échéance" : `${Number(actualBonus).toFixed(2)} USD (résultat enregistré)`;
         const settleButton = mature ? `<button class="action-btn btn-approve" onclick="settleContract('${c.id}')">Régler</button>` : "—";
-        contractsHtml += `<tr><td>${esc(profile.full_name || profile.email || c.user_id)}</td><td><strong>${Number(c.amount).toFixed(2)} USD</strong></td><td>${new Date(c.end_date).toLocaleDateString("fr-FR")}</td><td><span class="status-badge ${c.status === "completed" ? "active" : mature ? "pending" : "active"}">${statusLabel}</span></td><td>${settleButton}</td></tr>`;
+        contractsHtml += `<tr><td>${esc(profile.full_name || profile.email || c.user_id)}</td><td><strong>${Number(c.amount).toFixed(2)} USD</strong></td><td>${months} mois</td><td>${endDate.toLocaleDateString("fr-FR")}</td><td>${bonusText}</td><td><span class="status-badge ${c.status === "completed" ? "active" : mature ? "pending" : "active"}">${statusLabel}</span></td><td>${settleButton}</td></tr>`;
       });
       const adminContractsHead = $("adminContractsTable").querySelector("thead");
-      if (adminContractsHead && adminContractsHead.querySelectorAll("th").length === 4) adminContractsHead.querySelector("tr").insertAdjacentHTML("beforeend", "<th>Règlement</th>");
+      if (adminContractsHead && adminContractsHead.querySelectorAll("th").length === 6) adminContractsHead.querySelector("tr").insertAdjacentHTML("beforeend", "<th>Règlement</th>");
       $("adminContractsTable").querySelector("tbody").innerHTML = contractsHtml;
     } catch (e) {
       console.error("Admin Error:", e);
@@ -1291,8 +1319,9 @@
       const email = $("suEmail").value.trim().toLowerCase();
       const pwd = $("suPassword").value;
       const ref = $("suReferral").value.trim().toUpperCase();
+      const country = $("suCountry").value;
 
-      if (!name || !email || !pwd) {
+      if (!name || !email || !pwd || !country) {
         setSignupMessage("Veuillez renseigner votre nom complet, votre adresse e-mail et votre mot de passe.");
         return;
       }
@@ -1303,6 +1332,7 @@
         options: {
           data: {
             full_name: name,
+            country,
             referred_by_code: ref || null
           },
           emailRedirectTo: window.location.origin
@@ -1408,7 +1438,7 @@
     e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); const wallet = $("profileWallet").value.trim();
     if(wallet && (wallet.length < 20 || /\s/.test(wallet))) { $("profileStatusMsg").textContent = "Format invalide."; $("profileStatusMsg").style.color = "var(--red)"; return; }
     setBtnLoading(btn, "Enregistrement..."); $("profileStatusMsg").textContent = "";
-    const { error } = await supabaseClient.from("xy_profiles").update({ full_name: $("profileName").value.trim(), phone: $("profilePhone").value.trim() || null, wallet_address: wallet || null }).eq("id", currentUser.id);
+    const { error } = await supabaseClient.from("xy_profiles").update({ full_name: $("profileName").value.trim(), phone: $("profilePhone").value.trim() || null, country: $("profileCountry").value || null, wallet_address: wallet || null }).eq("id", currentUser.id);
     resetBtn(btn);
     if(error) { $("profileStatusMsg").textContent = errorText(error); $("profileStatusMsg").style.color = "var(--red)"; } 
     else { $("profileStatusMsg").textContent = "Profil mis à jour."; $("profileStatusMsg").style.color = "var(--green)"; loadProfile(); }
