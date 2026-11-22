@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#101827">
+  <meta name="theme-color" content="#071b52">
   <title>xynary-club | Espace Investisseur</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --navy: #0f172a; --navy-light: #1e293b; --red: #dc2626; --blue: #2563eb; --green: #059669;
-      --ink: #0f172a; --muted: #64748b; --line: #e2e8f0; --surface: #fff; --page: #f8fafc;
+      --navy: #071b52; --navy-light: #102b70; --red: #e50919; --blue: #0755d9; --green: #059669;
+      --ink: #101a35; --muted: #64748b; --line: #dce4f2; --surface: #fff; --page: #f5f7fb;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
       --radius: 12px;
     }
@@ -190,6 +190,28 @@
 .reward-title{font-weight:850;letter-spacing:.05em;font-size:14px}.reward-threshold{font-size:12px;color:#cbd5e1;margin-top:4px}.reward-prize{font-weight:750;margin:10px 0 14px;color:#fff;min-height:38px}.reward-progress-track{height:9px;background:#475569;border-radius:99px;overflow:hidden}.reward-progress-fill{height:100%;width:0;background:var(--reward-glow);border-radius:99px;transition:width .5s}.reward-progress-text{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#cbd5e1;margin-top:8px}.reward-status{display:inline-flex;margin-top:12px;padding:6px 10px;border-radius:99px;font-size:11px;font-weight:800;background:rgba(255,255,255,.09);color:#e2e8f0}.reward-status.unlocked{background:rgba(16,185,129,.18);color:#6ee7b7}
 @media(max-width:600px){.reward-levels{grid-template-columns:1fr;gap:14px}.reward-card{padding:16px}.reward-product-image{height:190px}}
 
+
+    /* Xynary brand palette polish: deep blue, vivid red, white */
+    .sidebar { background: linear-gradient(180deg, #071b52 0%, #0b245f 100%); }
+    .sidebar-header { background: rgba(255,255,255,.025); }
+    .nav-item.active { border-right-color: #e50919; background: rgba(7,85,217,.22); }
+    .nav-item:hover { background: rgba(255,255,255,.08); }
+    .page-header h1, .info-card h3 { color: #071b52; }
+    .balance-card { background: linear-gradient(135deg, #071b52 0%, #102b70 58%, #18243d 100%); }
+    .btn-contract, .primary-btn { background: linear-gradient(135deg, #0755d9, #0b3fa8); }
+    .btn-contract { box-shadow: 0 5px 16px rgba(7,85,217,.25); }
+    .btn-contract:hover, .primary-btn:hover { filter: brightness(1.08); }
+    .btn-deposit { background: #059669; }
+    .logout-btn { background: rgba(229,9,25,.12); color: #ff6672; }
+    .logout-btn:hover { background: rgba(229,9,25,.22); }
+    .nav-item.admin-item { color: #ff6570; border-color: rgba(229,9,25,.55); }
+    .nav-item.admin-item:hover { background: rgba(229,9,25,.12); }
+    .data-table th { color: #526483; }
+    .status-badge.admin { background: #e8efff; color: #0755d9; }
+    .field input:focus, .field select:focus { border-color: #0755d9; box-shadow: 0 0 0 3px rgba(7,85,217,.12); }
+    .back-btn:hover { color: #0755d9; }
+    @media (max-width: 768px) { .sidebar { background: linear-gradient(180deg, #071b52 0%, #0b245f 100%); } }
+
 </style>
 </head>
 <body>
@@ -356,6 +378,13 @@
           <div class="info-card">
             <h3>La première plateforme d'opportunités</h3>
             <p>Rejoignez <strong>xynary-club</strong> pour découvrir des stratégies sur les marchés Forex et Crypto. Les performances ne sont pas garanties : les résultats peuvent varier et des pertes sont possibles.</p>
+          </div>          <div class="info-card" style="margin-top:20px;">
+            <h3>Plans de rémunération annoncés</h3>
+            <p>Les taux ci-dessous sont les conditions proposées par durée. Ils ne constituent pas une garantie de rendement ni une promesse de paiement. Les marchés comportent des risques et le capital peut être perdu.</p>
+            <div style="overflow-x:auto;margin-top:14px;"><table class="data-table" style="min-width:500px;">
+              <thead><tr><th>Durée</th><th>Taux annoncé</th><th>Exemple sur 100 USD</th></tr></thead>
+              <tbody><tr><td>1 mois</td><td><strong>15 %</strong></td><td>15 USD</td></tr><tr><td>2 mois</td><td><strong>20 %</strong></td><td>20 USD</td></tr><tr><td>3 mois</td><td><strong>25 %</strong></td><td>25 USD</td></tr><tr><td>5 mois</td><td><strong>30 %</strong></td><td>30 USD</td></tr><tr><td>12 mois</td><td><strong>50 %</strong></td><td>50 USD</td></tr></tbody></table></div>
+            <p style="font-size:12px;color:var(--muted);margin-top:12px;"><strong>Important :</strong> exemples indicatifs. Les conditions, risques, frais et modalités de règlement doivent être confirmés dans les documents contractuels avant toute souscription.</p>
           </div>
         </div>
 
@@ -538,42 +567,12 @@
     <!-- VUE : À PROPOS -->
     <section id="view-about" class="view">
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
-      <div class="about-hero">
-        <h2>Bienvenue chez xynary-club</h2>
-        <p>Une communauté de membres intéressés par l’analyse des marchés financiers et les stratégies Forex et Crypto. Les investissements comportent des risques, y compris une perte partielle ou totale du capital.</p>
-      </div>
-      <div class="about-section">
-        <h3>Pourquoi investir chez nous ?</h3>
-        <div class="about-grid">
-          <div class="about-card">
-            <h4>Suivi des contrats et des résultats</h4>
-            <p>Chaque contrat présente sa durée, son montant, ses dates et son statut. Aucun taux de rendement fixe n’est promis. Les gains ou pertes doivent être calculés à partir des performances réellement constatées et vérifiées.</p>
-          </div>
-          <div class="about-card">
-            <h4>Une Expertise Reconnue</h4>
-            <p>Nos traders analysent les marchés 24h/24. Nous investissons dans le Forex, les Cryptomonnaies et les Actions de grandes entreprises technologiques.</p>
-          </div>
-        </div>
-      </div>
-      <div class="about-section">
-        <h3>Notre Système de Sécurité</h3>
-        <div class="about-card">
-          <p>La sécurité de vos fonds est notre priorité absolue. Nous utilisons des protocoles de cryptage de niveau bancaire. Vos fonds sont isolés et chaque contrat que vous activez est enregistré avec une date de début et une date de fin précises, garantissant une transparence totale.</p>
-        </div>
-      </div>
-      <div class="about-section">
-        <h3>Notre Système de Paiement</h3>
-        <div class="about-card">
-          <p>Nous utilisons le réseau <strong>USDT (TRC20)</strong> pour tous les dépôts et retraits. Ce réseau garantit des transactions quasi-instantanées avec des frais extrêmement bas.</p>
-        </div>
-      </div>
-      <div class="about-section">
-        <h3>Plus de 6 ans de confiance</h3>
-        <div class="about-card">
-          <p>Fondé en <strong>2020</strong>, xynary-club est un club officiellement enregistré et opérant à l'international. Nous sommes fiers de notre présence dans plusieurs pays clés :</p>
-          <ul class="about-list"><li>La France</li><li>Le Royaume-Uni</li><li>Le Canada</li><li>L'Algérie</li></ul>
-        </div>
-      </div>
+      <div class="about-hero"><h2>À propos de Xynary Club</h2><p>Xynary Club est une plateforme communautaire orientée vers l’analyse des marchés Forex et crypto-actifs, le partage d’informations et le suivi des activités des membres. Notre objectif est de présenter les informations et les conditions de manière claire et accessible.</p></div>
+      <div class="about-section"><h3>Notre mission</h3><div class="about-grid"><div class="about-card"><h4>Analyse et information</h4><p>Partager des contenus et informations sur les marchés financiers et les crypto-actifs, avec une approche axée sur la compréhension des risques.</p></div><div class="about-card"><h4>Suivi transparent</h4><p>Présenter les demandes, contrats, durées, frais, statuts et opérations enregistrées dans les espaces membre et administrateur.</p></div><div class="about-card"><h4>Communauté</h4><p>Proposer un espace membres, des outils de suivi et des informations sur les services et conditions disponibles.</p></div></div></div>
+      <div class="about-section"><h3>Plans et conditions</h3><div class="about-card"><p>Les plans affichés sur la page d’accueil présentent des taux annoncés selon la durée. Ils ne sont pas des rendements garantis. Toute souscription doit être précédée de la lecture des conditions contractuelles, des frais, des risques et des modalités de règlement.</p></div></div>
+      <div class="about-section"><h3>Gestion des comptes et sécurité</h3><div class="about-card"><p>Les comptes utilisent une authentification et les demandes financières sont soumises à des contrôles. Les utilisateurs doivent protéger leurs identifiants et vérifier les informations de leur profil et portefeuille avant toute demande.</p><p>Ne partagez jamais votre mot de passe, vos clés privées ou votre phrase de récupération avec le support.</p></div></div>
+      <div class="about-section"><h3>Support et contact</h3><div class="about-card"><p>Pour les questions concernant votre compte, vos demandes ou les conditions, contactez l’administration.</p><p><strong>Email support :</strong> xenaryclub@gmail.com</p></div></div>
+      <div class="about-section"><h3>Information sur les risques</h3><div class="about-card"><p>Le Forex et les crypto-actifs présentent un risque élevé. Les pertes peuvent être importantes et le capital peut être partiellement ou totalement perdu. Les taux affichés sont des taux annoncés par durée et ne garantissent aucun résultat réel.</p></div></div>
     </section>
   </main>
 </div>
@@ -617,6 +616,7 @@
       <div style="text-align:center; margin-bottom: 24px;">
          <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Montant à envoyer</div>
          <div style="font-size: 24px; font-weight: 700; color: var(--navy);" id="displayDepositAmount">0.00 $</div>
+         <div id="depositBreakdownNote" style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5"></div>
       </div>
       <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin-bottom: 20px; display:flex; gap:12px; align-items:flex-start;">
         <div style="font-size:13px; color:#991b1b; font-weight: 500; line-height:1.4;">Utilisez <strong>UNIQUEMENT</strong> le réseau TRC20 (Tron). Les autres réseaux entraîneront une perte définitive des fonds.</div>
@@ -677,10 +677,11 @@
       <div class="field">
         <label>Durée du contrat</label>
         <select id="contractDuration" style="background:var(--page);">
-          <option value="1">1 mois</option>
-          <option value="2">2 mois</option>
-          <option value="4">4 mois</option>
-          <option value="6">6 mois</option>
+          <option value="1">1 mois — taux annoncé 15 %</option>
+          <option value="2">2 mois — taux annoncé 20 %</option>
+          <option value="3">3 mois — taux annoncé 25 %</option>
+          <option value="5">5 mois — taux annoncé 30 %</option>
+          <option value="12">12 mois — taux annoncé 50 %</option>
         </select>
         <small style="display:block;color:var(--muted);line-height:1.5;margin-top:8px;">Aucun rendement n’est garanti. Le résultat final dépend des performances réellement constatées et peut être négatif.</small>
       </div>
@@ -871,9 +872,13 @@
   }
 
   function updateDepositModalUI() {
-    $("depositAmountInput").min = "150";
-    $("depositAmountInput").placeholder = "Min. 150";
-    $("depositFeeNote").textContent = "Montant minimum de dépôt : 150 USD. Les éventuels frais de service sont affichés séparément avant l’activation d’un contrat.";
+    const firstDeposit = !hasPaidFee;
+    const minDeposit = firstDeposit ? 186 : 150;
+    $("depositAmountInput").min = String(minDeposit);
+    $("depositAmountInput").placeholder = `Min. ${minDeposit}`;
+    $("depositFeeNote").textContent = firstDeposit
+      ? "Premier dépôt : 186 USD minimum (150 USD crédités au solde + 36 USD de frais d'achat/activation du premier contrat). Les 36 USD ne seront pas ajoutés au solde disponible."
+      : "Dépôt minimum : 150 USD. Après vérification, le montant reçu sera crédité au solde disponible. Les frais du premier contrat ont déjà été payés.";
   }
 
   async function loadProfile() {
@@ -1009,6 +1014,7 @@
         if (b.getDate() < a.getDate()) months--;
         return Math.max(0, months);
       };
+      const planRates = {1:0.15, 2:0.20, 3:0.25, 5:0.30, 12:0.50};
       const plannedBonus = c => {
         const explicit = [c.expected_bonus, c.planned_bonus, c.expected_profit, c.estimated_profit, c.bonus_amount, c.profit_amount, c.final_bonus, c.pnl, c.realized_profit]
           .find(v => v !== null && v !== undefined && v !== "" && Number.isFinite(Number(v)));
@@ -1020,6 +1026,8 @@
           if (Math.abs(rate) > 1) rate /= 100;
           return Number(c.amount || 0) * rate;
         }
+        const planRate = planRates[contractMonths(c.start_date, c.end_date)];
+        if (planRate !== undefined) return Number(c.amount || 0) * planRate;
         return null;
       };
       const money = v => Number(v).toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD";
@@ -1051,7 +1059,7 @@
 
     if (!balanceLoaded) { errorDiv.textContent = "Solde non vérifié. Actualisez la page et réessayez."; return; }
     if (!Number.isFinite(amount) || amount < 150) { errorDiv.textContent = "Le montant minimum est de 150 USD."; return; }
-    if (![30, 60, 120, 180].includes(durationDays)) { errorDiv.textContent = "Durée non valide."; return; }
+    if (![30, 60, 90, 150, 360].includes(durationDays)) { errorDiv.textContent = "Durée non valide."; return; }
 
     errorDiv.textContent = "";
     setBtnLoading(btn, "Activation sécurisée...");
@@ -1166,7 +1174,9 @@
           let rate = Number(rateValue); if (Math.abs(rate) > 1) rate /= 100;
           plannedBonus = Number(c.amount || 0) * rate;
         }
+        if (plannedBonus === null && ({1:0.15,2:0.20,3:0.25,5:0.30,12:0.50}[months] !== undefined)) plannedBonus = Number(c.amount || 0) * ({1:0.15,2:0.20,3:0.25,5:0.30,12:0.50}[months]);
         const bonusText = plannedBonus === null ? "Plan non configuré" : plannedBonus.toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD";
+        if (plannedBonus === null && ({1:0.15,2:0.20,3:0.25,5:0.30,12:0.50}[months] !== undefined)) plannedBonus = Number(c.amount || 0) * ({1:0.15,2:0.20,3:0.25,5:0.30,12:0.50}[months]);
         const totalText = plannedBonus === null ? "—" : (Number(c.amount || 0) + plannedBonus).toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD";
         const settleButton = mature ? `<button class="action-btn btn-approve" onclick="settleContract('${c.id}')">Régler</button>` : "—";
         contractsHtml += `<tr><td>${esc(profile.full_name || profile.email || c.user_id)}</td><td><strong>${Number(c.amount).toFixed(2)} USD</strong></td><td>${months} mois</td><td>${startDate.toLocaleDateString("fr-FR")}</td><td>${endDate.toLocaleDateString("fr-FR")}</td><td>${bonusText}</td><td>${totalText}</td><td><span class="status-badge ${c.status === "completed" ? "active" : mature ? "pending" : "active"}">${statusLabel}</span></td><td>${settleButton}</td></tr>`;
@@ -1426,9 +1436,13 @@
 
   $("depositAmountForm").addEventListener("submit", (e) => {
     e.preventDefault(); 
-    const amount = parseFloat($("depositAmountInput").value); const minDeposit = 150;
-    if (amount < minDeposit) { alert(`Le minimum de dépôt est de ${minDeposit} $.`); return; }
-    currentDepositAmount = amount; $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
+    const amount = parseFloat($("depositAmountInput").value); const minDeposit = hasPaidFee ? 150 : 186;
+    if (amount < minDeposit) { alert(`Le minimum de dépôt est de ${minDeposit} $. ${!hasPaidFee ? "Le premier dépôt comprend 150 USD crédités + 36 USD de frais." : ""}`); return; }
+    currentDepositAmount = amount;
+    const credited = (!hasPaidFee && amount >= 186) ? amount - 36 : amount;
+    $("displayDepositAmount").textContent = amount.toFixed(2) + " $";
+    const breakdown = document.getElementById("depositBreakdownNote");
+    if (breakdown) breakdown.textContent = !hasPaidFee ? `Répartition : ${credited.toFixed(2)} USD crédités au solde + 36.00 USD de frais du premier contrat.` : `Montant reçu : ${amount.toFixed(2)} USD — crédit prévu au solde après vérification.`;
     $("depositAccountIdDisplay").value = currentAccountNumber || "Identifiant non disponible";
     $("depositSenderName").value = $("profileDisplayName").textContent.trim() || "Nom non disponible";
     $("depositStep1").classList.add("hidden"); $("depositStep2").classList.remove("hidden");
