@@ -472,7 +472,7 @@
         <h3>Contrats (Tous les utilisateurs)</h3>
         <div style="overflow-x:auto;">
           <table class="data-table" id="adminContractsTable">
-            <thead><tr><th>Utilisateur</th><th>Montant</th><th>Durée</th><th>Fin du contrat</th><th>Bonus / résultat final</th><th>Statut</th></tr></thead>
+            <thead><tr><th>Utilisateur</th><th>Montant</th><th>Durée</th><th>Début</th><th>Fin</th><th>Bonus prévu</th><th>Total prévu</th><th>Statut</th><th>Règlement</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -757,7 +757,7 @@
   function bootstrapSkeletons() {
     const ra = $("recentActivityList"); if (ra) ra.innerHTML = skeletonCardsHTML(3);
     const tl = $("myTeamList"); if (tl) tl.innerHTML = skeletonCardsHTML(2);
-    const cc = $("contractsContainer"); if (cc) cc.innerHTML = '<table class="data-table"><thead><tr><th>Montant</th><th>Durée</th><th>Début</th><th>Fin</th><th>Bonus / résultat final</th><th>Statut</th></tr></thead><tbody>' + skeletonTableRows(6, 2) + '</tbody></table>';
+    const cc = $("contractsContainer"); if (cc) cc.innerHTML = '<table class="data-table"><thead><tr><th>Montant</th><th>Durée</th><th>Début</th><th>Fin</th><th>Bonus prévu</th><th>Total prévu</th><th>Statut</th></tr></thead><tbody>' + skeletonTableRows(6, 2) + '</tbody></table>';
     const fh = $("fullHistoryList"); if (fh) fh.innerHTML = skeletonCardsHTML(4);
     ["adminPendingTable", "adminUsersTable", "adminContractsTable"].forEach(id => {
       const t = $(id);
@@ -1002,25 +1002,37 @@
         return;
       }
 
-      let html = `<table class="data-table"><thead><tr><th>Montant</th><th>Durée</th><th>Début</th><th>Fin</th><th>Bonus / résultat final</th><th>Statut</th></tr></thead><tbody>`;
+      let html = `<table class="data-table"><thead><tr><th>Montant</th><th>Durée</th><th>Début</th><th>Fin</th><th>Bonus prévu</th><th>Total prévu</th><th>Statut</th></tr></thead><tbody>`;
       const contractMonths = (startDate, endDate) => {
         const a = new Date(startDate), b = new Date(endDate);
         let months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
         if (b.getDate() < a.getDate()) months--;
         return Math.max(0, months);
       };
-      const finalResult = c => {
-        const candidates = [c.final_bonus, c.bonus_amount, c.profit_amount, c.pnl, c.realized_profit];
-        const actual = candidates.find(v => typeof v === "number" && Number.isFinite(v));
-        return actual === undefined ? "À valider à l’échéance" : `${Number(actual).toFixed(2)} USD (résultat enregistré)`;
+      const plannedBonus = c => {
+        const explicit = [c.expected_bonus, c.planned_bonus, c.expected_profit, c.estimated_profit, c.bonus_amount, c.profit_amount, c.final_bonus, c.pnl, c.realized_profit]
+          .find(v => v !== null && v !== undefined && v !== "" && Number.isFinite(Number(v)));
+        if (explicit !== undefined) return Number(explicit);
+        const rateValue = [c.bonus_rate, c.profit_rate, c.expected_return_rate, c.return_rate, c.remuneration_rate, c.rate_percent]
+          .find(v => v !== null && v !== undefined && v !== "" && Number.isFinite(Number(v)));
+        if (rateValue !== undefined) {
+          let rate = Number(rateValue);
+          if (Math.abs(rate) > 1) rate /= 100;
+          return Number(c.amount || 0) * rate;
+        }
+        return null;
       };
+      const money = v => Number(v).toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD";
       data.forEach(c => {
         const start = new Date(c.start_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
         const end = new Date(c.end_date).toLocaleString('fr-FR', { day:'numeric', month:'short', year:'numeric'});
         const months = contractMonths(c.start_date, c.end_date);
         const statusLabel = c.status === "completed" ? "Terminé" : (new Date(c.end_date) <= new Date() ? "Échu — règlement en attente" : "En cours");
         const statusClass = c.status === "completed" ? "active" : (new Date(c.end_date) <= new Date() ? "pending" : "active");
-        html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${months} mois</td><td>${start}</td><td>${end}</td><td>${finalResult(c)}</td><td><span class="status-badge ${statusClass}">${statusLabel}</span></td></tr>`;
+        const bonus = plannedBonus(c);
+        const bonusDisplay = bonus === null ? "Plan de rémunération non configuré" : money(bonus);
+        const totalDisplay = bonus === null ? "—" : money(Number(c.amount || 0) + bonus);
+        html += `<tr><td><strong>${Number(c.amount).toFixed(2)} $</strong></td><td>${months} mois</td><td>${start}</td><td>${end}</td><td>${bonusDisplay}</td><td>${totalDisplay}</td><td><span class="status-badge ${statusClass}">${statusLabel}</span></td></tr>`;
       });
       html += `</tbody></table>`;
       container.innerHTML = html;
@@ -1145,14 +1157,20 @@
         let months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
         if (endDate.getDate() < startDate.getDate()) months--;
         months = Math.max(0, months);
-        const bonusFields = [c.final_bonus, c.bonus_amount, c.profit_amount, c.pnl, c.realized_profit];
-        const actualBonus = bonusFields.find(v => typeof v === "number" && Number.isFinite(v));
-        const bonusText = actualBonus === undefined ? "À valider à l’échéance" : `${Number(actualBonus).toFixed(2)} USD (résultat enregistré)`;
+        const explicitBonus = [c.expected_bonus, c.planned_bonus, c.expected_profit, c.estimated_profit, c.bonus_amount, c.profit_amount, c.final_bonus, c.pnl, c.realized_profit]
+          .find(v => v !== null && v !== undefined && v !== "" && Number.isFinite(Number(v)));
+        const rateValue = [c.bonus_rate, c.profit_rate, c.expected_return_rate, c.return_rate, c.remuneration_rate, c.rate_percent]
+          .find(v => v !== null && v !== undefined && v !== "" && Number.isFinite(Number(v)));
+        let plannedBonus = explicitBonus !== undefined ? Number(explicitBonus) : null;
+        if (plannedBonus === null && rateValue !== undefined) {
+          let rate = Number(rateValue); if (Math.abs(rate) > 1) rate /= 100;
+          plannedBonus = Number(c.amount || 0) * rate;
+        }
+        const bonusText = plannedBonus === null ? "Plan non configuré" : plannedBonus.toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD";
+        const totalText = plannedBonus === null ? "—" : (Number(c.amount || 0) + plannedBonus).toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD";
         const settleButton = mature ? `<button class="action-btn btn-approve" onclick="settleContract('${c.id}')">Régler</button>` : "—";
-        contractsHtml += `<tr><td>${esc(profile.full_name || profile.email || c.user_id)}</td><td><strong>${Number(c.amount).toFixed(2)} USD</strong></td><td>${months} mois</td><td>${endDate.toLocaleDateString("fr-FR")}</td><td>${bonusText}</td><td><span class="status-badge ${c.status === "completed" ? "active" : mature ? "pending" : "active"}">${statusLabel}</span></td><td>${settleButton}</td></tr>`;
+        contractsHtml += `<tr><td>${esc(profile.full_name || profile.email || c.user_id)}</td><td><strong>${Number(c.amount).toFixed(2)} USD</strong></td><td>${months} mois</td><td>${startDate.toLocaleDateString("fr-FR")}</td><td>${endDate.toLocaleDateString("fr-FR")}</td><td>${bonusText}</td><td>${totalText}</td><td><span class="status-badge ${c.status === "completed" ? "active" : mature ? "pending" : "active"}">${statusLabel}</span></td><td>${settleButton}</td></tr>`;
       });
-      const adminContractsHead = $("adminContractsTable").querySelector("thead");
-      if (adminContractsHead && adminContractsHead.querySelectorAll("th").length === 6) adminContractsHead.querySelector("tr").insertAdjacentHTML("beforeend", "<th>Règlement</th>");
       $("adminContractsTable").querySelector("tbody").innerHTML = contractsHtml;
     } catch (e) {
       console.error("Admin Error:", e);
