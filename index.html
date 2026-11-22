@@ -374,6 +374,7 @@
         <span>À propos</span>
       </div>
       
+      <div class="nav-item" onclick="switchView('messages', this)" id="messagesNavBtn"><span class="nav-icon">✉</span><span>Messages <span id="messageUnreadBadge" class="hidden" style="background:#e50919;color:#fff;border-radius:99px;padding:2px 7px;font-size:11px;margin-left:6px;">0</span></span></div>
       <div class="nav-item admin-item hidden" id="adminNavBtn" onclick="switchView('admin', this)">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
         <span>Administration</span>
@@ -526,6 +527,16 @@
       </div>
     </section>
 
+    <!-- VUE : MESSAGES -->
+    <section id="view-messages" class="view">
+      <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
+      <div class="page-header"><h1>Messages directs</h1><p>Bienvenue, notifications de compte et annonces de l’équipe Xynary-Club.</p></div>
+      <div class="info-card" style="padding:0;overflow:hidden;">
+        <div style="background:linear-gradient(120deg,#071b52,#0755d9);color:white;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;"><strong>Centre de messages</strong><span style="font-size:12px;opacity:.8;">En direct</span></div>
+        <div id="memberMessagesList" style="padding:16px;min-height:260px;max-height:65vh;overflow:auto;"><div style="color:var(--muted);text-align:center;padding:35px;">Chargement des messages…</div></div>
+      </div>
+    </section>
+
     <!-- VUE : ADMINISTRATION -->
     <section id="view-admin" class="view">
       <div class="back-nav"><button class="back-btn" onclick="switchView('dashboard')">Retour</button></div>
@@ -534,6 +545,13 @@
         <p>Gestion complète de la plateforme xynary-club.</p>
       </div>
 
+      <div class="info-card" style="border:1px solid #b9cfff;background:#f8fbff;margin-bottom:22px;">
+        <h3>📣 Message direct à tous les membres</h3><p style="color:var(--muted);font-size:13px;">Cet outil est réservé aux annonces techniques et communications officielles. Les messages d’inscription, dépôt, retrait, contrat et parrainage sont réservés aux notifications automatiques du système.</p>
+        <div class="field"><label>Titre du message</label><input id="broadcastTitle" maxlength="120" placeholder="Ex. Annonce de l’équipe technique"></div>
+        <div class="field"><label>Catégorie</label><select id="broadcastType" disabled><option value="technical" selected>Annonce technique uniquement</option></select></div>
+        <div class="field"><label>Message</label><textarea id="broadcastBody" rows="5" maxlength="5000" placeholder="Écrivez votre message ici…" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;resize:vertical;"></textarea></div>
+        <button class="primary-btn" id="sendBroadcastBtn" onclick="sendBroadcastMessage()">Envoyer à tous les utilisateurs</button><div id="broadcastStatus" style="margin-top:12px;font-size:13px;"></div>
+      </div>
       <div class="stats-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:24px;">
         <div class="info-card" style="margin-top:0;">
           <h3>Fonds Totaux Plateforme</h3>
@@ -795,6 +813,7 @@
   let hasPaidFee = false;
   let userReferralCode = "";
   let signupAwaitingEmailConfirmation = false;
+  let messageRealtimeChannel = null;
 
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -864,6 +883,7 @@
       element.classList.add('active');
     }
     if(viewName === 'admin') loadAdminData();
+    if(viewName === 'messages') loadMemberMessages();
     if(window.innerWidth <= 1024) $("sidebar").classList.remove("open");
   };
   
@@ -1148,6 +1168,7 @@
       });
       if (error) throw error;
       pendingContractRequestId = null;
+      await supabaseClient.from("xy_direct_messages").insert({recipient_id:currentUser.id,title:"Contrat enregistré",body:`Votre contrat de ${amount.toFixed(2)} USD pour ${durationMonths} mois a été enregistré. Consultez la page Mes Contrats pour suivre son statut.`,message_type:"contract",dedupe_key:`contract-${data?.contract_id||data?.id||Date.now()}`});
       await loadProfile();
       await loadContracts();
       resetBtn(btn);
@@ -1399,6 +1420,34 @@
     }
   }
 
+  function messageTypeLabel(type){return ({welcome:'Bienvenue',deposit:'Dépôt',withdrawal:'Retrait',contract:'Contrat',referral:'Parrainage',technical:'Annonce technique'})[type]||'Message';}
+  function messageEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  async function ensureWelcomeMessage(){
+    if(!currentUser||!supabaseClient)return;
+    const dedupe=`welcome-${currentUser.id}`;
+    const {error}=await supabaseClient.from('xy_direct_messages').upsert({recipient_id:currentUser.id,title:'Bienvenue sur Xynary-Club',body:'Bienvenue dans votre espace membre Xynary-Club. Vous pouvez consulter votre tableau de bord, suivre vos demandes et contrats, découvrir votre équipe et recevoir les annonces directement ici.',message_type:'welcome',dedupe_key:dedupe,created_by:null},{onConflict:'dedupe_key',ignoreDuplicates:true});
+    if(error) console.warn('Welcome message:',error.message);
+  }
+  async function loadMemberMessages(){
+    if(!currentUser||!supabaseClient)return;const box=$('memberMessagesList');if(!box)return;
+    const {data,error}=await supabaseClient.from('xy_direct_messages').select('*').eq('recipient_id',currentUser.id).order('created_at',{ascending:false}).limit(100);
+    if(error){box.innerHTML='<div style="text-align:center;color:var(--red);padding:25px;">Impossible de charger les messages. Vérifiez que la migration Messages a été exécutée.</div>';return;}
+    if(!data?.length){box.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px;">Aucun message pour le moment.</div>';return;}
+    box.innerHTML=data.map(m=>`<article style="border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px;background:${m.is_read?'#fff':'#f2f7ff'}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><strong style="color:var(--navy);">${messageEsc(m.title||messageTypeLabel(m.message_type))}</strong><span style="font-size:11px;color:var(--muted);">${messageEsc(messageTypeLabel(m.message_type))} · ${new Date(m.created_at).toLocaleString('fr-FR')}</span></div><div style="white-space:pre-wrap;line-height:1.65;color:#475569;margin-top:9px;">${messageEsc(m.body)}</div></article>`).join('');
+    const unread=data.filter(m=>!m.is_read).length;const badge=$('messageUnreadBadge');if(badge){badge.textContent=unread;badge.classList.toggle('hidden',unread===0);}
+    const ids=data.filter(m=>!m.is_read).map(m=>m.id);if(ids.length)await supabaseClient.from('xy_direct_messages').update({is_read:true,read_at:new Date().toISOString()}).in('id',ids);
+  }
+  function subscribeMessages(){
+    if(!currentUser||!supabaseClient)return;if(messageRealtimeChannel) supabaseClient.removeChannel(messageRealtimeChannel);
+    messageRealtimeChannel=supabaseClient.channel('xy-direct-messages-'+currentUser.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'xy_direct_messages',filter:'recipient_id=eq.'+currentUser.id},payload=>{loadMemberMessages();const badge=$('messageUnreadBadge');if(badge){badge.classList.remove('hidden');badge.textContent='Nouveau';}}).subscribe();
+  }
+  window.sendBroadcastMessage=async()=>{
+    if(!isAdmin){alert('Accès réservé à l’administrateur.');return;}const title=$('broadcastTitle').value.trim(),body=$('broadcastBody').value.trim(),type='technical',btn=$('sendBroadcastBtn'),status=$('broadcastStatus');
+    if(!title||!body){status.style.color='var(--red)';status.textContent='Veuillez renseigner le titre et le message.';return;}btn.disabled=true;btn.textContent='Envoi en cours…';status.textContent='';
+    try{const {data:users,error:uerr}=await supabaseClient.from('xy_profiles').select('id');if(uerr)throw uerr;const recipients=(users||[]).filter(u=>u.id!==currentUser.id);if(!recipients.length)throw new Error('Aucun utilisateur à notifier.');const now=Date.now();const rows=recipients.map((u,i)=>({recipient_id:u.id,title,body,message_type:type,created_by:currentUser.id,dedupe_key:`broadcast-${currentUser.id}-${now}-${i}`}));const {error}=await supabaseClient.from('xy_direct_messages').insert(rows);if(error)throw error;status.style.color='var(--green)';status.textContent=`Message envoyé à ${rows.length} compte(s).`; $('broadcastTitle').value='';$('broadcastBody').value='';}
+    catch(e){status.style.color='var(--red)';status.textContent='Échec de l’envoi : '+(e.message||e);}finally{btn.disabled=false;btn.textContent='Envoyer à tous les utilisateurs';}
+  };
+
   async function initApp(user) {
     currentUser = user;
     $("authArea").classList.add("hidden");
@@ -1407,7 +1456,10 @@
     
     try { 
       await loadProfile(); 
-      await loadRequests(); 
+      await loadRequests();
+      await ensureWelcomeMessage();
+      await loadMemberMessages();
+      subscribeMessages();
     } catch(e) { 
       console.error("Init Error:", e); 
     } finally {
@@ -1548,6 +1600,7 @@
     if (error) {
       alert("Impossible d'enregistrer la demande : " + error.message); resetBtn(btn); return;
     }
+    await supabaseClient.from("xy_direct_messages").insert({recipient_id:currentUser.id,title:"Demande de dépôt enregistrée",body:`Votre demande de dépôt de ${currentDepositAmount.toFixed(2)} USD a été enregistrée. Elle sera examinée par l’administration.`,message_type:"deposit",dedupe_key:`deposit-request-${txRef}`});
     $("depositStep2").classList.add("hidden"); $("depositStep3").classList.remove("hidden"); resetBtn(btn); loadRequests(); loadAdminData();
   });
 
