@@ -298,6 +298,17 @@
       .page-header h1, h1, h2, h3 { overflow-wrap: anywhere; }
       .market-ticker-wrap { width: 100%; max-width: 100vw; }
     }
+
+/* Password change success modal */
+.password-success-overlay{position:fixed;inset:0;z-index:3100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(7,14,30,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .22s}
+.password-success-overlay.active{opacity:1;pointer-events:auto}
+.password-success-card{width:min(100%,430px);background:#fff;border:1px solid #dbeafe;border-radius:22px;padding:28px 24px;text-align:center;box-shadow:0 28px 80px rgba(0,0,0,.3);transform:translateY(12px);transition:transform .22s}
+.password-success-overlay.active .password-success-card{transform:translateY(0)}
+.password-success-icon{width:66px;height:66px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:#e9f9f1;color:#15945f;font-size:32px;font-weight:800}
+.password-success-card h2{color:var(--navy);font-size:22px;margin:0 0 10px}
+.password-success-card p{color:#52627e;line-height:1.65;margin:0 0 20px}
+.password-success-card .primary-btn{width:100%}
+
 </style>
 </head>
 <body>
@@ -327,6 +338,16 @@
     <form id="recoveryPasswordForm" style="display:none;margin-top:18px;"><div class="field"><label>Nouveau mot de passe</label><input id="newRecoveryPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div><div class="field"><label>Confirmer le nouveau mot de passe</label><input id="confirmRecoveryPassword" type="password" minlength="8" required placeholder="Confirmez le mot de passe"></div><button type="submit" class="primary-btn">Modifier le mot de passe</button><div id="recoveryStatus" role="status" aria-live="polite" style="margin-top:12px;text-align:center;"></div></form>
     <form id="signupForm" style="display:none;"><div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div><div class="field"><label>Pays</label><select id="suCountry" required><option value="">Sélectionnez votre pays</option><option>République démocratique du Congo</option><option>République du Congo</option><option>Angola</option><option>Burundi</option><option>Rwanda</option><option>Ouganda</option><option>Tanzanie</option><option>Zambie</option><option>Afrique du Sud</option><option>Kenya</option><option>Nigeria</option><option>Ghana</option><option>Cameroun</option><option>Côte d’Ivoire</option><option>Sénégal</option><option>France</option><option>Belgique</option><option>Canada</option><option>États-Unis</option><option>Royaume-Uni</option><option>Autre</option></select></div><div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div><div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div><div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="20" placeholder="Code"></div><button type="submit" class="primary-btn">Créer un compte</button><div id="signupStatus" class="auth-feedback" role="status" aria-live="polite"></div></form></div></div>
 </section>
+
+
+<div id="passwordSuccessOverlay" class="password-success-overlay" aria-modal="true" role="dialog" aria-labelledby="passwordSuccessTitle">
+ <div class="password-success-card">
+  <div class="password-success-icon">✓</div>
+  <h2 id="passwordSuccessTitle">Mot de passe modifié avec succès</h2>
+  <p>Votre nouveau mot de passe est enregistré. Vous êtes maintenant sur la page de connexion et pouvez vous connecter avec votre nouveau mot de passe.</p>
+  <button type="button" class="primary-btn" onclick="closePasswordSuccessModal()">Continuer vers la connexion</button>
+ </div>
+</div>
 
 <div id="emailConfirmOverlay" class="email-confirm-overlay" aria-modal="true" role="dialog" aria-labelledby="emailConfirmTitle">
  <div class="email-confirm-card">
@@ -1632,21 +1653,44 @@
     $('forgotEmail').value=$('liEmail').value.trim(); $('forgotStatus').textContent='';
   };
   window.showLoginFormAgain = () => { $('forgotPasswordForm').style.display='none'; $('recoveryPasswordForm').style.display='none'; window.switchAuthTab('login'); };
+  window.closePasswordSuccessModal = () => { const overlay=$('passwordSuccessOverlay'); if(overlay) overlay.classList.remove('active'); };
+  function showPasswordSuccessModal(){ const overlay=$('passwordSuccessOverlay'); if(overlay){ overlay.classList.add('active'); } }
   function showRecoveryPasswordUI(){ $('publicLanding').classList.add('hidden'); $('authFormCard').classList.remove('hidden'); $('loginForm').style.display='none'; $('signupForm').style.display='none'; $('forgotPasswordForm').style.display='none'; $('recoveryPasswordForm').style.display='block'; $('authSubtitle').textContent='Choisissez un nouveau mot de passe sécurisé.'; }
   $('forgotPasswordForm').addEventListener('submit',async e=>{
-    e.preventDefault(); const email=$('forgotEmail').value.trim(); const btn=$('forgotPasswordForm').querySelector('button[type=submit]'); setBtnLoading(btn,'Envoi...');
-    const redirectTo=window.location.origin+window.location.pathname;
-    const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
-    $('forgotStatus').textContent=error?errorText(error):'Si cette adresse correspond à un compte, un e-mail de récupération a été envoyé. Vérifiez votre boîte et vos spams.';
-    $('forgotStatus').style.color=error?'var(--red)':'var(--green, #16a34a)'; resetBtn(btn);
+    e.preventDefault();
+    const email=$('forgotEmail').value.trim();
+    const btn=$('forgotPasswordForm').querySelector('button[type=submit]');
+    const status=$('forgotStatus');
+    if(!email){ status.textContent='Veuillez saisir votre adresse e-mail.'; status.style.color='var(--red)'; return; }
+    status.innerHTML='<span class="spinner" style="display:inline-block;vertical-align:middle;margin-right:8px;"></span>Envoi du lien de réinitialisation en cours…';
+    status.style.color='var(--navy)';
+    setBtnLoading(btn,'Envoi en cours...');
+    try {
+      const redirectTo=window.location.origin+window.location.pathname;
+      const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+      if(error){
+        status.textContent='Échec de l’envoi : '+errorText(error)+'. Vérifiez la configuration e-mail de Supabase et réessayez.';
+        status.style.color='var(--red)';
+      } else {
+        status.innerHTML='<strong>Demande envoyée.</strong><br>Vérifiez votre boîte e-mail ainsi que les courriers indésirables (spam). Un lien sécurisé de réinitialisation a été envoyé à l’adresse enregistrée sur Xynary Club. Si le message n’arrive pas, attendez quelques minutes puis réessayez.';
+        status.style.color='var(--green, #16a34a)';
+      }
+    } catch(err) {
+      status.textContent='Une erreur de connexion est survenue. Vérifiez votre connexion Internet puis réessayez.';
+      status.style.color='var(--red)';
+    } finally { resetBtn(btn); }
   });
   $('recoveryPasswordForm').addEventListener('submit',async e=>{
     e.preventDefault(); const pwd=$('newRecoveryPassword').value, confirmPwd=$('confirmRecoveryPassword').value; const btn=$('recoveryPasswordForm').querySelector('button[type=submit]');
     $('recoveryStatus').textContent=''; if(pwd.length<8){$('recoveryStatus').textContent='Le mot de passe doit contenir au moins 8 caractères.';return;} if(pwd!==confirmPwd){$('recoveryStatus').textContent='Les mots de passe ne correspondent pas.';return;}
     setBtnLoading(btn,'Modification...'); const {error}=await supabaseClient.auth.updateUser({password:pwd});
     if(error){$('recoveryStatus').textContent=errorText(error);$('recoveryStatus').style.color='var(--red)';resetBtn(btn);return;}
-    $('recoveryStatus').textContent='Mot de passe modifié avec succès. Vous pouvez vous connecter avec votre nouveau mot de passe.';$('recoveryStatus').style.color='var(--green, #16a34a)'; $('newRecoveryPassword').value='';$('confirmRecoveryPassword').value='';
-    await supabaseClient.auth.signOut(); resetBtn(btn); history.replaceState({},document.title,window.location.pathname); window.switchAuthTab('login');
+    $('newRecoveryPassword').value='';$('confirmRecoveryPassword').value='';
+    // End recovery flow and clean the URL so auth-state events cannot reopen the recovery form.
+    passwordRecoveryFlow=false; resetBtn(btn); history.replaceState({},document.title,window.location.pathname);
+    await supabaseClient.auth.signOut();
+    $('recoveryPasswordForm').style.display='none'; $('forgotPasswordForm').style.display='none'; $('signupForm').style.display='none'; $('loginForm').style.display='block'; $('authSubtitle').textContent='Connectez-vous à votre espace Xynary Club.'; $('authFormCard').classList.remove('hidden'); $('publicLanding').classList.add('hidden'); $('authArea').classList.remove('hidden'); $('liPassword').value=''; $('loginStatus').textContent='';
+    showPasswordSuccessModal();
   });
   let passwordRecoveryFlow=false;
   const hashParams=new URLSearchParams((location.hash||'').replace(/^#/,'')); const queryParams=new URLSearchParams(location.search||'');
@@ -1654,7 +1698,7 @@
   const recoveryLinkDetected=recoveryType==='recovery'||!!recoveryCode||!!(recoveryAT&&recoveryRT);
   async function activateRecoveryLink(){ if(!recoveryLinkDetected)return; passwordRecoveryFlow=true; showRecoveryPasswordUI(); try{ if(recoveryCode){const {error}=await supabaseClient.auth.exchangeCodeForSession(recoveryCode);if(error)throw error;} else if(recoveryAT&&recoveryRT){const {error}=await supabaseClient.auth.setSession({access_token:recoveryAT,refresh_token:recoveryRT});if(error)throw error;} showRecoveryPasswordUI(); }catch(err){showRecoveryPasswordUI();$('recoveryStatus').textContent='Lien invalide ou expiré. Demandez un nouveau lien de réinitialisation.';$('recoveryStatus').style.color='var(--red)';} }
   activateRecoveryLink();
-  supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'||(passwordRecoveryFlow&&session)){passwordRecoveryFlow=true;showRecoveryPasswordUI();}});
+  supabaseClient.auth.onAuthStateChange((event,session)=>{if(passwordRecoveryFlow&&(event==='PASSWORD_RECOVERY'||session)){showRecoveryPasswordUI();}});
 
   bootstrapSkeletons();
   supabaseClient.auth.getSession().then(({ data: { session } }) => { 
