@@ -930,6 +930,15 @@
   };
   window.showLoginFormAgain = () => { $("forgotPasswordForm").style.display = "none"; $("recoveryPasswordForm").style.display = "none"; window.switchAuthTab("login"); };
 
+  function showRecoveryPasswordUI() {
+    if (!$('authFormCard')) return;
+    $('publicLanding').classList.add('hidden'); $('authFormCard').classList.remove('hidden');
+    $('loginForm').style.display = 'none'; $('signupForm').style.display = 'none';
+    $('forgotPasswordForm').style.display = 'none'; $('recoveryPasswordForm').style.display = 'block';
+    $('authSubtitle').textContent = 'Choisissez un nouveau mot de passe sécurisé pour votre compte.';
+    $('recoveryStatus').textContent = '';
+  }
+
   window.switchAuthTab = (mode) => {
     const isLogin = mode === 'login';
     $("loginForm").style.display = isLogin ? "block" : "none";
@@ -1619,13 +1628,27 @@
     if (error) { $("recoveryStatus").textContent = errorText(error); $("recoveryStatus").style.color = "var(--red)"; resetBtn(btn); return; }
     $("recoveryStatus").textContent = "Mot de passe modifié avec succès. Vous pouvez maintenant vous connecter."; $("recoveryStatus").style.color = "var(--green, #16a34a)";
     $("newRecoveryPassword").value = ""; $("confirmRecoveryPassword").value = ""; resetBtn(btn);
+    // Clean recovery URL and return to login after successful password update.
+    await supabaseClient.auth.signOut();
+    window.history.replaceState({}, document.title, window.location.pathname);
+    window.switchAuthTab('login');
   });
 
-  supabaseClient.auth.onAuthStateChange((event) => {
-    if (event === "PASSWORD_RECOVERY") {
-      $("publicLanding").classList.add("hidden"); $("authFormCard").classList.remove("hidden");
-      $("loginForm").style.display = "none"; $("signupForm").style.display = "none"; $("forgotPasswordForm").style.display = "none";
-      $("recoveryPasswordForm").style.display = "block"; $("authSubtitle").textContent = "Choisissez un nouveau mot de passe sécurisé pour votre compte.";
+  // Recovery links may arrive as a hash token or as a PKCE ?code= callback.
+  // Keep recovery mode separate from the normal authenticated app startup.
+  let passwordRecoveryFlow = false;
+  const recoveryHash = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+  const recoveryQuery = new URLSearchParams(window.location.search || '');
+  const recoveryLinkDetected = recoveryHash.get('type') === 'recovery' || recoveryQuery.get('type') === 'recovery' || recoveryHash.has('access_token') || recoveryQuery.has('code');
+  if (recoveryLinkDetected) {
+    passwordRecoveryFlow = true;
+    showRecoveryPasswordUI();
+  }
+
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY' || (passwordRecoveryFlow && session)) {
+      passwordRecoveryFlow = true;
+      showRecoveryPasswordUI();
     }
   });
 
@@ -1692,6 +1715,10 @@
   
   bootstrapSkeletons();
   supabaseClient.auth.getSession().then(({ data: { session } }) => { 
+    if (passwordRecoveryFlow) {
+      showRecoveryPasswordUI();
+      return;
+    }
     if (session) initApp(session.user); 
     else $("authArea").classList.remove("hidden"); 
   });
