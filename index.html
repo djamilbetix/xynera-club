@@ -1393,30 +1393,57 @@
 
   async function loadRequests() {
     try {
-      const { data, error } = await supabaseClient.from("xy_deposit_requests").select("*").order("created_at", { ascending: false });
-      if (error) throw error;
-      const rows = data || [];
+      if (!currentUser) return;
+      const { data: deposits, error: depositError } = await supabaseClient
+        .from("xy_deposit_requests").select("*").eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+      if (depositError) throw depositError;
+      const { data: ledger, error: ledgerError } = await supabaseClient
+        .from("xy_ledger_entries").select("*").eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+      if (ledgerError) throw ledgerError;
+
       const recentList = $("recentActivityList"); const fullList = $("fullHistoryList");
       if (!recentList || !fullList) return;
+      const entries = [];
+      (deposits || []).forEach(d => entries.push({kind:"deposit_request", date:d.created_at, data:d}));
+      (ledger || []).forEach(l => entries.push({kind:"ledger", date:l.created_at, data:l}));
+      entries.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
       recentList.innerHTML = ""; fullList.innerHTML = "";
-      if (!rows.length) {
+      if (!entries.length) {
         recentList.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px 0;">Aucune activité.</div>';
         fullList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Aucune opération enregistrée.</div>';
         return;
       }
-      rows.forEach((item, index) => {
-        const amount = Number(item.amount || 0).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + (item.currency || "USD");
-        const date = new Date(item.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
-        const statusClass = item.status === "approved" ? "active" : item.status === "rejected" ? "pending" : "pending";
-        const statusText = item.status === "approved" ? "Approuvé" : item.status === "rejected" ? "Refusé" : "En attente";
-        const html = `<div class="op-item" style="padding:12px;margin-bottom:8px;"><div class="op-info"><div class="op-details"><strong>Dépôt</strong><small>${date}</small></div></div><div style="text-align:right;"><div class="op-amount">${amount}</div><div style="margin-top:4px;"><span class="status-badge ${statusClass}">${statusText}</span></div></div></div>`;
-        if (index < 3) recentList.innerHTML += html;
-        fullList.innerHTML += html;
-      });
+      const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+      const labels = {
+        deposit:"Dépôt crédité", deposit_request:"Demande de dépôt", contract_debit:"Montant affecté au contrat",
+        service_fee:"Frais de service", referral_bonus:"Bonus de parrainage (3%)",
+        realized_pnl:"Bonus / résultat du contrat", contract_bonus:"Bonus de fin de contrat",
+        contract_capital_return:"Retour de capital", withdrawal:"Retrait", withdrawal_request:"Demande de retrait",
+        bonus:"Bonus", reward_bonus:"Bonus de récompense"
+      };
+      function renderEntry(e){
+        const d=e.data; const isRequest=e.kind==="deposit_request";
+        const rawType=isRequest?"deposit_request":String(d.entry_type||"operation");
+        const label=(rawType==="realized_pnl"&&Number(d.amount||0)>0)?"Bonus de fin de contrat":(rawType==="realized_pnl"&&Number(d.amount||0)<=0)?"Résultat de contrat":(rawType==="contract_bonus"||rawType==="bonus"||rawType==="reward_bonus")?"Bonus crédité":labels[rawType]||String(d.entry_type||"Opération").replace(/_/g," ").replace(/^./,x=>x.toUpperCase());
+        const amountNum=Number(isRequest?d.amount:(d.amount||0));
+        const amount=(isRequest?amountNum:Math.abs(amountNum)).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+(d.currency||"USD");
+        const positive=!isRequest && amountNum>0;
+        const amountDisplay=(positive?"+":"")+(isRequest?amount:amount);
+        const date=d.created_at?new Date(d.created_at).toLocaleString("fr-FR",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"Date indisponible";
+        let status="", statusClass="pending";
+        if(isRequest){statusClass=d.status==="approved"?"active":"pending";status=d.status==="approved"?"Approuvé":d.status==="rejected"?"Refusé":"En attente";}
+        const source=d.description?`<small style="display:block;margin-top:4px;color:var(--muted);max-width:400px;">${esc(d.description)}</small>`:"";
+        const color=positive?"var(--green)":isRequest?"var(--navy)":"var(--red)";
+        return `<div class="op-item" style="padding:12px;margin-bottom:8px;align-items:flex-start;"><div class="op-info"><div class="op-details"><strong>${esc(label)}</strong><small>${esc(date)}</small>${source}</div></div><div style="text-align:right;min-width:110px;"><div class="op-amount" style="color:${color};">${esc(amountDisplay)}</div>${status?`<div style="margin-top:4px;"><span class="status-badge ${statusClass}">${esc(status)}</span></div>`:""}</div></div>`;
+      }
+      entries.forEach((e,index)=>{const html=renderEntry(e);if(index<5)recentList.innerHTML+=html;fullList.innerHTML+=html;});
     } catch (e) {
       console.error("Erreur historique:", e);
-      const recentList = $("recentActivityList");
+      const recentList = $("recentActivityList"); const fullList = $("fullHistoryList");
       if (recentList) recentList.textContent = "Impossible de charger l’historique pour le moment.";
+      if (fullList) fullList.textContent = "Impossible de charger l’historique pour le moment.";
     }
   }
 
