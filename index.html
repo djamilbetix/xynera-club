@@ -1672,12 +1672,12 @@
         status.textContent='Échec de l’envoi : '+errorText(error)+'. Vérifiez la configuration e-mail de Supabase et réessayez.';
         status.style.color='var(--red)';
       } else {
-        status.innerHTML='<strong>Demande envoyée.</strong><br>Vérifiez votre boîte e-mail ainsi que les courriers indésirables (spam). Un lien sécurisé de réinitialisation a été envoyé à l’adresse enregistrée sur Xynary Club. Si le message n’arrive pas, attendez quelques minutes puis réessayez.';
-        status.style.color='var(--green, #16a34a)';
+        status.textContent='';
+        showInfo('Demande envoyée', 'Vérifiez votre boîte e-mail ainsi que les courriers indésirables (spam). Un lien sécurisé de réinitialisation a été envoyé à l’adresse enregistrée sur Xynary Club. Si le message n’arrive pas, attendez quelques minutes puis réessayez.', false);
       }
     } catch(err) {
-      status.textContent='Une erreur de connexion est survenue. Vérifiez votre connexion Internet puis réessayez.';
-      status.style.color='var(--red)';
+      status.textContent='';
+      showInfo('Envoi impossible', 'Une erreur de connexion est survenue. Vérifiez votre connexion Internet puis réessayez.', true);
     } finally { resetBtn(btn); }
   });
   $('recoveryPasswordForm').addEventListener('submit',async e=>{
