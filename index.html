@@ -322,7 +322,7 @@
     <footer class="xp-footer"><div class="xp-footer-brand"><div class="landing-brand"><img src="logo-xynera.png" alt="Xynary Club logo"><span>Xynary-Club</span></div><p>Analyse, trading et communauté multi-marchés.</p></div><div class="xp-footer-links"><a href="#xp-markets">Marchés</a><a href="#xp-expertise">Notre approche</a><a href="#xp-community">Communauté</a><a href="#xp-formulas">Formules</a><a href="javascript:void(0)" onclick="alert('Politique de confidentialité : les données de compte sont utilisées pour la gestion du profil, l’accès aux services, le suivi des demandes et la sécurité. Les informations personnelles ne doivent être partagées qu’avec les services nécessaires au fonctionnement de la plateforme. Contact : xenaryclub@gmail.com. Une politique détaillée sera publiée ici.')">Politique de confidentialité</a><a href="javascript:void(0)" onclick="alert('Conditions d’utilisation : l’accès à Xynary-Club implique la création d’un compte et le respect des conditions applicables aux services, contrats, demandes et règles de la plateforme. Contact : xenaryclub@gmail.com.')">Conditions d’utilisation</a><a href="javascript:void(0)" onclick="alert('Contact support : xenaryclub@gmail.com')">Support</a></div><div class="xp-footer-bottom">© Xynary-Club · Tous droits réservés · <span>Les statistiques publiques seront activées avec des données vérifiées.</span></div></footer>
   </div>
   <div id="authFormCard" class="auth-form-card hidden"><button class="auth-back" onclick="showLandingPage()">← Retour à l’accueil</button><div class="auth-card-inner"><div style="text-align:center; margin-bottom:32px;"><h2 style="font-size:26px; color:var(--navy); font-weight:800; letter-spacing:-1px; margin-bottom:8px;">xynary-club</h2><p id="authSubtitle" style="color:var(--muted); font-size:14px;">Connectez-vous ou créez un compte. Une confirmation par e-mail est nécessaire avant l'accès.</p></div><div style="display:flex; border-bottom:1px solid var(--line); margin-bottom:24px;"><button id="loginTab" class="active" style="flex:1; padding:12px; font-weight:600; font-size:14px; color:var(--navy); border-bottom:2px solid var(--navy); background:transparent;" onclick="switchAuthTab('login')">Connexion</button><button id="signupTab" style="flex:1; padding:12px; font-weight:600; font-size:14px; color:var(--muted); border-bottom:2px solid transparent; background:transparent;" onclick="switchAuthTab('signup')">Inscription</button></div>
-    <form id="loginForm"><div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div><div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div><button type="submit" class="primary-btn">Se connecter</button><div id="loginStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div></form>
+    <form id="loginForm"><div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div><div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div><button type="submit" class="primary-btn">Se connecter</button><div style="text-align:center;margin-top:12px;"><button type="button" onclick="showForgotPasswordForm()" style="background:none;border:none;color:var(--navy);text-decoration:underline;cursor:pointer;font-size:13px;">Mot de passe oublié ?</button></div><div id="loginStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div></form><form id="forgotPasswordForm" style="display:none;margin-top:18px;"><div class="field"><label>Adresse e-mail du compte</label><input id="forgotEmail" type="email" required placeholder="nom@exemple.com"></div><button type="submit" class="primary-btn">Envoyer le lien de réinitialisation</button><button type="button" onclick="showLoginFormAgain()" style="width:100%;margin-top:10px;background:transparent;border:none;color:var(--navy);cursor:pointer;">← Retour à la connexion</button><div id="forgotStatus" class="auth-feedback" role="status" aria-live="polite" style="margin-top:12px;text-align:center;"></div></form><form id="recoveryPasswordForm" style="display:none;margin-top:18px;"><div class="field"><label>Nouveau mot de passe</label><input id="newRecoveryPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div><div class="field"><label>Confirmer le nouveau mot de passe</label><input id="confirmRecoveryPassword" type="password" minlength="8" required placeholder="Confirmez votre mot de passe"></div><button type="submit" class="primary-btn">Modifier le mot de passe</button><div id="recoveryStatus" class="auth-feedback" role="status" aria-live="polite" style="margin-top:12px;text-align:center;"></div></form>
     <form id="signupForm" style="display:none;"><div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div><div class="field"><label>Pays</label><select id="suCountry" required><option value="">Sélectionnez votre pays</option><option>République démocratique du Congo</option><option>République du Congo</option><option>Angola</option><option>Burundi</option><option>Rwanda</option><option>Ouganda</option><option>Tanzanie</option><option>Zambie</option><option>Afrique du Sud</option><option>Kenya</option><option>Nigeria</option><option>Ghana</option><option>Cameroun</option><option>Côte d’Ivoire</option><option>Sénégal</option><option>France</option><option>Belgique</option><option>Canada</option><option>États-Unis</option><option>Royaume-Uni</option><option>Autre</option></select></div><div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div><div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div><div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="20" placeholder="Code"></div><button type="submit" class="primary-btn">Créer un compte</button><div id="signupStatus" class="auth-feedback" role="status" aria-live="polite"></div></form></div></div>
 </section>
 
@@ -921,6 +921,14 @@
 
   window.showLandingPage = () => { $("publicLanding").classList.remove("hidden"); $("authFormCard").classList.add("hidden"); };
   window.showAuthForm = (mode) => { $("publicLanding").classList.add("hidden"); $("authFormCard").classList.remove("hidden"); window.switchAuthTab(mode || "login"); };
+
+  window.showForgotPasswordForm = () => {
+    $("loginForm").style.display = "none"; $("signupForm").style.display = "none";
+    $("forgotPasswordForm").style.display = "block"; $("recoveryPasswordForm").style.display = "none";
+    $("authSubtitle").textContent = "Entrez votre adresse e-mail. Nous vous enverrons un lien sécurisé pour réinitialiser votre mot de passe.";
+    $("forgotEmail").value = $("liEmail").value.trim(); $("forgotStatus").textContent = "";
+  };
+  window.showLoginFormAgain = () => { $("forgotPasswordForm").style.display = "none"; $("recoveryPasswordForm").style.display = "none"; window.switchAuthTab("login"); };
 
   window.switchAuthTab = (mode) => {
     const isLogin = mode === 'login';
@@ -1587,6 +1595,38 @@
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email: $("liEmail").value.trim(), password: $("liPassword").value });
     if(error) { $("loginStatus").textContent = errorText(error); resetBtn(btn); return; }
     await initApp(data.user); resetBtn(btn);
+  });
+
+  $("forgotPasswordForm").addEventListener("submit", async (e) => {
+    e.preventDefault(); const btn = $("forgotPasswordForm").querySelector('button[type="submit"]');
+    setBtnLoading(btn, "Envoi..."); $("forgotStatus").textContent = "";
+    const email = $("forgotEmail").value.trim();
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) { $("forgotStatus").textContent = errorText(error); $("forgotStatus").style.color = "var(--red)"; }
+    else { $("forgotStatus").textContent = "Si cette adresse correspond à un compte, un e-mail de réinitialisation a été envoyé. Vérifiez aussi vos spams."; $("forgotStatus").style.color = "var(--green, #16a34a)"; }
+    resetBtn(btn);
+  });
+
+  $("recoveryPasswordForm").addEventListener("submit", async (e) => {
+    e.preventDefault(); const btn = $("recoveryPasswordForm").querySelector('button[type="submit"]');
+    const pwd = $("newRecoveryPassword").value, confirm = $("confirmRecoveryPassword").value;
+    $("recoveryStatus").textContent = "";
+    if (pwd.length < 8) { $("recoveryStatus").textContent = "Le mot de passe doit contenir au moins 8 caractères."; return; }
+    if (pwd !== confirm) { $("recoveryStatus").textContent = "Les deux mots de passe ne correspondent pas."; return; }
+    setBtnLoading(btn, "Modification...");
+    const { error } = await supabaseClient.auth.updateUser({ password: pwd });
+    if (error) { $("recoveryStatus").textContent = errorText(error); $("recoveryStatus").style.color = "var(--red)"; resetBtn(btn); return; }
+    $("recoveryStatus").textContent = "Mot de passe modifié avec succès. Vous pouvez maintenant vous connecter."; $("recoveryStatus").style.color = "var(--green, #16a34a)";
+    $("newRecoveryPassword").value = ""; $("confirmRecoveryPassword").value = ""; resetBtn(btn);
+  });
+
+  supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") {
+      $("publicLanding").classList.add("hidden"); $("authFormCard").classList.remove("hidden");
+      $("loginForm").style.display = "none"; $("signupForm").style.display = "none"; $("forgotPasswordForm").style.display = "none";
+      $("recoveryPasswordForm").style.display = "block"; $("authSubtitle").textContent = "Choisissez un nouveau mot de passe sécurisé pour votre compte.";
+    }
   });
 
   $("depositAmountForm").addEventListener("submit", (e) => {
