@@ -322,7 +322,9 @@
     <footer class="xp-footer"><div class="xp-footer-brand"><div class="landing-brand"><img src="logo-xynera.png" alt="Xynary Club logo"><span>Xynary-Club</span></div><p>Analyse, trading et communauté multi-marchés.</p></div><div class="xp-footer-links"><a href="#xp-markets">Marchés</a><a href="#xp-expertise">Notre approche</a><a href="#xp-community">Communauté</a><a href="#xp-formulas">Formules</a><a href="javascript:void(0)" onclick="alert('Politique de confidentialité : les données de compte sont utilisées pour la gestion du profil, l’accès aux services, le suivi des demandes et la sécurité. Les informations personnelles ne doivent être partagées qu’avec les services nécessaires au fonctionnement de la plateforme. Contact : xenaryclub@gmail.com. Une politique détaillée sera publiée ici.')">Politique de confidentialité</a><a href="javascript:void(0)" onclick="alert('Conditions d’utilisation : l’accès à Xynary-Club implique la création d’un compte et le respect des conditions applicables aux services, contrats, demandes et règles de la plateforme. Contact : xenaryclub@gmail.com.')">Conditions d’utilisation</a><a href="javascript:void(0)" onclick="alert('Contact support : xenaryclub@gmail.com')">Support</a></div><div class="xp-footer-bottom">© Xynary-Club · Tous droits réservés · <span>Les statistiques publiques seront activées avec des données vérifiées.</span></div></footer>
   </div>
   <div id="authFormCard" class="auth-form-card hidden"><button class="auth-back" onclick="showLandingPage()">← Retour à l’accueil</button><div class="auth-card-inner"><div style="text-align:center; margin-bottom:32px;"><h2 style="font-size:26px; color:var(--navy); font-weight:800; letter-spacing:-1px; margin-bottom:8px;">xynary-club</h2><p id="authSubtitle" style="color:var(--muted); font-size:14px;">Connectez-vous ou créez un compte. Une confirmation par e-mail est nécessaire avant l'accès.</p></div><div style="display:flex; border-bottom:1px solid var(--line); margin-bottom:24px;"><button id="loginTab" class="active" style="flex:1; padding:12px; font-weight:600; font-size:14px; color:var(--navy); border-bottom:2px solid var(--navy); background:transparent;" onclick="switchAuthTab('login')">Connexion</button><button id="signupTab" style="flex:1; padding:12px; font-weight:600; font-size:14px; color:var(--muted); border-bottom:2px solid transparent; background:transparent;" onclick="switchAuthTab('signup')">Inscription</button></div>
-    <form id="loginForm"><div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div><div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div><button type="submit" class="primary-btn">Se connecter</button><div style="text-align:center;margin-top:12px;"><button type="button" onclick="showForgotPasswordForm()" style="background:none;border:none;color:var(--navy);text-decoration:underline;cursor:pointer;font-size:13px;">Mot de passe oublié ?</button></div><div id="loginStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div></form><form id="forgotPasswordForm" style="display:none;margin-top:18px;"><div class="field"><label>Adresse e-mail du compte</label><input id="forgotEmail" type="email" required placeholder="nom@exemple.com"></div><button type="submit" class="primary-btn">Envoyer le lien de réinitialisation</button><button type="button" onclick="showLoginFormAgain()" style="width:100%;margin-top:10px;background:transparent;border:none;color:var(--navy);cursor:pointer;">← Retour à la connexion</button><div id="forgotStatus" class="auth-feedback" role="status" aria-live="polite" style="margin-top:12px;text-align:center;"></div></form><form id="recoveryPasswordForm" style="display:none;margin-top:18px;"><div class="field"><label>Nouveau mot de passe</label><input id="newRecoveryPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div><div class="field"><label>Confirmer le nouveau mot de passe</label><input id="confirmRecoveryPassword" type="password" minlength="8" required placeholder="Confirmez votre mot de passe"></div><button type="submit" class="primary-btn">Modifier le mot de passe</button><div id="recoveryStatus" class="auth-feedback" role="status" aria-live="polite" style="margin-top:12px;text-align:center;"></div></form>
+    <form id="loginForm"><div class="field"><label>Adresse e-mail</label><input id="liEmail" type="email" required placeholder="nom@exemple.com"></div><div class="field"><label>Mot de passe</label><input id="liPassword" type="password" required placeholder="Votre mot de passe"></div><button type="submit" class="primary-btn">Se connecter</button><div style="text-align:center;margin-top:12px;"><button type="button" onclick="showForgotPasswordForm()" style="background:none;border:none;color:var(--navy);text-decoration:underline;cursor:pointer;font-size:13px;">Mot de passe oublié ?</button></div><div id="loginStatus" style="text-align:center; margin-top:16px; font-size:13px; color:var(--red);"></div></form>
+    <form id="forgotPasswordForm" style="display:none;margin-top:18px;"><div class="field"><label>Adresse e-mail du compte</label><input id="forgotEmail" type="email" required placeholder="nom@exemple.com"></div><button type="submit" class="primary-btn">Envoyer le lien de réinitialisation</button><button type="button" onclick="showLoginFormAgain()" style="width:100%;margin-top:10px;background:transparent;border:none;color:var(--navy);cursor:pointer;">← Retour à la connexion</button><div id="forgotStatus" role="status" aria-live="polite" style="margin-top:12px;text-align:center;"></div></form>
+    <form id="recoveryPasswordForm" style="display:none;margin-top:18px;"><div class="field"><label>Nouveau mot de passe</label><input id="newRecoveryPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div><div class="field"><label>Confirmer le nouveau mot de passe</label><input id="confirmRecoveryPassword" type="password" minlength="8" required placeholder="Confirmez le mot de passe"></div><button type="submit" class="primary-btn">Modifier le mot de passe</button><div id="recoveryStatus" role="status" aria-live="polite" style="margin-top:12px;text-align:center;"></div></form>
     <form id="signupForm" style="display:none;"><div class="field"><label>Nom complet</label><input id="suName" required placeholder="Votre nom"></div><div class="field"><label>Pays</label><select id="suCountry" required><option value="">Sélectionnez votre pays</option><option>République démocratique du Congo</option><option>République du Congo</option><option>Angola</option><option>Burundi</option><option>Rwanda</option><option>Ouganda</option><option>Tanzanie</option><option>Zambie</option><option>Afrique du Sud</option><option>Kenya</option><option>Nigeria</option><option>Ghana</option><option>Cameroun</option><option>Côte d’Ivoire</option><option>Sénégal</option><option>France</option><option>Belgique</option><option>Canada</option><option>États-Unis</option><option>Royaume-Uni</option><option>Autre</option></select></div><div class="field"><label>Adresse e-mail</label><input id="suEmail" type="email" required placeholder="nom@exemple.com"></div><div class="field"><label>Mot de passe</label><input id="suPassword" type="password" minlength="8" required placeholder="8 caractères minimum"></div><div class="field"><label>Code de parrainage (facultatif)</label><input id="suReferral" type="text" maxlength="20" placeholder="Code"></div><button type="submit" class="primary-btn">Créer un compte</button><div id="signupStatus" class="auth-feedback" role="status" aria-live="polite"></div></form></div></div>
 </section>
 
@@ -482,7 +484,7 @@
         <div>
           <div class="info-card" style="margin-top:0;">
             <h3>Votre lien de parrainage</h3>
-            <p style="margin-bottom:16px; font-size:13px; color:var(--muted);">Partagez ce lien. Une commission de parrainage de <strong>3%</strong> du montant investi par votre filleul est créditée automatiquement sur votre compte dès l’activation de son contrat. <strong>(Retirable)</strong></p>
+            <p style="margin-bottom:16px; font-size:13px; color:var(--muted);">Partagez ce lien. Vous gagnerez <strong>3%</strong> de l'investissement de vos filleuls, crédité sur votre compte après l'activation de leur contrat. <strong>(Retirable)</strong></p>
             <div style="display:flex; flex-direction:column; gap:10px;">
               <input type="text" id="myReferralLinkInput" readonly style="width:100%; background:var(--page); padding:14px; border-radius:6px; font-size:13px; border:1px solid var(--line); color:var(--navy); font-family:monospace; outline:none;">
               <button class="primary-btn" onclick="copyReferralLink()">Copier le lien</button>
@@ -546,9 +548,9 @@
       </div>
 
       <div class="info-card" style="border:1px solid #b9cfff;background:#f8fbff;margin-bottom:22px;">
-        <h3>📣 Message direct à tous les membres</h3><p style="color:var(--muted);font-size:13px;">Cet outil est réservé aux annonces techniques et communications officielles. Les messages d’inscription, dépôt, retrait, contrat et parrainage sont réservés aux notifications automatiques du système.</p>
+        <h3>📣 Message direct à tous les membres</h3><p style="color:var(--muted);font-size:13px;">Rédigez une annonce et envoyez-la immédiatement dans la boîte Messages de chaque compte.</p>
         <div class="field"><label>Titre du message</label><input id="broadcastTitle" maxlength="120" placeholder="Ex. Annonce de l’équipe technique"></div>
-        <div class="field"><label>Catégorie</label><select id="broadcastType" disabled><option value="technical" selected>Annonce technique uniquement</option></select></div>
+        <div class="field"><label>Type de message</label><select id="broadcastType"><option value="announcement">Annonce générale</option><option value="technical">Équipe technique</option><option value="referral">Parrainage</option><option value="deposit">Dépôt</option><option value="contract">Contrat</option></select></div>
         <div class="field"><label>Message</label><textarea id="broadcastBody" rows="5" maxlength="5000" placeholder="Écrivez votre message ici…" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;resize:vertical;"></textarea></div>
         <button class="primary-btn" id="sendBroadcastBtn" onclick="sendBroadcastMessage()">Envoyer à tous les utilisateurs</button><div id="broadcastStatus" style="margin-top:12px;font-size:13px;"></div>
       </div>
@@ -921,23 +923,6 @@
 
   window.showLandingPage = () => { $("publicLanding").classList.remove("hidden"); $("authFormCard").classList.add("hidden"); };
   window.showAuthForm = (mode) => { $("publicLanding").classList.add("hidden"); $("authFormCard").classList.remove("hidden"); window.switchAuthTab(mode || "login"); };
-
-  window.showForgotPasswordForm = () => {
-    $("loginForm").style.display = "none"; $("signupForm").style.display = "none";
-    $("forgotPasswordForm").style.display = "block"; $("recoveryPasswordForm").style.display = "none";
-    $("authSubtitle").textContent = "Entrez votre adresse e-mail. Nous vous enverrons un lien sécurisé pour réinitialiser votre mot de passe.";
-    $("forgotEmail").value = $("liEmail").value.trim(); $("forgotStatus").textContent = "";
-  };
-  window.showLoginFormAgain = () => { $("forgotPasswordForm").style.display = "none"; $("recoveryPasswordForm").style.display = "none"; window.switchAuthTab("login"); };
-
-  function showRecoveryPasswordUI() {
-    if (!$('authFormCard')) return;
-    $('publicLanding').classList.add('hidden'); $('authFormCard').classList.remove('hidden');
-    $('loginForm').style.display = 'none'; $('signupForm').style.display = 'none';
-    $('forgotPasswordForm').style.display = 'none'; $('recoveryPasswordForm').style.display = 'block';
-    $('authSubtitle').textContent = 'Choisissez un nouveau mot de passe sécurisé pour votre compte.';
-    $('recoveryStatus').textContent = '';
-  }
 
   window.switchAuthTab = (mode) => {
     const isLogin = mode === 'login';
@@ -1410,61 +1395,34 @@
 
   async function loadRequests() {
     try {
-      if (!currentUser) return;
-      const { data: deposits, error: depositError } = await supabaseClient
-        .from("xy_deposit_requests").select("*").eq("user_id", currentUser.id)
-        .order("created_at", { ascending: false });
-      if (depositError) throw depositError;
-      const { data: ledger, error: ledgerError } = await supabaseClient
-        .from("xy_ledger_entries").select("*").eq("user_id", currentUser.id)
-        .order("created_at", { ascending: false });
-      if (ledgerError) throw ledgerError;
-
+      const { data, error } = await supabaseClient.from("xy_deposit_requests").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      const rows = data || [];
       const recentList = $("recentActivityList"); const fullList = $("fullHistoryList");
       if (!recentList || !fullList) return;
-      const entries = [];
-      (deposits || []).forEach(d => entries.push({kind:"deposit_request", date:d.created_at, data:d}));
-      (ledger || []).forEach(l => entries.push({kind:"ledger", date:l.created_at, data:l}));
-      entries.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
       recentList.innerHTML = ""; fullList.innerHTML = "";
-      if (!entries.length) {
+      if (!rows.length) {
         recentList.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px 0;">Aucune activité.</div>';
         fullList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Aucune opération enregistrée.</div>';
         return;
       }
-      const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
-      const labels = {
-        deposit:"Dépôt crédité", deposit_request:"Demande de dépôt", contract_debit:"Montant affecté au contrat",
-        service_fee:"Frais de service", referral_bonus:"Bonus de parrainage (3%)",
-        realized_pnl:"Bonus / résultat du contrat", contract_bonus:"Bonus de fin de contrat",
-        contract_capital_return:"Retour de capital", withdrawal:"Retrait", withdrawal_request:"Demande de retrait",
-        bonus:"Bonus", reward_bonus:"Bonus de récompense"
-      };
-      function renderEntry(e){
-        const d=e.data; const isRequest=e.kind==="deposit_request";
-        const rawType=isRequest?"deposit_request":String(d.entry_type||"operation");
-        const label=(rawType==="realized_pnl"&&Number(d.amount||0)>0)?"Bonus de fin de contrat":(rawType==="realized_pnl"&&Number(d.amount||0)<=0)?"Résultat de contrat":(rawType==="contract_bonus"||rawType==="bonus"||rawType==="reward_bonus")?"Bonus crédité":labels[rawType]||String(d.entry_type||"Opération").replace(/_/g," ").replace(/^./,x=>x.toUpperCase());
-        const amountNum=Number(isRequest?d.amount:(d.amount||0));
-        const amount=(isRequest?amountNum:Math.abs(amountNum)).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+(d.currency||"USD");
-        const positive=!isRequest && amountNum>0;
-        const amountDisplay=(positive?"+":"")+(isRequest?amount:amount);
-        const date=d.created_at?new Date(d.created_at).toLocaleString("fr-FR",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"Date indisponible";
-        let status="", statusClass="pending";
-        if(isRequest){statusClass=d.status==="approved"?"active":"pending";status=d.status==="approved"?"Approuvé":d.status==="rejected"?"Refusé":"En attente";}
-        const source=d.description?`<small style="display:block;margin-top:4px;color:var(--muted);max-width:400px;">${esc(d.description)}</small>`:"";
-        const color=positive?"var(--green)":isRequest?"var(--navy)":"var(--red)";
-        return `<div class="op-item" style="padding:12px;margin-bottom:8px;align-items:flex-start;"><div class="op-info"><div class="op-details"><strong>${esc(label)}</strong><small>${esc(date)}</small>${source}</div></div><div style="text-align:right;min-width:110px;"><div class="op-amount" style="color:${color};">${esc(amountDisplay)}</div>${status?`<div style="margin-top:4px;"><span class="status-badge ${statusClass}">${esc(status)}</span></div>`:""}</div></div>`;
-      }
-      entries.forEach((e,index)=>{const html=renderEntry(e);if(index<5)recentList.innerHTML+=html;fullList.innerHTML+=html;});
+      rows.forEach((item, index) => {
+        const amount = Number(item.amount || 0).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + (item.currency || "USD");
+        const date = new Date(item.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+        const statusClass = item.status === "approved" ? "active" : item.status === "rejected" ? "pending" : "pending";
+        const statusText = item.status === "approved" ? "Approuvé" : item.status === "rejected" ? "Refusé" : "En attente";
+        const html = `<div class="op-item" style="padding:12px;margin-bottom:8px;"><div class="op-info"><div class="op-details"><strong>Dépôt</strong><small>${date}</small></div></div><div style="text-align:right;"><div class="op-amount">${amount}</div><div style="margin-top:4px;"><span class="status-badge ${statusClass}">${statusText}</span></div></div></div>`;
+        if (index < 3) recentList.innerHTML += html;
+        fullList.innerHTML += html;
+      });
     } catch (e) {
       console.error("Erreur historique:", e);
-      const recentList = $("recentActivityList"); const fullList = $("fullHistoryList");
+      const recentList = $("recentActivityList");
       if (recentList) recentList.textContent = "Impossible de charger l’historique pour le moment.";
-      if (fullList) fullList.textContent = "Impossible de charger l’historique pour le moment.";
     }
   }
 
-  function messageTypeLabel(type){return ({welcome:'Bienvenue',deposit:'Dépôt',withdrawal:'Retrait',contract:'Contrat',referral:'Parrainage',technical:'Annonce technique'})[type]||'Message';}
+  function messageTypeLabel(type){return ({welcome:'Bienvenue',deposit:'Dépôt',contract:'Contrat',referral:'Parrainage',technical:'Équipe technique',announcement:'Annonce'})[type]||'Message';}
   function messageEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   async function ensureWelcomeMessage(){
     if(!currentUser||!supabaseClient)return;
@@ -1486,7 +1444,7 @@
     messageRealtimeChannel=supabaseClient.channel('xy-direct-messages-'+currentUser.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'xy_direct_messages',filter:'recipient_id=eq.'+currentUser.id},payload=>{loadMemberMessages();const badge=$('messageUnreadBadge');if(badge){badge.classList.remove('hidden');badge.textContent='Nouveau';}}).subscribe();
   }
   window.sendBroadcastMessage=async()=>{
-    if(!isAdmin){alert('Accès réservé à l’administrateur.');return;}const title=$('broadcastTitle').value.trim(),body=$('broadcastBody').value.trim(),type='technical',btn=$('sendBroadcastBtn'),status=$('broadcastStatus');
+    if(!isAdmin){alert('Accès réservé à l’administrateur.');return;}const title=$('broadcastTitle').value.trim(),body=$('broadcastBody').value.trim(),type=$('broadcastType').value,btn=$('sendBroadcastBtn'),status=$('broadcastStatus');
     if(!title||!body){status.style.color='var(--red)';status.textContent='Veuillez renseigner le titre et le message.';return;}btn.disabled=true;btn.textContent='Envoi en cours…';status.textContent='';
     try{const {data:users,error:uerr}=await supabaseClient.from('xy_profiles').select('id');if(uerr)throw uerr;const recipients=(users||[]).filter(u=>u.id!==currentUser.id);if(!recipients.length)throw new Error('Aucun utilisateur à notifier.');const now=Date.now();const rows=recipients.map((u,i)=>({recipient_id:u.id,title,body,message_type:type,created_by:currentUser.id,dedupe_key:`broadcast-${currentUser.id}-${now}-${i}`}));const {error}=await supabaseClient.from('xy_direct_messages').insert(rows);if(error)throw error;status.style.color='var(--green)';status.textContent=`Message envoyé à ${rows.length} compte(s).`; $('broadcastTitle').value='';$('broadcastBody').value='';}
     catch(e){status.style.color='var(--red)';status.textContent='Échec de l’envoi : '+(e.message||e);}finally{btn.disabled=false;btn.textContent='Envoyer à tous les utilisateurs';}
@@ -1606,52 +1564,6 @@
     await initApp(data.user); resetBtn(btn);
   });
 
-  $("forgotPasswordForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); const btn = $("forgotPasswordForm").querySelector('button[type="submit"]');
-    setBtnLoading(btn, "Envoi..."); $("forgotStatus").textContent = "";
-    const email = $("forgotEmail").value.trim();
-    const redirectTo = window.location.origin + window.location.pathname;
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
-    if (error) { $("forgotStatus").textContent = errorText(error); $("forgotStatus").style.color = "var(--red)"; }
-    else { $("forgotStatus").textContent = "Si cette adresse correspond à un compte, un e-mail de réinitialisation a été envoyé. Vérifiez aussi vos spams."; $("forgotStatus").style.color = "var(--green, #16a34a)"; }
-    resetBtn(btn);
-  });
-
-  $("recoveryPasswordForm").addEventListener("submit", async (e) => {
-    e.preventDefault(); const btn = $("recoveryPasswordForm").querySelector('button[type="submit"]');
-    const pwd = $("newRecoveryPassword").value, confirm = $("confirmRecoveryPassword").value;
-    $("recoveryStatus").textContent = "";
-    if (pwd.length < 8) { $("recoveryStatus").textContent = "Le mot de passe doit contenir au moins 8 caractères."; return; }
-    if (pwd !== confirm) { $("recoveryStatus").textContent = "Les deux mots de passe ne correspondent pas."; return; }
-    setBtnLoading(btn, "Modification...");
-    const { error } = await supabaseClient.auth.updateUser({ password: pwd });
-    if (error) { $("recoveryStatus").textContent = errorText(error); $("recoveryStatus").style.color = "var(--red)"; resetBtn(btn); return; }
-    $("recoveryStatus").textContent = "Mot de passe modifié avec succès. Vous pouvez maintenant vous connecter."; $("recoveryStatus").style.color = "var(--green, #16a34a)";
-    $("newRecoveryPassword").value = ""; $("confirmRecoveryPassword").value = ""; resetBtn(btn);
-    // Clean recovery URL and return to login after successful password update.
-    await supabaseClient.auth.signOut();
-    window.history.replaceState({}, document.title, window.location.pathname);
-    window.switchAuthTab('login');
-  });
-
-  // Recovery links may arrive as a hash token or as a PKCE ?code= callback.
-  // Keep recovery mode separate from the normal authenticated app startup.
-  let passwordRecoveryFlow = false;
-  const recoveryHash = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
-  const recoveryQuery = new URLSearchParams(window.location.search || '');
-  const recoveryLinkDetected = recoveryHash.get('type') === 'recovery' || recoveryQuery.get('type') === 'recovery' || recoveryHash.has('access_token') || recoveryQuery.has('code');
-  if (recoveryLinkDetected) {
-    passwordRecoveryFlow = true;
-    showRecoveryPasswordUI();
-  }
-
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY' || (passwordRecoveryFlow && session)) {
-      passwordRecoveryFlow = true;
-      showRecoveryPasswordUI();
-    }
-  });
-
   $("depositAmountForm").addEventListener("submit", (e) => {
     e.preventDefault(); 
     const amount = parseFloat($("depositAmountInput").value); const minDeposit = hasPaidFee ? 150 : 186;
@@ -1713,12 +1625,40 @@
   $("logoutBtnSidebar").addEventListener("click", handleLogout);
   if($("logoutBtnProfile")) $("logoutBtnProfile").addEventListener("click", handleLogout);
   
+  window.showForgotPasswordForm = () => {
+    $('loginForm').style.display='none'; $('signupForm').style.display='none';
+    $('forgotPasswordForm').style.display='block'; $('recoveryPasswordForm').style.display='none';
+    $('authSubtitle').textContent='Entrez votre e-mail. Nous vous enverrons un lien sécurisé pour réinitialiser votre mot de passe.';
+    $('forgotEmail').value=$('liEmail').value.trim(); $('forgotStatus').textContent='';
+  };
+  window.showLoginFormAgain = () => { $('forgotPasswordForm').style.display='none'; $('recoveryPasswordForm').style.display='none'; window.switchAuthTab('login'); };
+  function showRecoveryPasswordUI(){ $('publicLanding').classList.add('hidden'); $('authFormCard').classList.remove('hidden'); $('loginForm').style.display='none'; $('signupForm').style.display='none'; $('forgotPasswordForm').style.display='none'; $('recoveryPasswordForm').style.display='block'; $('authSubtitle').textContent='Choisissez un nouveau mot de passe sécurisé.'; }
+  $('forgotPasswordForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const email=$('forgotEmail').value.trim(); const btn=$('forgotPasswordForm').querySelector('button[type=submit]'); setBtnLoading(btn,'Envoi...');
+    const redirectTo=window.location.origin+window.location.pathname;
+    const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+    $('forgotStatus').textContent=error?errorText(error):'Si cette adresse correspond à un compte, un e-mail de récupération a été envoyé. Vérifiez votre boîte et vos spams.';
+    $('forgotStatus').style.color=error?'var(--red)':'var(--green, #16a34a)'; resetBtn(btn);
+  });
+  $('recoveryPasswordForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const pwd=$('newRecoveryPassword').value, confirmPwd=$('confirmRecoveryPassword').value; const btn=$('recoveryPasswordForm').querySelector('button[type=submit]');
+    $('recoveryStatus').textContent=''; if(pwd.length<8){$('recoveryStatus').textContent='Le mot de passe doit contenir au moins 8 caractères.';return;} if(pwd!==confirmPwd){$('recoveryStatus').textContent='Les mots de passe ne correspondent pas.';return;}
+    setBtnLoading(btn,'Modification...'); const {error}=await supabaseClient.auth.updateUser({password:pwd});
+    if(error){$('recoveryStatus').textContent=errorText(error);$('recoveryStatus').style.color='var(--red)';resetBtn(btn);return;}
+    $('recoveryStatus').textContent='Mot de passe modifié avec succès. Vous pouvez vous connecter avec votre nouveau mot de passe.';$('recoveryStatus').style.color='var(--green, #16a34a)'; $('newRecoveryPassword').value='';$('confirmRecoveryPassword').value='';
+    await supabaseClient.auth.signOut(); resetBtn(btn); history.replaceState({},document.title,window.location.pathname); window.switchAuthTab('login');
+  });
+  let passwordRecoveryFlow=false;
+  const hashParams=new URLSearchParams((location.hash||'').replace(/^#/,'')); const queryParams=new URLSearchParams(location.search||'');
+  const recoveryCode=queryParams.get('code'); const recoveryType=hashParams.get('type')||queryParams.get('type'); const recoveryAT=hashParams.get('access_token')||queryParams.get('access_token'); const recoveryRT=hashParams.get('refresh_token')||queryParams.get('refresh_token');
+  const recoveryLinkDetected=recoveryType==='recovery'||!!recoveryCode||!!(recoveryAT&&recoveryRT);
+  async function activateRecoveryLink(){ if(!recoveryLinkDetected)return; passwordRecoveryFlow=true; showRecoveryPasswordUI(); try{ if(recoveryCode){const {error}=await supabaseClient.auth.exchangeCodeForSession(recoveryCode);if(error)throw error;} else if(recoveryAT&&recoveryRT){const {error}=await supabaseClient.auth.setSession({access_token:recoveryAT,refresh_token:recoveryRT});if(error)throw error;} showRecoveryPasswordUI(); }catch(err){showRecoveryPasswordUI();$('recoveryStatus').textContent='Lien invalide ou expiré. Demandez un nouveau lien de réinitialisation.';$('recoveryStatus').style.color='var(--red)';} }
+  activateRecoveryLink();
+  supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'||(passwordRecoveryFlow&&session)){passwordRecoveryFlow=true;showRecoveryPasswordUI();}});
+
   bootstrapSkeletons();
   supabaseClient.auth.getSession().then(({ data: { session } }) => { 
-    if (passwordRecoveryFlow) {
-      showRecoveryPasswordUI();
-      return;
-    }
+    if (passwordRecoveryFlow || recoveryLinkDetected) { passwordRecoveryFlow=true; showRecoveryPasswordUI(); return; }
     if (session) initApp(session.user); 
     else $("authArea").classList.remove("hidden"); 
   });
